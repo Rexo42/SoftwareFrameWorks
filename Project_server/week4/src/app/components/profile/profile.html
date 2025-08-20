@@ -1,0 +1,25 @@
+<app-nav-bar></app-nav-bar>
+<p>profile works! successful Login</p>
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+  <label>
+    Username:
+    <input type="text" formControlName="username" />
+  </label>
+
+  <label>
+    Birthdate:
+    <input type="text" formControlName="birthdate" />
+  </label>
+
+  <label>
+    Age:
+    <input type="number" formControlName="age" />
+  </label>
+
+  <label>
+    Email:
+    <input type="email" formControlName="email" />
+  </label>
+
+  <button type="submit">Update Profile</button>
+</form>

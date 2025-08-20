@@ -1,0 +1,32 @@
+<app-nav-bar></app-nav-bar>
+<div class="main">
+    <h3>Enter your login credentials</h3>
+
+    <form (ngSubmit)="login()">
+        <label for="first">
+            Username:
+        </label>
+        <input type="text" id="username" name="username" [(ngModel)]="username"
+            [(ngModel)]="username" 
+            placeholder="Enter your Username" required>
+            
+
+        <label for="username">
+            Password:
+        </label>
+        <input type="password" id="password" name="password" [(ngModel)]="password" 
+            [(ngModel)]="password"
+            placeholder="Enter your Password" required>
+           
+
+        <div class="wrap">
+            <button type="submit">
+                Login
+            </button>
+        </div>
+    </form>
+
+    <div id = errorMsg>{{ message }}</div>
+</div>
+
+
