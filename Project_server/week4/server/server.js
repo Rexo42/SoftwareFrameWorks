@@ -7,7 +7,7 @@ const path = require('path');
 var cors = require('cors');
 app.use(cors());
 
-app.use(express.static(path.join('../dist/week4/browser')));
+//app.use(express.static(path.join('../dist/week4/browser')));
 app.use(express.json());
 
 app.use(session({
@@ -58,8 +58,7 @@ app.post('/api/auth', (req, res) => {
         if (username == users[i].username && password == users[i].password)
         {
             users[i].valid = true;
-            copy = users[i];
-            copy.password = "";
+            copy = new user(users[i].username, users[i].email, users[i].password)
             return res.json({ message: 'login success', success: users[i].valid, details: copy});
         }
     }
