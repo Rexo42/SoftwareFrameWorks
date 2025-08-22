@@ -53,16 +53,38 @@ console.log('Serving static files from:', path.join(__dirname));
 
 app.post('/api/auth', (req, res) => {
     const {username, password} = req.body;
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < users.length; i++)
     {
         if (username == users[i].username && password == users[i].password)
         {
             users[i].valid = true;
-            copy = new user(users[i].username, users[i].email, users[i].password)
+            copy = new user(users[i].username, users[i].email, '')
             return res.json({ message: 'login success', success: users[i].valid, details: copy});
         }
     }
     return res.json({ message: 'login failed', success: false});
+});
+
+app.post('/api/create', (req, res) =>{
+    const {username, password, email} = req.body;
+    if (!username || !password || !email)
+    {
+        return res.json({message: 'missing fields', success: false});
+    }
+        // go through existing users and check a username doesnt already exist if not return kino
+    for (i = 0; i < users.length; i++)
+    {
+        if (users[i].username == username || users[i].email == email)
+        {
+            return res.json ({message: 'that username or email is already taken', success: false})
+        }
+    }
+    details = new user(username, email, password);
+    console.log(details.username);
+    copy = new user(details.username, details.email, '')
+    users.push(details);
+    console.log("made a user");
+    return res.json({message: 'creation success', success: true, details: copy})
 });
 
 

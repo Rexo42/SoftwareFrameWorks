@@ -15,6 +15,9 @@
       <li class="nav-item" *ngIf="isLoggedIn">
         <a class="nav-link" (click)="logout()" style="cursor: pointer;">Logout</a>
       </li>
+      <li class="nav-item" *ngIf="!isLoggedIn">
+        <a class="nav-link" (click)="create()" style="cursor: pointer;">Create Account</a>
+      </li>
     </ul>
 
   </div>

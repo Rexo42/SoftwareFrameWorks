@@ -12,6 +12,7 @@ import { Home } from './components/home/home';
 import { NavBar } from './components/nav-bar/nav-bar';
 import { LoginPage } from './components/login-page/login-page';
 import { Profile } from './components/profile/profile';
+import { CreateAccount } from './components/create-account/create-account';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { Profile } from './components/profile/profile';
     Home,
     NavBar,
     LoginPage,
-    Profile
+    Profile,
+    CreateAccount
   ],
   imports: [
     BrowserModule,
