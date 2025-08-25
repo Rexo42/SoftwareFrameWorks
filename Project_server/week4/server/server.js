@@ -50,6 +50,34 @@ console.log("My First Nodejs Server!");
 console.log("Server listening on: "+ host + " port:" + port);
 console.log('Serving static files from:', path.join(__dirname));
 });
+const { Server } = require('socket.io');
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:4200", // Your Angular frontend
+    methods: ["GET", "POST"]
+  }
+});
+
+io.on('connection', (socket)=>
+{
+    console.log("user connected via socket: ", socket.id);
+
+    socket.on('joinRoom', (room)=>{
+        socket.join(room);
+        console.log("socket: ",socket.id, " joined room: ", room);
+    });
+
+
+    socket.on('disconnect',()=>
+    {
+        console.log("user disconnected: ", socket.id);
+    });
+
+});
+
+
+
 
 app.post('/api/auth', (req, res) => {
     const {username, password} = req.body;
