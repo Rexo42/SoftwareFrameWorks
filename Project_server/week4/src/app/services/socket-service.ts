@@ -11,15 +11,15 @@ export class SocketService
   private readonly URL = 'http://localhost:3000';
   constructor(){}
 
-  connect(room?: string)
+  connect(room?: string, user?: string)
   {
     if (!this.socket || !this.socket.connected)
     {
       this.socket = io(this.URL);
       this.socket.on('connect', ()=>{
-        if (room)
+        if (room && user)
         {
-          this.joinRoom(room);
+          this.joinRoom(room, user);
         }
       });
     }
@@ -34,25 +34,25 @@ export class SocketService
     }
   }
 
-  joinRoom(room: string)
+  joinRoom(room: string, user: string)
   {
     if (this.socket && this.socket.connected)
     {
-      this.socket.emit('joinRoom', room);
+      this.socket.emit('joinRoom', room, user);
     }
     
   }
 
-  sendMessage(message: string)
+  sendMessage(message: string, username: string)
   {
     if (this.socket && this.socket.connected)
     {
-      this.socket.emit('sendMessage', message);  
+      this.socket.emit('sendMessage', message, username);  
     }
     
   }
 
-  receiveMessage(callback: (data: any) => void)
+  receiveMessage(callback: (message: any, user: any) => void)
   {
       if (this.socket)
       {

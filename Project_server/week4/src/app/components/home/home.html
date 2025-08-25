@@ -5,10 +5,14 @@
       <h1 class="display-4">Welcome to the Home Page</h1>
       <p class="lead">This is a chat-room based app in development using Angular and Node</p>
       <hr class="my-4">
-      <p>If you already have an account, you can log in. If not, feel free to create one!</p>
-      <div class="d-flex justify-content-center gap-3 mt-4">
+      <p *ngIf="!isLogged">If you already have an account, you can log in. If not, feel free to create one!</p>
+      <div class="d-flex justify-content-center gap-3 mt-4" *ngIf="!isLogged">
         <a routerLink="/login" class="btn btn-primary btn-lg">Login</a>
         <a routerLink="/create" class="btn btn-outline-secondary btn-lg">Create Account</a>
+      </div>
+      <p *ngIf="isLogged">It looks like your already logged in!</p>
+      <div class="d-flex justify-content-center gap-3 mt-4" *ngIf="isLogged">
+        <a routerLink="/profile" class="btn btn-primary btn-lg">View Profile</a>
       </div>
     </div>
   </div>

@@ -14,6 +14,7 @@ import { LoginPage } from './components/login-page/login-page';
 import { Profile } from './components/profile/profile';
 import { CreateAccount } from './components/create-account/create-account';
 import { ChatRooms } from './components/chat-rooms/chat-rooms';
+import { Dummy } from './components/dummy/dummy';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { ChatRooms } from './components/chat-rooms/chat-rooms';
     LoginPage,
     Profile,
     CreateAccount,
-    ChatRooms
+    ChatRooms,
+    Dummy
   ],
   imports: [
     BrowserModule,

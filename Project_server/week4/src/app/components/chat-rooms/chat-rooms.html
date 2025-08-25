@@ -3,6 +3,19 @@
 
 <!-- ability to create chatrooms -->
  <!-- upon being served this route, we need to do a get request and get all current chatrooms -->
+<div class="container mt-3">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="border p-3 mb-3" style="height: 300px; overflow-y: auto; background-color: #f8f9fa;">
+        <div *ngFor="let msg of messages">
+          <p class="mb-1"> ({{ msg.getFormattedTime() }}) {{msg.sender}}: {{msg.message}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
  <form (ngSubmit)="sendMessage()">
     <div class="container mt-5">

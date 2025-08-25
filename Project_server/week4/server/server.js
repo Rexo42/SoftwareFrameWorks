@@ -63,16 +63,19 @@ io.on('connection', (socket)=>
 {
     console.log("user connected via socket: ", socket.id);
 
-    socket.on('joinRoom', (room)=>{
+    socket.on('joinRoom', (room, user)=>{
         socket.join(room);
         console.log("socket: ",socket.id, " joined room: ", room);
+        io.to('1').emit('receiveMessage', "has joined", user);
     });
-    socket.on('sendMessage', (message)=>{
+    // need a leave room function 
+    socket.on('sendMessage', (message, username)=>{
         console.log("message recieved from:", socket.id, " :: ", message);
-        socket.to('1').emit('receiveMessage', message);
+        socket.to('1').emit('receiveMessage', message, username);
     });
     socket.on('disconnect',()=>
     {
+        io.to('1').emit('receiveMessage', "has disconnected", socket.id);
         console.log("user disconnected: ", socket.id);
     });
 

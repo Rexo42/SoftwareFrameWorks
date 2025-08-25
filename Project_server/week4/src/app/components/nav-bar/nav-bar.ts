@@ -21,7 +21,10 @@ export class NavBar implements OnInit
   {
     localStorage.removeItem('currentUser');
     this.isLoggedIn = false;
-    this.router.navigate(['/home']);
+      this.router.navigate(['/dummy'], { skipLocationChange: true }).then(() => 
+      {
+        this.router.navigate(['/home']);
+      });
   }
   create(): void
   {

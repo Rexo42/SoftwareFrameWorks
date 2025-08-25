@@ -12,13 +12,22 @@ import { Socket } from 'socket.io-client';
 export class ChatRooms implements OnInit, OnDestroy
 {
   message : string = "";
+  messages :chatMessage[] = [];
   constructor(private router : Router, private socketService : SocketService){}
   ngOnInit(): void 
   {
-    this.socketService.connect((1).toString());
-    this.socketService.receiveMessage((message: string)=>
+    const userRaw = localStorage.getItem('currentUser');
+    const currentUser = userRaw ? JSON.parse(userRaw) : null;
+
+
+    if (currentUser?.username) 
+    {
+      this.socketService.connect('1', currentUser.username);
+    }
+    this.socketService.receiveMessage((message: string, username: string)=>
     {
       // update that array
+      this.messages.push(new chatMessage(username, message));
       console.log('message recieved: ', message);
     });
     // inject socket service
@@ -43,6 +52,22 @@ export class ChatRooms implements OnInit, OnDestroy
          return;
        }
     // update ui
-    this.socketService.sendMessage(userMessage);
+    const userRaw = localStorage.getItem('currentUser');
+    const currentUser = userRaw ? JSON.parse(userRaw) : null;
+    this.messages.push(new chatMessage(currentUser.username,this.message));
+    this.socketService.sendMessage(userMessage, currentUser.username);
+    this.message ='';
+  }
+
+}
+class chatMessage
+{
+  constructor(public sender : string, public message: string, public timeStamp: Date = new Date()){}
+    getFormattedTime(): string 
+  {
+    return this.timeStamp.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 }
