@@ -13,6 +13,7 @@ import { NavBar } from './components/nav-bar/nav-bar';
 import { LoginPage } from './components/login-page/login-page';
 import { Profile } from './components/profile/profile';
 import { CreateAccount } from './components/create-account/create-account';
+import { ChatRooms } from './components/chat-rooms/chat-rooms';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { CreateAccount } from './components/create-account/create-account';
     NavBar,
     LoginPage,
     Profile,
-    CreateAccount
+    CreateAccount,
+    ChatRooms
   ],
   imports: [
     BrowserModule,

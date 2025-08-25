@@ -4,6 +4,7 @@ import {Home} from './components/home/home';
 import {LoginPage} from './components/login-page/login-page';
 import {Profile} from './components/profile/profile';
 import {CreateAccount} from './components/create-account/create-account';
+import {ChatRooms} from './components/chat-rooms/chat-rooms';
 
 const routes: Routes = 
 [
@@ -11,7 +12,8 @@ const routes: Routes =
   {path: 'home', component: Home},
   {path: 'login', component: LoginPage},
   {path: 'profile', component: Profile},
-  {path: 'create', component: CreateAccount}
+  {path: 'create', component: CreateAccount},
+  {path: 'chatRooms', component: ChatRooms}
 
 ];
 
