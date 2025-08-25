@@ -21,4 +21,9 @@ export class Api {
     {
       return this.http.post<LoginResponse>(`${this.baseUrl}/auth`, user);
     }
+
+    createAccountRequest(user: {username: string; password: string})
+    {
+      return this.http.post<LoginResponse>(`${this.baseUrl}/create`, user)
+    }
 }
