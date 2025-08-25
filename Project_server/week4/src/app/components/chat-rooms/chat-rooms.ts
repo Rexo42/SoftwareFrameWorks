@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {SocketService} from '../../services/socket-service'
 import { Router } from '@angular/router';
 import { Socket } from 'socket.io-client';
@@ -9,7 +9,7 @@ import { Socket } from 'socket.io-client';
   templateUrl: './chat-rooms.html',
   styleUrl: './chat-rooms.css'
 })
-export class ChatRooms implements OnInit 
+export class ChatRooms implements OnInit, OnDestroy
 {
   constructor(private router : Router, private socketService : SocketService){}
   ngOnInit(): void 
@@ -22,5 +22,9 @@ export class ChatRooms implements OnInit
     // we need to send a get request to the server to retrieve all current chatrooms    
       // create get to send back room info to here
         // we can use that retrieved room info to setup UI  
+  }
+  ngOnDestroy(): void 
+  {
+    this.socketService.disconnect();    
   }
 }

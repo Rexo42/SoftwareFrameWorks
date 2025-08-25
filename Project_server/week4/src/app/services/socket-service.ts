@@ -14,6 +14,14 @@ export class SocketService
     this.socket = io(this.URL);
   }
 
+  disconnect()
+  {
+    if (this.socket && this.socket.connected)
+    {
+      this.socket.disconnect();
+    }
+  }
+
   joinRoom(room: string)
   {
     this.socket.emit('joinRoom', room);
