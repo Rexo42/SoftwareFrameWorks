@@ -11,10 +11,16 @@ import { Socket } from 'socket.io-client';
 })
 export class ChatRooms implements OnInit, OnDestroy
 {
+  message : string = "";
   constructor(private router : Router, private socketService : SocketService){}
   ngOnInit(): void 
   {
-    this.socketService.joinRoom((1).toString());
+    this.socketService.connect((1).toString());
+    this.socketService.receiveMessage((message: string)=>
+    {
+      // update that array
+      console.log('message recieved: ', message);
+    });
     // inject socket service
 
 
@@ -23,8 +29,20 @@ export class ChatRooms implements OnInit, OnDestroy
       // create get to send back room info to here
         // we can use that retrieved room info to setup UI  
   }
+
   ngOnDestroy(): void 
   {
     this.socketService.disconnect();    
+  }
+
+  sendMessage()
+  {
+    const userMessage = this.message;
+       if (!userMessage)
+       {
+         return;
+       }
+    // update ui
+    this.socketService.sendMessage(userMessage);
   }
 }

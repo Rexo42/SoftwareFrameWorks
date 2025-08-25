@@ -3,3 +3,27 @@
 
 <!-- ability to create chatrooms -->
  <!-- upon being served this route, we need to do a get request and get all current chatrooms -->
+
+ <form (ngSubmit)="sendMessage()">
+    <div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="mb-3">
+          <label for="message" class="form-label">Message:</label>
+          <input
+            type="text"
+            id="message"
+            name="message"
+            class="form-control"
+            [(ngModel)]="message"
+            placeholder="Enter your message"
+            required>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+ </form>

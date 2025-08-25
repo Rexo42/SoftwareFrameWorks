@@ -67,8 +67,10 @@ io.on('connection', (socket)=>
         socket.join(room);
         console.log("socket: ",socket.id, " joined room: ", room);
     });
-
-
+    socket.on('sendMessage', (message)=>{
+        console.log("message recieved from:", socket.id, " :: ", message);
+        socket.to('1').emit('receiveMessage', message);
+    });
     socket.on('disconnect',()=>
     {
         console.log("user disconnected: ", socket.id);

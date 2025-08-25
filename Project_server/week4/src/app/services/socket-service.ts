@@ -7,11 +7,22 @@ import {io, Socket} from 'socket.io-client';
 })
 export class SocketService 
 {
-  private socket: Socket;
+  private socket: Socket | null = null;
   private readonly URL = 'http://localhost:3000';
-  constructor()
+  constructor(){}
+
+  connect(room?: string)
   {
-    this.socket = io(this.URL);
+    if (!this.socket || !this.socket.connected)
+    {
+      this.socket = io(this.URL);
+      this.socket.on('connect', ()=>{
+        if (room)
+        {
+          this.joinRoom(room);
+        }
+      });
+    }
   }
 
   disconnect()
@@ -19,21 +30,33 @@ export class SocketService
     if (this.socket && this.socket.connected)
     {
       this.socket.disconnect();
+      this.socket = null;
     }
   }
 
   joinRoom(room: string)
   {
-    this.socket.emit('joinRoom', room);
+    if (this.socket && this.socket.connected)
+    {
+      this.socket.emit('joinRoom', room);
+    }
+    
   }
 
   sendMessage(message: string)
   {
-    this.socket.emit('message', message);
+    if (this.socket && this.socket.connected)
+    {
+      this.socket.emit('sendMessage', message);  
+    }
+    
   }
 
   receiveMessage(callback: (data: any) => void)
   {
-    this.socket.on('message', callback);
+      if (this.socket)
+      {
+         this.socket.on('receiveMessage', callback);
+      }
   }
 }
