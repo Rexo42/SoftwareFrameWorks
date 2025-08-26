@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked} from '@angular/core';
 import {SocketService} from '../../services/socket-service'
 import { Router } from '@angular/router';
 import { Socket } from 'socket.io-client';
@@ -9,13 +9,28 @@ import { Socket } from 'socket.io-client';
   templateUrl: './chat-rooms.html',
   styleUrl: './chat-rooms.css'
 })
-export class ChatRooms implements OnInit, OnDestroy
+export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
 {
+  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   message : string = "";
   messages :chatMessage[] = [];
+
+  
+
+  scroll(): void
+  {
+    try{
+      this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+    } catch(err){
+      console.error('Scroll failed', err);
+    }
+  }
+
+
   constructor(private router : Router, private socketService : SocketService){}
   ngOnInit(): void 
   {
+  
     const userRaw = localStorage.getItem('currentUser');
     const currentUser = userRaw ? JSON.parse(userRaw) : null;
 
@@ -24,19 +39,21 @@ export class ChatRooms implements OnInit, OnDestroy
     {
       this.socketService.connect('1', currentUser.username);
     }
+    else
+    {
+      this.router.navigate(['/home'])
+    }
     this.socketService.receiveMessage((message: string, username: string)=>
     {
-      // update that array
       this.messages.push(new chatMessage(username, message));
       console.log('message recieved: ', message);
     });
-    // inject socket service
+ 
+  }
 
-
-            // we need to open a socket here or we do it when the user presses log in (saves resources and wont just waste them when doing other stuff)
-    // we need to send a get request to the server to retrieve all current chatrooms    
-      // create get to send back room info to here
-        // we can use that retrieved room info to setup UI  
+  ngAfterViewChecked():void
+  {
+    this.scroll();
   }
 
   ngOnDestroy(): void 

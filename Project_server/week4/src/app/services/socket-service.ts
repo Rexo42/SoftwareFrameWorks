@@ -8,7 +8,9 @@ import {io, Socket} from 'socket.io-client';
 export class SocketService 
 {
   private socket: Socket | null = null;
-  private readonly URL = 'http://localhost:3000';
+  //private readonly URL = 'http://localhost:3000';
+  private readonly URL = '121.222.65.60:3000'
+
   constructor(){}
 
   connect(room?: string, user?: string)

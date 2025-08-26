@@ -15,7 +15,8 @@ interface LoginResponse
 })
 export class Api {
     constructor(private http: HttpClient) {}
-    private baseUrl = 'http://localhost:3000/api';
+    //private baseUrl = 'http://localhost:3000/api';
+     private baseUrl = 'http://121.222.65.60:3000/api';
 
     loginRequest(user: {username: string; password: string})
     {

@@ -14,7 +14,7 @@ app.use(session({
   secret: 'my-secret-key', // Change this in production
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: true } // Set to true only if using HTTPS
+  cookie: { secure: false } // Set to true only if using HTTPS
 }));
 
 class user
@@ -42,7 +42,7 @@ const users =
 ];
 
 
-let server = http.listen(3000, function () 
+let server = http.listen(3000,'0.0.0.0', function () 
 {
 let host = server.address().address;
 let port = server.address().port;
@@ -54,7 +54,8 @@ const { Server } = require('socket.io');
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:4200", // Your Angular frontend
+    //origin: "http://localhost:4200", // Your Angular frontend
+    origin: "http://121.222.65.60:4200",
     methods: ["GET", "POST"]
   }
 });
