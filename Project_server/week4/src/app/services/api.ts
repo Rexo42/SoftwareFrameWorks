@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 interface LoginResponse
 {
@@ -15,8 +16,8 @@ interface LoginResponse
 })
 export class Api {
     constructor(private http: HttpClient) {}
-    //private baseUrl = 'http://localhost:3000/api';
-     private baseUrl = 'http://121.222.65.60:3000/api';
+    private baseUrl = 'http://localhost:3000/api';
+    // private baseUrl = 'http://121.222.65.60:3000/api';
 
     loginRequest(user: {username: string; password: string})
     {
@@ -26,5 +27,10 @@ export class Api {
     createAccountRequest(user: {username: string; password: string})
     {
       return this.http.post<LoginResponse>(`${this.baseUrl}/create`, user)
+    }
+
+    ping(): Observable<any>
+    {
+      return this.http.get(`${this.baseUrl}/ping`);
     }
 }

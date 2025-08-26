@@ -42,7 +42,7 @@ const users =
 ];
 
 
-let server = http.listen(3000,'0.0.0.0', function () 
+let server = http.listen(3000, function () 
 {
 let host = server.address().address;
 let port = server.address().port;
@@ -54,8 +54,8 @@ const { Server } = require('socket.io');
 
 const io = new Server(server, {
   cors: {
-    //origin: "http://localhost:4200", // Your Angular frontend
-    origin: "http://121.222.65.60:4200",
+    origin: "http://localhost:4200", // Your Angular frontend
+    //origin: "http://121.222.65.60:4200",
     methods: ["GET", "POST"]
   }
 });
@@ -84,6 +84,9 @@ io.on('connection', (socket)=>
 
 
 
+app.get('/api/ping', (req, res) =>{
+    res.status(200).send('OK');
+});
 
 app.post('/api/auth', (req, res) => {
     const {username, password} = req.body;

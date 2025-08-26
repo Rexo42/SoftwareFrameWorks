@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked} from '@angular/core';
 import {SocketService} from '../../services/socket-service'
 import { Router } from '@angular/router';
-import { Socket } from 'socket.io-client';
+import {Api} from '../../services/api'
 
 @Component({
   selector: 'app-chat-rooms',
@@ -27,7 +27,7 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   }
 
 
-  constructor(private router : Router, private socketService : SocketService){}
+  constructor(private router : Router, private socketService : SocketService, private api : Api){}
   ngOnInit(): void 
   {
   
