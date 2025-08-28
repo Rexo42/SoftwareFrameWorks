@@ -1,7 +1,7 @@
 var express = require('express'); //used for routing
 const session = require('express-session');
 var app = express();
-var http = require('http').Server(app); //used to provide http functionality
+var http = require('http').Server(app); 
 const path = require('path');
 
 var cors = require('cors');
@@ -11,10 +11,10 @@ app.use(cors());
 app.use(express.json());
 
 app.use(session({
-  secret: 'my-secret-key', // Change this in production
+  secret: 'my-secret-key', 
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // Set to true only if using HTTPS
+  cookie: { secure: false }
 }));
 
 class user
@@ -54,7 +54,7 @@ const { Server } = require('socket.io');
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:4200", // Your Angular frontend
+    origin: "http://localhost:4200",
     //origin: "http://121.222.65.60:4200",
     methods: ["GET", "POST"]
   }
