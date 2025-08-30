@@ -7,6 +7,7 @@ interface LoginResponse
   message: string;
   success : boolean;
   details:string;
+  token : string;
 }
 
 
@@ -32,5 +33,15 @@ export class Api {
     ping(): Observable<any>
     {
       return this.http.get(`${this.baseUrl}/ping`);
+    }
+
+    verifyToken(token: string) 
+    {
+      console.log(token);
+      return this.http.post<{ valid: boolean, username: string, email: string, age: string, birthdate: string }>(`${this.baseUrl}/verifyToken`,null, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
     }
 }

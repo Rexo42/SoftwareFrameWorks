@@ -3,6 +3,9 @@ const session = require('express-session');
 var app = express();
 var http = require('http').Server(app); //used to provide http functionality
 const path = require('path');
+const jwt = require ('jsonwebtoken')
+
+const jwtKey = 'testKey123';
 
 var cors = require('cors');
 app.use(cors());
@@ -56,7 +59,8 @@ const io = new Server(server, {
   cors: {
     origin: "http://localhost:4200", // Your Angular frontend
     //origin: "http://121.222.65.60:4200",
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   }
 });
 
@@ -82,6 +86,28 @@ io.on('connection', (socket)=>
 
 });
 
+app.post('/api/verifyToken', (req, res) =>{
+    console.log("called");
+    const authHeader = req.headers.authorization;
+    if (!authHeader)
+    {
+        console.log('No auth header found');
+        return res.json({valid : false});
+    }
+
+    
+    const token = authHeader.split(' ')[1];
+    console.log(`token recieved from user: ${token}`);
+    data = validateToken(token);
+    for (i = 0; i < users.length; i++)
+    {
+        if (users[i].username == data.username)
+        {
+            return res.json({valid : true, username : data.username, email:users[i].email, age:users[i].age, birthdate:users[i].birthdate })
+        }
+    }
+    console.log(data.username);
+});
 
 
 app.get('/api/ping', (req, res) =>{
@@ -95,11 +121,16 @@ app.post('/api/auth', (req, res) => {
         if (username == users[i].username && password == users[i].password)
         {
             users[i].valid = true;
-            copy = new user(users[i].username, users[i].email, '')
-            return res.json({ message: 'login success', success: users[i].valid, details: copy});
+            copy = new user(users[i].username, users[i].email, '');
+
+            const token = generateToken({username: copy.username});
+            //validateToken(token);
+            console.log('authorisation token created: ', token);
+            return res.json({message:"login success",success: true,token :token})
+            //return res.json({ message: 'login success', success: users[i].valid, details: copy});
         }
     }
-    return res.json({ message: 'login failed', success: false});
+    return res.json({ message: 'login failed', success: false, token : null});
 });
 
 app.post('/api/create', (req, res) =>{
@@ -124,6 +155,28 @@ app.post('/api/create', (req, res) =>{
     return res.json({message: 'creation success', success: true, details: copy})
 });
 
+function generateToken(payload) {
+    // Generate the token with an expiration time of 1 hour
+    const token = jwt.sign(payload, jwtKey, { expiresIn: '1h' });
+    console.log("Generated Token:", token);
+    return token;
+}
+
+function validateToken(token) {
+    try {
+        // Verify the token using the secret key
+        const decoded = jwt.verify(token, jwtKey);
+        console.log("Token is valid. Decoded payload:", decoded);
+        return decoded;
+    } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            console.log("Token expired.");
+        } else {
+            console.log("Invalid token:", err.message);
+        }
+        return null;
+    }
+}
 
 
 
