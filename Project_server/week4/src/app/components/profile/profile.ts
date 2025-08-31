@@ -43,31 +43,47 @@ export class Profile implements OnInit
           else
           {
             console.log("failed to validate token");
-            this.router.navigate(['/login']);
+            this.router.navigate(['/home']);
           }
 
         }
       })
-     // const user = JSON.parse(storedUser);
-
-    //   this.profileForm = this.fb.group({
-    //   username: [user.username],
-    //   birthdate: [user.birthdate],
-    //   age: [user.age],
-    //   email: [user.email],
-    //   valid: [user.valid]
-    // });
     }
     else
     {
       console.log("no auth token found");
-      this.router.navigate(['/login']);
+      this.router.navigate(['/home']);
     }
   }
   onSubmit(): void
   {
-    // call a post to the server to update credentials
+    const token = localStorage.getItem('currentUser');
+    if (!token)
+    {
+      console.log("token missing when updating details!");
+      this.router.navigate(['/home']);
+      return;
+    }
+   
     const values = this.profileForm.value;
+    const user = {
+      username : values.username,
+      email : values.email,
+      age : values.age,
+      birthdate: values.birthdate,
+    };
+    console.log(user, token);
+    const cleanToken = token.replace(/^"|"$/g, '');
+    this.Api.updateProfileRequest(user, cleanToken).subscribe({
+      next: (response) =>{
+        if (response.token)
+        {
+          localStorage.clear;
+          localStorage.setItem('currentUser', response.token);
+        }
+      }
+    });
+    
     
   }
 }

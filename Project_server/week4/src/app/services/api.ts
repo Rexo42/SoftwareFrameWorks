@@ -30,10 +30,15 @@ export class Api {
       return this.http.post<LoginResponse>(`${this.baseUrl}/create`, user)
     }
 
-    ping(): Observable<any>
+    updateProfileRequest(user: {username: string; email: string; age: string; birthdate: string}, token:string)
     {
-      return this.http.get(`${this.baseUrl}/ping`);
+      return this.http.post<{success: boolean, token: string}>(`${this.baseUrl}/updateProfile`, user, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
     }
+  
 
     verifyToken(token: string) 
     {

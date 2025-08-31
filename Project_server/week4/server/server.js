@@ -110,10 +110,6 @@ app.post('/api/verifyToken', (req, res) =>{
 });
 
 
-app.get('/api/ping', (req, res) =>{
-    res.status(200).send('OK');
-});
-
 app.post('/api/auth', (req, res) => {
     const {username, password} = req.body;
     for (i = 0; i < users.length; i++)
@@ -155,9 +151,41 @@ app.post('/api/create', (req, res) =>{
     return res.json({message: 'creation success', success: true, details: copy})
 });
 
+app.post('/api/updateProfile', (req, res) => {
+    console.log("LOOK HERE");
+    const {username, email, age, birthdate} = req.body;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    console.log(req.body);
+    //console.log("LOOK HERE");
+    decrypted = validateToken(token);
+    let user = null;
+    for (i = 0; i < users.length; i++){
+        if (decrypted.username == users[i].username)
+        {
+            user = users[i];
+            break;
+        }
+    }
+    if (user)
+    {
+        user.username = username;
+        user.email = email;
+        user.age = age;
+        user.birthdate = birthdate;
+        //console.log("profile updated!");
+        const newToken = generateToken({username: user.username});
+        return res.json({ success: true, token : newToken });
+    }
+    else{
+        return res.status(403).json({ error: 'user doesnt exist' });
+    }
+});
+
 function generateToken(payload) {
     // Generate the token with an expiration time of 1 hour
-    const token = jwt.sign(payload, jwtKey, { expiresIn: '1h' });
+    const token = jwt.sign(payload, jwtKey, { expiresIn: '15m' });
     console.log("Generated Token:", token);
     return token;
 }
