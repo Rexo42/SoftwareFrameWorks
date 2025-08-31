@@ -33,7 +33,7 @@ export class CreateAccount
         if (response.success) 
         {
           // we need to set local storage of the values
-          localStorage.setItem('currentUser', JSON.stringify(response.details))
+          localStorage.setItem('currentUser', JSON.stringify(response.token))
           this.router.navigate(['/profile']);
         } else {
           this.message = response.message;

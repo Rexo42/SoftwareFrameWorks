@@ -19,17 +19,20 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: false }
 }));
+int : ticker = 0;
 
 class user
 {
     constructor(username, email, password)
     {
+        this.userID = ticker;
         this.username = username;
         this.email = email;
         this.age;
         this.birthdate;
         this.valid = false;
         this.password = password;
+        ticker += 1;
     }
 }
 //username: 'user1', birthdate: string, age: int, email: string, password: 'pass1', valid: false
@@ -87,7 +90,6 @@ io.on('connection', (socket)=>
 });
 
 app.post('/api/verifyToken', (req, res) =>{
-    console.log("called");
     const authHeader = req.headers.authorization;
     if (!authHeader)
     {
@@ -99,14 +101,15 @@ app.post('/api/verifyToken', (req, res) =>{
     const token = authHeader.split(' ')[1];
     console.log(`token recieved from user: ${token}`);
     data = validateToken(token);
+
     for (i = 0; i < users.length; i++)
     {
-        if (users[i].username == data.username)
+        if (users[i].userID == data.username)
         {
-            return res.json({valid : true, username : data.username, email:users[i].email, age:users[i].age, birthdate:users[i].birthdate })
+            return res.json({valid : true, username : users[i].username, email:users[i].email, age:users[i].age, birthdate:users[i].birthdate })
         }
     }
-    console.log(data.username);
+
 });
 
 
@@ -117,9 +120,8 @@ app.post('/api/auth', (req, res) => {
         if (username == users[i].username && password == users[i].password)
         {
             users[i].valid = true;
-            copy = new user(users[i].username, users[i].email, '');
 
-            const token = generateToken({username: copy.username});
+            const token = generateToken({username: users[i].userID});
             //validateToken(token);
             console.log('authorisation token created: ', token);
             return res.json({message:"login success",success: true,token :token})
@@ -152,7 +154,6 @@ app.post('/api/create', (req, res) =>{
 });
 
 app.post('/api/updateProfile', (req, res) => {
-    console.log("LOOK HERE");
     const {username, email, age, birthdate} = req.body;
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -161,8 +162,9 @@ app.post('/api/updateProfile', (req, res) => {
     //console.log("LOOK HERE");
     decrypted = validateToken(token);
     let user = null;
+    console.log(decrypted.userID, "look here");
     for (i = 0; i < users.length; i++){
-        if (decrypted.username == users[i].username)
+        if (decrypted.username == users[i].userID)
         {
             user = users[i];
             break;
@@ -174,12 +176,10 @@ app.post('/api/updateProfile', (req, res) => {
         user.email = email;
         user.age = age;
         user.birthdate = birthdate;
-        //console.log("profile updated!");
-        const newToken = generateToken({username: user.username});
-        return res.json({ success: true, token : newToken });
+        return res.json({ success: true});
     }
     else{
-        return res.status(403).json({ error: 'user doesnt exist' });
+        return res.status(403).json({ error: 'user doesnt exist', success: false});
     }
 });
 

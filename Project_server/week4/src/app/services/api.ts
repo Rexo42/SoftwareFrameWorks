@@ -22,17 +22,17 @@ export class Api {
 
     loginRequest(user: {username: string; password: string})
     {
-      return this.http.post<LoginResponse>(`${this.baseUrl}/auth`, user);
+      return this.http.post<{success: boolean, token: string}>(`${this.baseUrl}/auth`, user);
     }
 
     createAccountRequest(user: {username: string; password: string})
     {
-      return this.http.post<LoginResponse>(`${this.baseUrl}/create`, user)
+      return this.http.post<{success: boolean, token : string, message : string}>(`${this.baseUrl}/create`, user)
     }
 
     updateProfileRequest(user: {username: string; email: string; age: string; birthdate: string}, token:string)
     {
-      return this.http.post<{success: boolean, token: string}>(`${this.baseUrl}/updateProfile`, user, {
+      return this.http.post<{success: boolean}>(`${this.baseUrl}/updateProfile`, user, {
         headers: {
           Authorization: `Bearer ${token}`
         }

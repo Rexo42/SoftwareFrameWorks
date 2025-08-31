@@ -76,10 +76,13 @@ export class Profile implements OnInit
     const cleanToken = token.replace(/^"|"$/g, '');
     this.Api.updateProfileRequest(user, cleanToken).subscribe({
       next: (response) =>{
-        if (response.token)
+        if (response.success)
         {
-          localStorage.clear;
-          localStorage.setItem('currentUser', response.token);
+          console.log("updated credentials");
+        }
+        else
+        {
+          console.log("failed to update profile");
         }
       }
     });

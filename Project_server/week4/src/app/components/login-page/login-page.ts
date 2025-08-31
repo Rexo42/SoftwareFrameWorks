@@ -35,7 +35,6 @@ export class LoginPage
       next: (response) => {
         if (response.success) 
         {
-
           localStorage.setItem('currentUser', JSON.stringify(response.token));
           this.router.navigate(['/profile']);
         } else {
