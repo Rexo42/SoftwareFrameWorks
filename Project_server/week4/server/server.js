@@ -19,8 +19,9 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: false }
 }));
-int : ticker = 0;
 
+
+int : ticker = 0;
 class user
 {
     constructor(username, email, password)
@@ -32,20 +33,38 @@ class user
         this.birthdate;
         this.valid = false;
         this.password = password;
+        this.roles = [];
+        this.groups = [];
         ticker += 1;
     }
 }
-//username: 'user1', birthdate: string, age: int, email: string, password: 'pass1', valid: false
-    // {new : user("user1", "exampl@testmail.com", "pass1")},
-    // { username: 'user2', birthdate: '12/8/1995', age: 42, email: "example2@testmail.com", password: 'pass3', valid: false },
-    // { username: 'user3', birthdate: '18/2/2013', age: 36, email: "example3@testmail.com", password: 'pass3', valid: false }
-// hardcoded logins for testing
+class group
+{
+    constructor(name, creator)
+    {
+        this.groupName = name;
+        this.creator = creator;
+        this.members = []; // i will use user ID's here
+        this.channels = [];
+    }
+}
+class channels
+{
+    constructor(name)
+    {
+        this.channelName = name;
+        this.channelMembers = [];
+    }
+}
+
+
 const users = 
 [
-    new user("user1", "example@testmail.com", "pass1"),
-    new user("user2", "example2@testmail.com", "pass2"),
-    new user("user3", "example3@testmail.com", "pass3")
+    new user("super", "superAdmin@example.com", "123")
 ];
+users[0].roles.push("Super Administrator");
+let groups = [];
+
 
 
 let server = http.listen(3000, function () 
@@ -89,6 +108,69 @@ io.on('connection', (socket)=>
 
 });
 
+// group/channel routes
+app.get('/api/getGroups', (req, res) =>{
+    return res.json({groups : groups})
+});
+
+app.post('/api/createGroup',(res, req)=>{
+    // send through group name and the creator user id
+    data = req.body;
+    let newGroup = new group(data.groupName, data.creator);
+    // also will need to give the creator of the group the admin role
+    groups.push(newGroup);
+});
+
+app.post('/api/createChannel',(res, req)=>{
+    data = req.body;
+    // contains parentGroup, Channel name id of user making group
+    for (i = 0; i < groups.length; i++)
+    {
+        if (groups[i].groupName == data.parentGroup)
+        {
+            group = groups[i];
+            group.channels.push(new channel(data.channelName));
+            // send event to everyone in the parent group socket to update UI stuff
+        }
+    }
+});
+
+app.delete('/api/deleteChannel', (res, req)=>{
+    data = req.body;
+    // send through the channel name being deleted, also need a reference to the parent GROUP
+    for (i = 0; i < groups; i++)
+    {
+        if (groups[i].groupName == data.parentGroup)
+        {
+            for (j = 0; j < groups[i].channels.length; j++)
+            {
+                if (groups[i].channels[j].channelName == data.channelName)
+                {
+                    groups[i].channels.remove(j);
+                    return res.json({success:true});
+                    // send an event to everyone in the channel that updates UI 
+                }
+            }
+        }
+    }
+    return res.json({success:false});
+});
+
+app.delete('/api/deleteGroup', (res,req) =>{
+    data = req.body;
+    // group name, and user sending the request
+    for (i = 0; i < groups.length; i++)
+    {
+        if (groups[i].groupName == data.groupName)
+        {
+            groups.remove(i);
+            // send out socket event to everyone in that group to update UI and then also close socket opened to this group
+        }
+    }
+
+})
+
+///
 app.post('/api/verifyToken', (req, res) =>{
     const authHeader = req.headers.authorization;
     if (!authHeader)
@@ -97,7 +179,6 @@ app.post('/api/verifyToken', (req, res) =>{
         return res.json({valid : false});
     }
 
-    
     const token = authHeader.split(' ')[1];
     console.log(`token recieved from user: ${token}`);
     data = validateToken(token);
@@ -111,7 +192,6 @@ app.post('/api/verifyToken', (req, res) =>{
     }
 
 });
-
 
 app.post('/api/auth', (req, res) => {
     const {username, password} = req.body;
@@ -138,13 +218,11 @@ app.post('/api/create', (req, res) =>{
         return res.json({message: 'missing fields', success: false});
     }
         // go through existing users and check a username doesnt already exist if not return kino
-    for (i = 0; i < users.length; i++)
+    if (!checkValidUsername(undefined, username))
     {
-        if (users[i].username == username || users[i].email == email)
-        {
-            return res.json ({message: 'that username or email is already taken', success: false})
-        }
+        return res.json ({message: 'that username is already taken', success: false})
     }
+
     details = new user(username, email, password);
     console.log(details.username);
     copy = new user(details.username, details.email, '')
@@ -158,11 +236,16 @@ app.post('/api/updateProfile', (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    console.log(req.body);
+    //console.log(req.body);
     //console.log("LOOK HERE");
     decrypted = validateToken(token);
+    if (!checkValidUsername(decrypted.username, username))
+    {
+        return res.json({error: 'username already taken',success: false});
+    }
+
     let user = null;
-    console.log(decrypted.userID, "look here");
+    //console.log(decrypted.username, "look here");
     for (i = 0; i < users.length; i++){
         if (decrypted.username == users[i].userID)
         {
@@ -184,7 +267,6 @@ app.post('/api/updateProfile', (req, res) => {
 });
 
 function generateToken(payload) {
-    // Generate the token with an expiration time of 1 hour
     const token = jwt.sign(payload, jwtKey, { expiresIn: '15m' });
     console.log("Generated Token:", token);
     return token;
@@ -192,7 +274,6 @@ function generateToken(payload) {
 
 function validateToken(token) {
     try {
-        // Verify the token using the secret key
         const decoded = jwt.verify(token, jwtKey);
         console.log("Token is valid. Decoded payload:", decoded);
         return decoded;
@@ -206,7 +287,30 @@ function validateToken(token) {
     }
 }
 
-
+function checkValidUsername(userID, username)
+{
+    if (userID == undefined)
+    {
+        for (i = 0; i < users.length; i++)
+        {
+            if(users[i].username == username)
+            {
+                return false;
+            }
+        }
+    }
+    else
+    {
+        for (i = 0; i < users.length; i++)
+        {
+            if(users[i].userID != userID && users[i].username == username)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 
 /*

@@ -17,10 +17,10 @@ export class CreateAccount
   constructor(private router: Router, private Api : Api) {}
         ngOnInit(): void
     {
-      if (localStorage.getItem('currentUser'))
-      {
-        this.router.navigate(['/profile']);
-      }
+      //if (localStorage.getItem('currentUser'))
+      //{
+      //  this.router.navigate(['/profile']);
+      //}
 
     }
 
@@ -33,8 +33,10 @@ export class CreateAccount
         if (response.success) 
         {
           // we need to set local storage of the values
-          localStorage.setItem('currentUser', JSON.stringify(response.token))
-          this.router.navigate(['/profile']);
+
+         // localStorage.setItem('currentUser', JSON.stringify(response.token))
+         // this.router.navigate(['/profile']);
+          this.message = response.message;
         } else {
           this.message = response.message;
         }

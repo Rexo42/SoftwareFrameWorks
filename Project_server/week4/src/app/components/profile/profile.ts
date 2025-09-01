@@ -11,6 +11,7 @@ import { Api } from '../../services/api';
 })
 export class Profile implements OnInit
 {
+  message : string = "";
   profileForm!: FormGroup
   constructor(private fb: FormBuilder, private router:Router, private Api : Api){}
   ngOnInit(): void
@@ -79,10 +80,12 @@ export class Profile implements OnInit
         if (response.success)
         {
           console.log("updated credentials");
+          this.message = "Profile Updated Successfully!";
         }
         else
         {
           console.log("failed to update profile");
+          this.message = "Failed To Update Profile!";
         }
       }
     });

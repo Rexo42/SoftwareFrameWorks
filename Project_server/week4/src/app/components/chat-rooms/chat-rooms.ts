@@ -11,9 +11,12 @@ import {Api} from '../../services/api'
 })
 export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
 {
+  currentUser : string = "";
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   message : string = "";
   messages :chatMessage[] = [];
+  userRole : string = "";
+  channelName : string = "";
 
   
 
@@ -30,19 +33,37 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   constructor(private router : Router, private socketService : SocketService, private api : Api){}
   ngOnInit(): void 
   {
-  
-    const userRaw = localStorage.getItem('currentUser');
-    const currentUser = userRaw ? JSON.parse(userRaw) : null;
-
-
-    if (currentUser?.username) 
+    const rawToken = localStorage.getItem('currentUser');
+    if (rawToken)
     {
-      this.socketService.connect('1', currentUser.username);
+      const cleanToken = rawToken.replace(/^"|"$/g, '');
+      this.api.verifyToken(cleanToken).subscribe({
+        next: (response) => {
+          if (response.valid)
+          {
+            this.currentUser = response.username;
+            if (this.currentUser == "super")
+            {
+              this.userRole = "SuperAdmin";
+            }
+            console.log(" look here");
+            this.socketService.connect('0', response.username)
+            this.channelName = "Public Room";
+          }
+          else
+          {
+            console.log("invalid token");
+            localStorage.clear();
+            this.router.navigate(['/home'])
+          }
+        }
+      });
     }
     else
     {
       this.router.navigate(['/home'])
     }
+    
     this.socketService.receiveMessage((message: string, username: string)=>
     {
       this.messages.push(new chatMessage(username, message));
@@ -69,10 +90,10 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
          return;
        }
     // update ui
-    const userRaw = localStorage.getItem('currentUser');
-    const currentUser = userRaw ? JSON.parse(userRaw) : null;
-    this.messages.push(new chatMessage(currentUser.username,this.message));
-    this.socketService.sendMessage(userMessage, currentUser.username);
+    //const userRaw = localStorage.getItem('currentUser');
+    //const currentUser = userRaw ? JSON.parse(userRaw) : null;
+    this.messages.push(new chatMessage(this.currentUser,this.message));
+    this.socketService.sendMessage(userMessage, this.currentUser);
     this.message ='';
   }
 
