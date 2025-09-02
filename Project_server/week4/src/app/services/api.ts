@@ -1,15 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-interface LoginResponse
-{
-  message: string;
-  success : boolean;
-  details:string;
-  token : string;
-}
-
 
 
 @Injectable({
@@ -38,11 +28,20 @@ export class Api {
         }
       })
     }
+
+    createGroup(token: string, groupName: string, username: string)
+    {
+      return this.http.post<{ valid: boolean}>(`${this.baseUrl}/createGroup`,({groupName: groupName, username: username}), {
+      headers: {
+      Authorization: `Bearer ${token}`
+      }
+      });
+    }
   
 
     verifyToken(token: string) 
     {
-      console.log(token);
+      //console.log(token);
       return this.http.post<{ valid: boolean, username: string, email: string, age: string, birthdate: string }>(`${this.baseUrl}/verifyToken`,null, {
         headers: {
           Authorization: `Bearer ${token}`

@@ -46,6 +46,7 @@ class group
         this.creator = creator;
         this.members = []; // i will use user ID's here
         this.channels = [];
+        this.members.push(this.creator);
     }
 }
 class channels
@@ -113,12 +114,16 @@ app.get('/api/getGroups', (req, res) =>{
     return res.json({groups : groups})
 });
 
-app.post('/api/createGroup',(res, req)=>{
+app.post('/api/createGroup',(req, res)=>{
     // send through group name and the creator user id
+    //console.log(req.body);
     data = req.body;
-    let newGroup = new group(data.groupName, data.creator);
+    let newGroup = new group(data.groupName, data.username);
+    //newGroup.members.push();
     // also will need to give the creator of the group the admin role
     groups.push(newGroup);
+    console.log("created group: ", newGroup);
+    return res.json({valid: true});
 });
 
 app.post('/api/createChannel',(res, req)=>{

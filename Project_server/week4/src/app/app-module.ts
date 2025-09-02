@@ -15,6 +15,7 @@ import { Profile } from './components/profile/profile';
 import { CreateAccount } from './components/create-account/create-account';
 import { ChatRooms } from './components/chat-rooms/chat-rooms';
 import { Dummy } from './components/dummy/dummy';
+import { GroupUI } from './components/group-ui/group-ui';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { Dummy } from './components/dummy/dummy';
     Profile,
     CreateAccount,
     ChatRooms,
-    Dummy
+    Dummy,
+    GroupUI
   ],
   imports: [
     BrowserModule,

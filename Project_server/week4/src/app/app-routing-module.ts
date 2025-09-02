@@ -9,7 +9,7 @@ import {Dummy} from './components/dummy/dummy';
 
 const routes: Routes = 
 [
-  {path: '', component: CreateAccount},
+  {path: '', component: Home},
   {path: 'home', component: Home},
   {path: 'login', component: LoginPage},
   {path: 'profile', component: Profile},
