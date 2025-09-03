@@ -33,20 +33,23 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   constructor(private router : Router, private socketService : SocketService, private api : Api){}
   ngOnInit(): void 
   {
+
     const rawToken = localStorage.getItem('currentUser');
     if (rawToken)
     {
+      
       const cleanToken = rawToken.replace(/^"|"$/g, '');
       this.api.verifyToken(cleanToken).subscribe({
         next: (response) => {
           if (response.valid)
           {
+            console.log("kino");
             this.currentUser = response.username;
+            console.log(response.username);
             if (this.currentUser == "super")
             {
               this.userRole = "SuperAdmin";
             }
-            console.log(" look here");
             this.socketService.connect('0', response.username)
             this.channelName = "Public Room";
           }

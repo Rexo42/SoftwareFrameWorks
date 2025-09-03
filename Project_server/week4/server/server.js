@@ -3,7 +3,9 @@ const session = require('express-session');
 var app = express();
 var http = require('http').Server(app); 
 const path = require('path');
-const jwt = require ('jsonwebtoken')
+const jwt = require ('jsonwebtoken');
+
+const fs = require('fs');
 
 const jwtKey = 'testKey123';
 
@@ -58,6 +60,15 @@ class channels
     }
 }
 
+class serverData
+{
+    constructor()
+    {
+        this.groups = [];
+        this. users = [];
+    }
+}
+
 
 const users = 
 [
@@ -66,6 +77,23 @@ const users =
 users[0].roles.push("Super Administrator");
 let groups = [];
 
+
+let serverDataa;
+// check file location if existing json data is there
+if (fs.existsSync('serverData.Json'))
+{
+    const jsonData = fs.readFileSync('serverData.Json', 'utf-8');
+    serverDataa = JSON.parse(jsonData);
+    console.log("loaded existing server data: ");
+}
+else
+{
+    serverDataa = new serverData();
+    serverDataa.groups = groups;
+    serverDataa.users = users;
+    fs.writeFileSync('serverData.Json', JSON.stringify(serverDataa, null, 2), 'utf-8');
+    console.log("created new server data!");
+}
 
 
 let server = http.listen(3000, function () 
@@ -123,6 +151,7 @@ app.post('/api/createGroup',(req, res)=>{
     // also will need to give the creator of the group the admin role
     groups.push(newGroup);
     console.log("created group: ", newGroup);
+    updateServerData(serverDataa);
     return res.json({valid: true});
 });
 
@@ -172,6 +201,7 @@ app.delete('/api/deleteGroup', (res,req) =>{
             // send out socket event to everyone in that group to update UI and then also close socket opened to this group
         }
     }
+    updateServerData(serverDataa);
 
 })
 
@@ -187,9 +217,14 @@ app.post('/api/verifyToken', (req, res) =>{
     const token = authHeader.split(' ')[1];
     console.log(`token recieved from user: ${token}`);
     data = validateToken(token);
-
+    if (data == null)
+    {
+        return res.json({valid: false});
+    }
+    //console.log(data.username, "look here");
     for (i = 0; i < users.length; i++)
     {
+        //console.log(data.username, "look here");
         if (users[i].userID == data.username)
         {
             return res.json({valid : true, username : users[i].username, email:users[i].email, age:users[i].age, birthdate:users[i].birthdate })
@@ -233,6 +268,9 @@ app.post('/api/create', (req, res) =>{
     copy = new user(details.username, details.email, '')
     users.push(details);
     console.log("made a user");
+///
+    updateServerData(serverDataa);
+///
     return res.json({message: 'creation success', success: true, details: copy})
 });
 
@@ -241,9 +279,7 @@ app.post('/api/updateProfile', (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    //console.log(req.body);
-    //console.log("LOOK HERE");
-    decrypted = validateToken(token);
+    decrypted = validateToken(token); // need to add expiry protection here
     if (!checkValidUsername(decrypted.username, username))
     {
         return res.json({error: 'username already taken',success: false});
@@ -264,6 +300,7 @@ app.post('/api/updateProfile', (req, res) => {
         user.email = email;
         user.age = age;
         user.birthdate = birthdate;
+        updateServerData(serverDataa);
         return res.json({ success: true});
     }
     else{
@@ -317,6 +354,13 @@ function checkValidUsername(userID, username)
     return true;
 }
 
+function updateServerData(serverData)
+{
+    serverData.users = users;
+    serverData.group = group;
+    fs.writeFileSync('serverData.Json', JSON.stringify(serverDataa, null, 2), 'utf-8');
+    console.log("updated server data!");
+}
 
 /*
 app.get('/account', function (req, res)

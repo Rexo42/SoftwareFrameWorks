@@ -1,0 +1,25 @@
+{
+  "groups": [],
+  "users": [
+    {
+      "userID": 0,
+      "username": "super",
+      "email": "superAdmin@example.com",
+      "valid": false,
+      "password": "123",
+      "roles": [
+        "Super Administrator"
+      ],
+      "groups": []
+    },
+    {
+      "userID": 1,
+      "username": "Rexo",
+      "email": "kino",
+      "valid": false,
+      "password": "123",
+      "roles": [],
+      "groups": []
+    }
+  ]
+}
