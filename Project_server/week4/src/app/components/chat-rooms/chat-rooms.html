@@ -1,5 +1,50 @@
 <app-nav-bar></app-nav-bar>
-<p>Welcome to the ChatRoom Page! Feel free to join an open chatroom or create your own!</p>
 
-<!-- ability to create chatrooms -->
- <!-- upon being served this route, we need to do a get request and get all current chatrooms -->
+<div class="container mt-4">
+  <div class="row">
+    <!-- If user is SuperAdmin, show chat in 7 columns -->
+    <div
+      [ngClass]="userRole === 'SuperAdmin' ? 'col-md-7' : 'col-md-6 mx-auto'"
+    >
+      <!-- Scrollable Chat Messages -->
+       <div>
+        Channel: {{channelName}}
+       </div>
+      <div #scrollContainer
+           class="border p-3 mb-3"
+           style="height: 300px; overflow-y: auto; background-color: #f8f9fa;">
+        <div *ngFor="let msg of messages">
+          <p class="mb-1">
+            ({{ msg.getFormattedTime() }}) {{ msg.sender }}: {{ msg.message }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Message Input Form -->
+      <form (ngSubmit)="sendMessage()">
+        <div class="mb-3">
+          <label for="message" class="form-label">Message:</label>
+          <input
+            type="text"
+            id="message"
+            name="message"
+            class="form-control"
+            [(ngModel)]="message"
+            placeholder="Enter your message"
+            required>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">Send</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Create Account (right column if SuperAdmin) -->
+    <div *ngIf="userRole === 'SuperAdmin'" class="col-md-5">
+      <app-create-account></app-create-account>
+    </div>
+    <div *ngIf="userRole === 'SuperAdmin'" class="col-md-5">
+      <app-group-ui></app-group-ui>
+    </div>
+  </div>
+</div>

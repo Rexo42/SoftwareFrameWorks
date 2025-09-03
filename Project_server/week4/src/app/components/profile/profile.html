@@ -1,56 +1,45 @@
 <app-nav-bar></app-nav-bar>
 
-<form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="container mt-4 p-4 border rounded shadow-sm bg-light" style="max-width: 500px;">
-  <h3 class="mb-4 text-center">Update Profile</h3>
+<div class="d-flex flex-column align-items-center mt-4">
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" 
+        class="container p-4 border rounded shadow-sm bg-light" 
+        style="max-width: 500px;">
+    <h3 class="mb-4 text-center">Update Profile</h3>
 
-  <div class="mb-3">
-    <label for="username" class="form-label">Username:</label>
-    <input
-      type="text"
-      id="username"
-      class="form-control"
-      formControlName="username"
-      placeholder="Enter your Username"
-      required
-    />
-  </div>
+    <!-- Form Fields Here -->
+    <div class="mb-3">
+      <label for="username" class="form-label">Username:</label>
+      <input type="text" id="username" class="form-control"
+             formControlName="username" placeholder="Enter your Username" required />
+    </div>
 
-  <div class="mb-3">
-    <label for="birthdate" class="form-label">Birthdate:</label>
-    <input
-      type="date"
-      id="birthdate"
-      class="form-control"
-      formControlName="birthdate"
-      placeholder="Select your Birthdate"
-    />
-  </div>
+    <div class="mb-3">
+      <label for="birthdate" class="form-label">Birthdate:</label>
+      <input type="date" id="birthdate" class="form-control"
+             formControlName="birthdate" placeholder="Select your Birthdate" />
+    </div>
 
-  <div class="mb-3">
-    <label for="age" class="form-label">Age:</label>
-    <input
-      type="number"
-      id="age"
-      class="form-control"
-      formControlName="age"
-      placeholder="Enter your Age"
-      min="0"
-    />
-  </div>
+    <div class="mb-3">
+      <label for="age" class="form-label">Age:</label>
+      <input type="number" id="age" class="form-control"
+             formControlName="age" placeholder="Enter your Age" min="0" />
+    </div>
 
-  <div class="mb-3">
-    <label for="email" class="form-label">Email:</label>
-    <input
-      type="email"
-      id="email"
-      class="form-control"
-      formControlName="email"
-      placeholder="Enter your Email"
-      required
-    />
-  </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email:</label>
+      <input type="email" id="email" class="form-control"
+             formControlName="email" placeholder="Enter your Email" required />
+    </div>
 
-  <div class="d-grid">
-    <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid">Update Profile</button>
+    <div class="d-grid">
+      <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid">
+        Update Profile
+      </button>
+    </div>
+  </form>
+
+  <!-- Error/Success Message -->
+  <div *ngIf="message" class="mt-3 alert alert-info text-center w-100" style="max-width: 500px;" id="errorMsg">
+    {{ message }}
   </div>
-</form>
+</div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl} from '@angular/forms';
 import { Route, Router } from '@angular/router';
+import { Api } from '../../services/api';
 
 @Component({
   selector: 'app-profile',
@@ -10,31 +11,86 @@ import { Route, Router } from '@angular/router';
 })
 export class Profile implements OnInit
 {
+  message : string = "";
   profileForm!: FormGroup
-  constructor(private fb: FormBuilder, private router:Router ){}
+  constructor(private fb: FormBuilder, private router:Router, private Api : Api){}
   ngOnInit(): void
   {
+    this.profileForm = this.fb.group({
+    username: [''],
+    email: [''],
+    age: [''],
+    birthdate: [''],
+  });
     const storedUser = localStorage.getItem('currentUser')
     if (storedUser)
     {
-      const user = JSON.parse(storedUser);
+      this.Api.verifyToken(storedUser.replace(/^"|"$/g, '')).subscribe ({
+        next: (response) => {
+          if (response.valid)
+          {
+            // response include username
+            console.log("validated successfully");
+            console.log(response)
+            this.profileForm = this.fb.group(
+            {
+              username: [response.username || ''],
+              email: [response.email || ''],
+              age: [response.age || ''],
+              birthdate: [response.birthdate || ''],
+            });
 
-      this.profileForm = this.fb.group({
-      username: [user.username],
-      birthdate: [user.birthdate],
-      age: [user.age],
-      email: [user.email],
-      valid: [user.valid]
-    });
+          }
+          else
+          {
+            console.log("failed to validate token");
+            this.router.navigate(['/home']);
+          }
+
+        }
+      })
     }
     else
     {
-      this.router.navigate(['/login']);
+      console.log("no auth token found");
+      this.router.navigate(['/home']);
     }
   }
   onSubmit(): void
   {
-  localStorage.setItem('currentUser',JSON.stringify(this.profileForm.value));
+    const token = localStorage.getItem('currentUser');
+    if (!token)
+    {
+      console.log("token missing when updating details!");
+      this.router.navigate(['/home']);
+      return;
+    }
+   
+    const values = this.profileForm.value;
+    const user = {
+      username : values.username,
+      email : values.email,
+      age : values.age,
+      birthdate: values.birthdate,
+    };
+    console.log(user, token);
+    const cleanToken = token.replace(/^"|"$/g, '');
+    this.Api.updateProfileRequest(user, cleanToken).subscribe({
+      next: (response) =>{
+        if (response.success)
+        {
+          console.log("updated credentials");
+          this.message = "Profile Updated Successfully!";
+        }
+        else
+        {
+          console.log("failed to update profile");
+          this.message = "Failed To Update Profile!";
+        }
+      }
+    });
+    
+    
   }
 }
 

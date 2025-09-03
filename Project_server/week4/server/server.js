@@ -1,8 +1,13 @@
 var express = require('express'); //used for routing
 const session = require('express-session');
 var app = express();
-var http = require('http').Server(app); //used to provide http functionality
+var http = require('http').Server(app); 
 const path = require('path');
+const jwt = require ('jsonwebtoken');
+
+const fs = require('fs');
+
+const jwtKey = 'testKey123';
 
 var cors = require('cors');
 app.use(cors());
@@ -11,35 +16,84 @@ app.use(cors());
 app.use(express.json());
 
 app.use(session({
-  secret: 'my-secret-key', // Change this in production
+  secret: 'my-secret-key', 
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: true } // Set to true only if using HTTPS
+  cookie: { secure: false }
 }));
 
+
+int : ticker = 0;
 class user
 {
     constructor(username, email, password)
     {
+        this.userID = ticker;
         this.username = username;
         this.email = email;
         this.age;
         this.birthdate;
         this.valid = false;
         this.password = password;
+        this.roles = [];
+        this.groups = [];
+        ticker += 1;
     }
 }
-//username: 'user1', birthdate: string, age: int, email: string, password: 'pass1', valid: false
-    // {new : user("user1", "exampl@testmail.com", "pass1")},
-    // { username: 'user2', birthdate: '12/8/1995', age: 42, email: "example2@testmail.com", password: 'pass3', valid: false },
-    // { username: 'user3', birthdate: '18/2/2013', age: 36, email: "example3@testmail.com", password: 'pass3', valid: false }
-// hardcoded logins for testing
+class group
+{
+    constructor(name, creator)
+    {
+        this.groupName = name;
+        this.creator = creator;
+        this.members = []; // i will use user ID's here
+        this.channels = [];
+        this.members.push(this.creator);
+    }
+}
+class channels
+{
+    constructor(name)
+    {
+        this.channelName = name;
+        this.channelMembers = [];
+    }
+}
+
+class serverData
+{
+    constructor()
+    {
+        this.groups = [];
+        this. users = [];
+    }
+}
+
+
 const users = 
 [
-    new user("user1", "example@testmail.com", "pass1"),
-    new user("user2", "example2@testmail.com", "pass2"),
-    new user("user3", "example3@testmail.com", "pass3")
+    new user("super", "superAdmin@example.com", "123")
 ];
+users[0].roles.push("Super Administrator");
+let groups = [];
+
+
+let serverDataa;
+// check file location if existing json data is there
+if (fs.existsSync('serverData.Json'))
+{
+    const jsonData = fs.readFileSync('serverData.Json', 'utf-8');
+    serverDataa = JSON.parse(jsonData);
+    console.log("loaded existing server data: ");
+}
+else
+{
+    serverDataa = new serverData();
+    serverDataa.groups = groups;
+    serverDataa.users = users;
+    fs.writeFileSync('serverData.Json', JSON.stringify(serverDataa, null, 2), 'utf-8');
+    console.log("created new server data!");
+}
 
 
 let server = http.listen(3000, function () 
@@ -54,8 +108,10 @@ const { Server } = require('socket.io');
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:4200", // Your Angular frontend
-    methods: ["GET", "POST"]
+    origin: "http://localhost:4200",
+    //origin: "http://121.222.65.60:4200",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   }
 });
 
@@ -63,21 +119,119 @@ io.on('connection', (socket)=>
 {
     console.log("user connected via socket: ", socket.id);
 
-    socket.on('joinRoom', (room)=>{
+    socket.on('joinRoom', (room, user)=>{
         socket.join(room);
         console.log("socket: ",socket.id, " joined room: ", room);
+        io.to('1').emit('receiveMessage', "has joined", user);
     });
-
-
+    // need a leave room function 
+    socket.on('sendMessage', (message, username)=>{
+        console.log("message recieved from:", socket.id, " :: ", message);
+        socket.to('1').emit('receiveMessage', message, username);
+    });
     socket.on('disconnect',()=>
     {
+        io.to('1').emit('receiveMessage', "has disconnected", socket.id);
         console.log("user disconnected: ", socket.id);
     });
 
 });
 
+// group/channel routes
+app.get('/api/getGroups', (req, res) =>{
+    return res.json({groups : groups})
+});
 
+app.post('/api/createGroup',(req, res)=>{
+    // send through group name and the creator user id
+    //console.log(req.body);
+    data = req.body;
+    let newGroup = new group(data.groupName, data.username);
+    //newGroup.members.push();
+    // also will need to give the creator of the group the admin role
+    groups.push(newGroup);
+    console.log("created group: ", newGroup);
+    updateServerData(serverDataa);
+    return res.json({valid: true});
+});
 
+app.post('/api/createChannel',(res, req)=>{
+    data = req.body;
+    // contains parentGroup, Channel name id of user making group
+    for (i = 0; i < groups.length; i++)
+    {
+        if (groups[i].groupName == data.parentGroup)
+        {
+            group = groups[i];
+            group.channels.push(new channel(data.channelName));
+            // send event to everyone in the parent group socket to update UI stuff
+        }
+    }
+});
+
+app.delete('/api/deleteChannel', (res, req)=>{
+    data = req.body;
+    // send through the channel name being deleted, also need a reference to the parent GROUP
+    for (i = 0; i < groups; i++)
+    {
+        if (groups[i].groupName == data.parentGroup)
+        {
+            for (j = 0; j < groups[i].channels.length; j++)
+            {
+                if (groups[i].channels[j].channelName == data.channelName)
+                {
+                    groups[i].channels.remove(j);
+                    return res.json({success:true});
+                    // send an event to everyone in the channel that updates UI 
+                }
+            }
+        }
+    }
+    return res.json({success:false});
+});
+
+app.delete('/api/deleteGroup', (res,req) =>{
+    data = req.body;
+    // group name, and user sending the request
+    for (i = 0; i < groups.length; i++)
+    {
+        if (groups[i].groupName == data.groupName)
+        {
+            groups.remove(i);
+            // send out socket event to everyone in that group to update UI and then also close socket opened to this group
+        }
+    }
+    updateServerData(serverDataa);
+
+})
+
+///
+app.post('/api/verifyToken', (req, res) =>{
+    const authHeader = req.headers.authorization;
+    if (!authHeader)
+    {
+        console.log('No auth header found');
+        return res.json({valid : false});
+    }
+
+    const token = authHeader.split(' ')[1];
+    console.log(`token recieved from user: ${token}`);
+    data = validateToken(token);
+    if (data == null)
+    {
+        return res.json({valid: false});
+    }
+    //console.log(data.username, "look here");
+    for (i = 0; i < users.length; i++)
+    {
+        //console.log(data.username, "look here");
+        if (users[i].userID == data.username)
+        {
+            return res.json({valid : true, username : users[i].username, email:users[i].email, age:users[i].age, birthdate:users[i].birthdate })
+        }
+    }
+
+});
 
 app.post('/api/auth', (req, res) => {
     const {username, password} = req.body;
@@ -86,11 +240,15 @@ app.post('/api/auth', (req, res) => {
         if (username == users[i].username && password == users[i].password)
         {
             users[i].valid = true;
-            copy = new user(users[i].username, users[i].email, '')
-            return res.json({ message: 'login success', success: users[i].valid, details: copy});
+
+            const token = generateToken({username: users[i].userID});
+            //validateToken(token);
+            console.log('authorisation token created: ', token);
+            return res.json({message:"login success",success: true,token :token})
+            //return res.json({ message: 'login success', success: users[i].valid, details: copy});
         }
     }
-    return res.json({ message: 'login failed', success: false});
+    return res.json({ message: 'login failed', success: false, token : null});
 });
 
 app.post('/api/create', (req, res) =>{
@@ -100,24 +258,109 @@ app.post('/api/create', (req, res) =>{
         return res.json({message: 'missing fields', success: false});
     }
         // go through existing users and check a username doesnt already exist if not return kino
-    for (i = 0; i < users.length; i++)
+    if (!checkValidUsername(undefined, username))
     {
-        if (users[i].username == username || users[i].email == email)
-        {
-            return res.json ({message: 'that username or email is already taken', success: false})
-        }
+        return res.json ({message: 'that username is already taken', success: false})
     }
+
     details = new user(username, email, password);
     console.log(details.username);
     copy = new user(details.username, details.email, '')
     users.push(details);
     console.log("made a user");
+///
+    updateServerData(serverDataa);
+///
     return res.json({message: 'creation success', success: true, details: copy})
 });
 
+app.post('/api/updateProfile', (req, res) => {
+    const {username, email, age, birthdate} = req.body;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
+    decrypted = validateToken(token); // need to add expiry protection here
+    if (!checkValidUsername(decrypted.username, username))
+    {
+        return res.json({error: 'username already taken',success: false});
+    }
 
+    let user = null;
+    //console.log(decrypted.username, "look here");
+    for (i = 0; i < users.length; i++){
+        if (decrypted.username == users[i].userID)
+        {
+            user = users[i];
+            break;
+        }
+    }
+    if (user)
+    {
+        user.username = username;
+        user.email = email;
+        user.age = age;
+        user.birthdate = birthdate;
+        updateServerData(serverDataa);
+        return res.json({ success: true});
+    }
+    else{
+        return res.status(403).json({ error: 'user doesnt exist', success: false});
+    }
+});
 
+function generateToken(payload) {
+    const token = jwt.sign(payload, jwtKey, { expiresIn: '15m' });
+    console.log("Generated Token:", token);
+    return token;
+}
+
+function validateToken(token) {
+    try {
+        const decoded = jwt.verify(token, jwtKey);
+        console.log("Token is valid. Decoded payload:", decoded);
+        return decoded;
+    } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            console.log("Token expired.");
+        } else {
+            console.log("Invalid token:", err.message);
+        }
+        return null;
+    }
+}
+
+function checkValidUsername(userID, username)
+{
+    if (userID == undefined)
+    {
+        for (i = 0; i < users.length; i++)
+        {
+            if(users[i].username == username)
+            {
+                return false;
+            }
+        }
+    }
+    else
+    {
+        for (i = 0; i < users.length; i++)
+        {
+            if(users[i].userID != userID && users[i].username == username)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+function updateServerData(serverData)
+{
+    serverData.users = users;
+    serverData.group = group;
+    fs.writeFileSync('serverData.Json', JSON.stringify(serverDataa, null, 2), 'utf-8');
+    console.log("updated server data!");
+}
 
 /*
 app.get('/account', function (req, res)
