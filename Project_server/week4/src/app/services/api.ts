@@ -37,6 +37,11 @@ export class Api {
       }
       });
     }
+
+    getGroups()
+    {
+      return this.http.get<{groups: string[]}>(`${this.baseUrl}/getGroups`);
+    }
   
 
     verifyToken(token: string) 

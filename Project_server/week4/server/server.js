@@ -46,7 +46,7 @@ class group
     {
         this.groupName = name;
         this.creator = creator;
-        this.members = []; // i will use user ID's here
+        this.members = []; 
         this.channels = [];
         this.members.push(this.creator);
     }
@@ -145,7 +145,12 @@ io.on('connection', (socket)=>
 
 // group/channel routes
 app.get('/api/getGroups', (req, res) =>{
-    return res.json({groups : groups})
+    let groupNames = [];
+    for (i = 0; i < groups.length; i++)
+    {
+        groupNames.push(groups[i].groupName)
+    }
+    return res.json({groups : groupNames})
 });
 
 app.post('/api/createGroup',(req, res)=>{
@@ -160,6 +165,7 @@ app.post('/api/createGroup',(req, res)=>{
     updateServerData(serverDataa);
     return res.json({valid: true});
 });
+
 
 app.post('/api/createChannel',(res, req)=>{
     data = req.body;

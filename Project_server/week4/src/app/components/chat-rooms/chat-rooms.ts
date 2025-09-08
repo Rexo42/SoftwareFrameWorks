@@ -65,6 +65,13 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
             }
             this.socketService.connect('0', response.username)
             this.channelName = "Public Room";
+            this.api.getGroups().subscribe({
+              next: (response) =>{
+                this.groups = response.groups;
+              }
+            })
+
+
           }
           else
           {
@@ -109,12 +116,12 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
 
   createGroup()
   {
-    const groupName = this.groupName;
-    if (!groupName || !this.currentUser)
+    const currentGroupName = this.groupName;
+    if (!currentGroupName || !this.currentUser)
     {
       return;
     }
-    this.socketService.newGroup(groupName, this.currentUser);
+    this.socketService.newGroup(currentGroupName, this.currentUser);
     this.groupName = '';
   }
 

@@ -12,9 +12,14 @@ export class SocketService
   private readonly URL = 'http://localhost:3000';
   //private readonly URL = '121.222.65.60:3000'
 
+  ////
+  private messageCallback: ((message: any, user: any) => void) | null = null;
+  private updateGroupsCallback: ((groupName: string) => void) | null = null;
+////
+
   constructor(){}
 
-  connect(room?: string, user?: string)
+  connect(room: string, user: string)
   {
     if (!this.socket || !this.socket.connected)
     {
@@ -24,6 +29,17 @@ export class SocketService
         {
           this.joinRoom(room, user);
         }
+
+        if (this.messageCallback) 
+        {
+          this.socket?.on('receiveMessage', this.messageCallback);
+        }
+
+        if (this.updateGroupsCallback) 
+        {
+          this.socket?.on('updateGroups', this.updateGroupsCallback);
+        }
+
       });
     }
   }
@@ -57,9 +73,10 @@ export class SocketService
 
   receiveMessage(callback: (message: any, user: any) => void)
   {
-    console.log("trying to do something");
-      if (this.socket)
+    this.messageCallback = callback;
+      if (this.socket && this.socket.connected)
       {
+        console.log("trying to do something");
          this.socket.on('receiveMessage', callback);
       }
   }
@@ -75,7 +92,8 @@ export class SocketService
 
   updateGroups(callback: (groupName: string) => void)
   {
-      if (this.socket)
+    this.updateGroupsCallback = callback;
+      if (this.socket && this.socket.connected)
       {
          this.socket.on('updateGroups', callback);
       }
