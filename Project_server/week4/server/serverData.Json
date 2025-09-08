@@ -15,11 +15,21 @@
     {
       "userID": 1,
       "username": "rexo",
-      "email": "ddd",
+      "email": "example@example",
       "valid": false,
       "password": "123",
       "roles": [],
       "groups": []
+    }
+  ],
+  "group": [
+    {
+      "groupName": "kino",
+      "creator": "super",
+      "members": [
+        "super"
+      ],
+      "channels": []
     }
   ]
 }

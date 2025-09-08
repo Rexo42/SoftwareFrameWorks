@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 @Injectable({
@@ -38,14 +38,18 @@ export class Api {
       });
     }
 
-    getGroups()
+    getGroups(token : string)
     {
-      return this.http.get<{groups: string[]}>(`${this.baseUrl}/getGroups`);
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+      return this.http.get<{groups: string[]}>(`${this.baseUrl}/getGroups`, { headers });
     }
   
 
     verifyToken(token: string) 
     {
+
       //console.log(token);
       return this.http.post<{ valid: boolean, username: string, email: string, age: string, birthdate: string }>(`${this.baseUrl}/verifyToken`,null, {
         headers: {

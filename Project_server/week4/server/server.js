@@ -70,7 +70,7 @@ class serverData
 }
 
 
-const users = 
+let users = 
 [
     new user("super", "superAdmin@example.com", "123")
 ];
@@ -85,6 +85,8 @@ if (fs.existsSync('serverData.Json'))
     const jsonData = fs.readFileSync('serverData.Json', 'utf-8');
     serverDataa = JSON.parse(jsonData);
     console.log("loaded existing server data: ");
+    users = serverDataa.users;
+    groups = serverDataa.group;
 }
 else
 {
@@ -133,6 +135,7 @@ io.on('connection', (socket)=>
         console.log("creating new group from socket: ", socket.id);
         console.log (username, "created new group: ", groupName)
         groups.push(new group(groupName, username));
+        updateServerData(serverDataa);
         io.to('0').emit('updateGroups', groupName);
     });
     socket.on('disconnect',()=>
@@ -145,12 +148,41 @@ io.on('connection', (socket)=>
 
 // group/channel routes
 app.get('/api/getGroups', (req, res) =>{
+    console.log("PULLING USER GROUP");
     let groupNames = [];
-    for (i = 0; i < groups.length; i++)
+    const authHeader = req.headers.authorization;
+    if (!authHeader)
     {
-        groupNames.push(groups[i].groupName)
+        console.log('No auth header found');
+        return res.json({valid : false});
     }
-    return res.json({groups : groupNames})
+
+    const token = authHeader.split(' ')[1];
+    console.log(`token recieved from user: ${token}`);
+    data = validateToken(token);
+    if (data == null)
+    {
+        return res.json({valid: false});
+    }
+    //console.log("KINO");
+    for (let user of users)
+    {
+        //console.log(data.username);
+        //console.log(user.userID);
+        if (user.userID == data.username)
+        {
+            if (user.roles[0] == "Super Administrator")
+            {
+                groupNames = groups.map(group => group.groupName)
+                //console.log(groupNames);
+                //console.log(groups);
+                return res.json({groups: groupNames});
+            }
+            groupNames = user.groups.map(group => group.groupName)
+            return res.json({groups: groupNames});
+        }
+    }
+    //return res.json({groups : groupNames})
 });
 
 app.post('/api/createGroup',(req, res)=>{
@@ -369,7 +401,7 @@ function checkValidUsername(userID, username)
 function updateServerData(serverData)
 {
     serverData.users = users;
-    serverData.group = group;
+    serverData.group = groups;
     fs.writeFileSync('serverData.Json', JSON.stringify(serverDataa, null, 2), 'utf-8');
     console.log("updated server data!");
 }

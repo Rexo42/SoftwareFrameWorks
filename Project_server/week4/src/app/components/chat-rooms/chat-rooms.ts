@@ -65,7 +65,7 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
             }
             this.socketService.connect('0', response.username)
             this.channelName = "Public Room";
-            this.api.getGroups().subscribe({
+            this.api.getGroups(cleanToken).subscribe({
               next: (response) =>{
                 this.groups = response.groups;
               }
