@@ -18,6 +18,9 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   groups: string[] = [];
   userRole : string = "";
   channelName : string = "";
+  showAdminPanel :boolean = true;
+  errorMsg: string = '';
+
 
   ///
   groupName = "";
@@ -119,11 +122,35 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
     const currentGroupName = this.groupName;
     if (!currentGroupName || !this.currentUser)
     {
+      this.errorMsg = "Missing fields";
       return;
     }
-    this.socketService.newGroup(currentGroupName, this.currentUser);
+    
+    this.socketService.newGroup(currentGroupName, this.currentUser).then(response => {
+    if (response.valid) 
+    {
+    this.errorMsg = response.message;
+    } 
+    else 
+    {
+    this.errorMsg = response.message;
+    }
+});
+
+    //this.socketService.newGroup(currentGroupName, this.currentUser);
+
     this.groupName = '';
   }
+
+  toggleAdminPanel()
+  {
+    if (this.showAdminPanel)
+    {
+      this.errorMsg = '';
+    }
+    this.showAdminPanel = !this.showAdminPanel;
+  }
+
 
 }
 class chatMessage

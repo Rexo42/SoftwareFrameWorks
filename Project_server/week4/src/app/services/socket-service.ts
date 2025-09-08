@@ -82,13 +82,17 @@ export class SocketService
   }
 
 
-  newGroup(groupName: string, username: string)
-  {
-    if (this.socket && this.socket.connected)
-    {
-      this.socket.emit('newGroup', groupName, username);  
+newGroup(groupName: string, username: string): Promise<{ valid: boolean; message: string }> {
+  return new Promise((resolve, reject) => {
+    if (this.socket && this.socket.connected) {
+      this.socket.emit('newGroup', groupName, username, (response: { valid: boolean; message: string }) => {
+        resolve(response);
+      });
+    } else {
+      reject({ valid: false, message: 'Socket not connected' });
     }
-  }
+  });
+}
 
   updateGroups(callback: (groupName: string) => void)
   {

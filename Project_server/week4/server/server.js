@@ -131,12 +131,20 @@ io.on('connection', (socket)=>
         console.log("message recieved from:", socket.id, " :: ", message);
         socket.to('0').emit('receiveMessage', message, username);
     });
-    socket.on('newGroup', (groupName, username)=>{
+    socket.on('newGroup', (groupName, username, callback)=>{
+        for (let group of groups)
+        {
+        if (group.groupName == groupName)
+        {
+            return callback({valid: false, message: 'Group Already Exists'});
+        }
+        }
         console.log("creating new group from socket: ", socket.id);
         console.log (username, "created new group: ", groupName)
         groups.push(new group(groupName, username));
         updateServerData(serverDataa);
         io.to('0').emit('updateGroups', groupName);
+        return callback({valid:true, message: "Group Created Successfully"});
     });
     socket.on('disconnect',()=>
     {
@@ -190,6 +198,13 @@ app.post('/api/createGroup',(req, res)=>{
     //console.log(req.body);
     data = req.body;
     let newGroup = new group(data.groupName, data.username);
+    for (let group of groups)
+    {
+        if (group.groupName == data.groupName)
+        {
+            return res.json({valid:false});
+        }
+    }
     //newGroup.members.push();
     // also will need to give the creator of the group the admin role
     groups.push(newGroup);

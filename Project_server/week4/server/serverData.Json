@@ -30,6 +30,14 @@
         "super"
       ],
       "channels": []
+    },
+    {
+      "groupName": "kino2",
+      "creator": "super",
+      "members": [
+        "super"
+      ],
+      "channels": []
     }
   ]
 }

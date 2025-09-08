@@ -2,7 +2,7 @@
 
 <div class="container mt-4">
   <div class="row">
-      <!-- Group List Sidebar -->
+    <!-- Group List Sidebar -->
     <div class="col-md-2">
       <div class="border p-2" style="height: 300px; overflow-y: auto; background-color: #e9ecef;">
         <h6 class="text-center">Groups</h6>
@@ -13,14 +13,14 @@
         </ul>
       </div>
     </div>
-    <!-- If user is SuperAdmin, show chat in 7 columns -->
-    <div
-      [ngClass]="userRole === 'SuperAdmin' ? 'col-md-7' : 'col-md-6 mx-auto'"
-    >
+
+    <!-- Chat Section (Middle Column) -->
+    <div [ngClass]="userRole === 'SuperAdmin' ? 'col-md-7' : 'col-md-8 mx-auto'">
+      <div>
+        <strong>Channel:</strong> {{ channelName }}
+      </div>
+      
       <!-- Scrollable Chat Messages -->
-       <div>
-        Channel: {{channelName}}
-       </div>
       <div #scrollContainer
            class="border p-3 mb-3"
            style="height: 300px; overflow-y: auto; background-color: #f8f9fa;">
@@ -50,38 +50,52 @@
       </form>
     </div>
 
-    <!-- Create Account (right column if SuperAdmin) -->
-    <div *ngIf="userRole === 'SuperAdmin'" class="col-md-5">
-      <app-create-account></app-create-account>
-    </div>
-    <div *ngIf="userRole === 'SuperAdmin'" class="col-md-5">
-      <div class="container mt-4">
-        <div class="card">
-          <div class="card-header">
-            <h5>Create New Group</h5>
-          </div>
-          <div class="card-body">
-            <form (ngSubmit)="createGroup()">
-              <div class="mb-3">
-                <label for="groupName" class="form-label">Group Name</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  id="groupName" 
-                  [(ngModel)]="groupName" 
-                  name="groupName" 
-                  placeholder="Enter group name"
-                  required
-                />
-              </div>
+    <!-- SuperAdmin Extra Panel (Right Column) -->
+    <div *ngIf="userRole === 'SuperAdmin'" class="col-md-3">
+      <!-- Toggle Button -->
+      <div class="d-grid mb-3">
+        <button class="btn btn-secondary" (click)="toggleAdminPanel()">
+          Admin Panel (On/Off)
+        </button>
+      </div>
+
+      <!-- Toggleable Admin Panel Content -->
+      <div *ngIf="showAdminPanel">
+        <!-- Create Account Component -->
+        <app-create-account></app-create-account>
+
+        <!-- Styled Create Group Form -->
+        <div class="container mt-4">
+          <form 
+            (ngSubmit)="createGroup()" 
+            class="container p-4 border rounded shadow-sm bg-light" 
+            style="max-width: 500px;"
+          >
+            <h3 class="mb-4 text-center">Create Group</h3>
+
+            <div class="mb-3">
+              <label for="groupName" class="form-label">Group Name:</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="groupName" 
+                [(ngModel)]="groupName" 
+                name="groupName" 
+                placeholder="Enter group name"
+                required
+              />
+            </div>
+
+            <div class="d-grid">
               <button type="submit" class="btn btn-primary">Create Group</button>
-            </form>
-          </div>
+            </div>
+
+            <div *ngIf="errorMsg" class="mt-3 alert alert-info text-center" id="errorMsg">
+              {{ errorMsg }}
+            </div>
+          </form>
         </div>
-    </div>
-
-
-      
+      </div>
     </div>
   </div>
 </div>
