@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FormGroupName } from '@angular/forms';
 import {io, Socket} from 'socket.io-client';
 
 
@@ -56,9 +57,27 @@ export class SocketService
 
   receiveMessage(callback: (message: any, user: any) => void)
   {
+    console.log("trying to do something");
       if (this.socket)
       {
          this.socket.on('receiveMessage', callback);
+      }
+  }
+
+
+  newGroup(groupName: string, username: string)
+  {
+    if (this.socket && this.socket.connected)
+    {
+      this.socket.emit('newGroup', groupName, username);  
+    }
+  }
+
+  updateGroups(callback: (groupName: string) => void)
+  {
+      if (this.socket)
+      {
+         this.socket.on('updateGroups', callback);
       }
   }
 }

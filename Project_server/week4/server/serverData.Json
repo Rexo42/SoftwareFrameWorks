@@ -5,7 +5,7 @@
       "userID": 0,
       "username": "super",
       "email": "superAdmin@example.com",
-      "valid": false,
+      "valid": true,
       "password": "123",
       "roles": [
         "Super Administrator"
@@ -14,8 +14,8 @@
     },
     {
       "userID": 1,
-      "username": "Rexo",
-      "email": "kino",
+      "username": "rexo",
+      "email": "example",
       "valid": false,
       "password": "123",
       "roles": [],

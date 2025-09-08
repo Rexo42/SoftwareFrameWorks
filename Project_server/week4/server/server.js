@@ -122,16 +122,22 @@ io.on('connection', (socket)=>
     socket.on('joinRoom', (room, user)=>{
         socket.join(room);
         console.log("socket: ",socket.id, " joined room: ", room);
-        io.to('1').emit('receiveMessage', "has joined", user);
+        io.to('0').emit('receiveMessage', "has joined", user);
     });
     // need a leave room function 
     socket.on('sendMessage', (message, username)=>{
         console.log("message recieved from:", socket.id, " :: ", message);
-        socket.to('1').emit('receiveMessage', message, username);
+        socket.to('0').emit('receiveMessage', message, username);
+    });
+    socket.on('newGroup', (groupName, username)=>{
+        console.log("creating new group from socket: ", socket.id);
+        console.log (username, "created new group: ", groupName)
+        groups.push(new group(groupName, username));
+        io.to('0').emit('updateGroups', groupName);
     });
     socket.on('disconnect',()=>
     {
-        io.to('1').emit('receiveMessage', "has disconnected", socket.id);
+        io.to('0').emit('receiveMessage', "has disconnected", socket.id);
         console.log("user disconnected: ", socket.id);
     });
 

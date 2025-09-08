@@ -15,8 +15,13 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   message : string = "";
   messages :chatMessage[] = [];
+  groups: string[] = [];
   userRole : string = "";
   channelName : string = "";
+
+  ///
+  groupName = "";
+  ///
 
   
 
@@ -33,6 +38,15 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   constructor(private router : Router, private socketService : SocketService, private api : Api){}
   ngOnInit(): void 
   {
+    this.socketService.receiveMessage((message: string, username: string)=>
+    {
+      this.messages.push(new chatMessage(username, message));
+      console.log('message recieved: ', message);
+    });
+
+    this.socketService.updateGroups((groupName: string, ) => {
+      this.groups.push(groupName);
+    })
 
     const rawToken = localStorage.getItem('currentUser');
     if (rawToken)
@@ -43,7 +57,6 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
         next: (response) => {
           if (response.valid)
           {
-            console.log("kino");
             this.currentUser = response.username;
             console.log(response.username);
             if (this.currentUser == "super")
@@ -66,12 +79,6 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
     {
       this.router.navigate(['/home'])
     }
-    
-    this.socketService.receiveMessage((message: string, username: string)=>
-    {
-      this.messages.push(new chatMessage(username, message));
-      console.log('message recieved: ', message);
-    });
  
   }
 
@@ -98,6 +105,17 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
     this.messages.push(new chatMessage(this.currentUser,this.message));
     this.socketService.sendMessage(userMessage, this.currentUser);
     this.message ='';
+  }
+
+  createGroup()
+  {
+    const groupName = this.groupName;
+    if (!groupName || !this.currentUser)
+    {
+      return;
+    }
+    this.socketService.newGroup(groupName, this.currentUser);
+    this.groupName = '';
   }
 
 }
