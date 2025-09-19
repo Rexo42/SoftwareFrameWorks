@@ -22,12 +22,9 @@ export async function verifyToken(app, db)
         {
             if (user.userID == decryptedToken.userID)
             {
-                console.log("token read successfully");
-                return res.json({valid: true, username: user.username, email: user.email, age: 18, birthdate: user.birthdate})
-                //return res.json({valid : true, username : users[i].username, email:users[i].email, age:users[i].age, birthdate:users[i].birthdate })
+                return res.json({valid: true, username: user.username, email: user.email, age: user.age, birthdate: user.birthdate})
             }
         }
         return res.json({valid:false});
-        // go through users find with matching user id
     })
 }

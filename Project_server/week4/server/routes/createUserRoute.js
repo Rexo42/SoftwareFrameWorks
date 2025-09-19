@@ -7,14 +7,14 @@ export async function createUser(app, db)
         const data = req.body;
         if (!data || (data.username == '' || data.email == ''||data.password==''))
         {
-            return res.status(401).json({
+            return res.status(400).json({
                 success: false,
                 message: "missing fields",
             });
         }
         if (!await checkValidUsername(db, data.username))
         {
-            return res.status(401).json({
+            return res.status(409).json({
                 success:false,
                 message: "username already taken",
             });
@@ -29,9 +29,9 @@ export async function createUser(app, db)
         }
         catch(error)
         {
-            return res.status(401).json({
+            return res.status(500).json({
                 success:false,
-                message: "server error..."
+                message: "server error...(something actually broke)"
             });
         }
 

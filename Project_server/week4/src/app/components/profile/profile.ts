@@ -44,6 +44,7 @@ export class Profile implements OnInit
           else
           {
             console.log("failed to validate token");
+            localStorage.removeItem('currentUser');
             this.router.navigate(['/home']);
           }
 
@@ -85,7 +86,7 @@ export class Profile implements OnInit
         else
         {
           console.log("failed to update profile");
-          this.message = "Failed To Update Profile!";
+          this.message = response.message;
         }
       }
     });

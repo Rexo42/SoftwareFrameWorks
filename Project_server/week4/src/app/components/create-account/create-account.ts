@@ -42,14 +42,7 @@ export class CreateAccount
       }
     },
     error: (err) => {
-      if (err.status == 401 && err.error && err.error.message)
-      {
-        this.message = err.error.message;
-      }
-      else
-      {
-        this.message = 'Server error, please try again later.';
-      }
+      this.message = err.error.message;
     }
   });
   }

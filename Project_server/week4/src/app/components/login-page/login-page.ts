@@ -43,7 +43,7 @@ export class LoginPage
         }
       },
       error: (err) => {
-        if (err.status == 401 && err.error && err.error.message)
+        if (err.status == 404 && err.error && err.error.message)
         {
           this.message = err.error.message;
         }

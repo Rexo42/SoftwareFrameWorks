@@ -1,11 +1,11 @@
 import express from 'express';
 import {createServer} from 'http';
 import path from 'path';
-import jwt from 'jsonwebtoken';
-import fs from 'fs';
+//import jwt from 'jsonwebtoken';
+//import fs from 'fs';
 import cors from 'cors';
-import bodyParser from 'body-parser';
-import { ObjectId } from 'mongodb';
+//import bodyParser from 'body-parser';
+//import { ObjectId } from 'mongodb';
 import {Server} from 'socket.io';
 import {dirname} from 'path';
 import { fileURLToPath } from 'url';
@@ -14,6 +14,8 @@ import { fileURLToPath } from 'url';
 import { userLogin } from './routes/userLoginRoute.js';
 import {verifyToken} from './routes/verifyTokenRoute.js';
 import { createUser } from './routes/createUserRoute.js';
+import { removeUser } from './routes/removeUserRoute.js';
+import { updateProfile } from './routes/updateProfileRoute.js';
 ///
 
 const __filename = fileURLToPath(import.meta.url);
@@ -63,7 +65,8 @@ try
     userLogin(app, db);
     verifyToken(app, db);
     createUser(app, db);
-
+    removeUser(app,db);
+    updateProfile(app,db);
     ///
 
 
@@ -221,39 +224,39 @@ app.delete('/api/deleteGroup', (res,req) =>{
 
 })
 
-app.post('/api/updateProfile', (req, res) => {
-    const {username, email, age, birthdate} = req.body;
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+// app.post('/api/updateProfile', (req, res) => {
+//     const {username, email, age, birthdate} = req.body;
+//     const authHeader = req.headers['authorization'];
+//     const token = authHeader && authHeader.split(' ')[1];
 
-    decrypted = validateToken(token); // need to add expiry protection here
-    if (!checkValidUsername(decrypted.username, username))
-    {
-        return res.json({error: 'username already taken',success: false});
-    }
+//     decrypted = validateToken(token); // need to add expiry protection here
+//     if (!checkValidUsername(decrypted.username, username))
+//     {
+//         return res.json({error: 'username already taken',success: false});
+//     }
 
-    let user = null;
-    //console.log(decrypted.username, "look here");
-    for (i = 0; i < users.length; i++){
-        if (decrypted.username == users[i].userID)
-        {
-            user = users[i];
-            break;
-        }
-    }
-    if (user)
-    {
-        user.username = username;
-        user.email = email;
-        user.age = age;
-        user.birthdate = birthdate;
-        updateServerData(serverDataa);
-        return res.json({ success: true});
-    }
-    else{
-        return res.status(403).json({ error: 'user doesnt exist', success: false});
-    }
-});
+//     let user = null;
+//     //console.log(decrypted.username, "look here");
+//     for (i = 0; i < users.length; i++){
+//         if (decrypted.username == users[i].userID)
+//         {
+//             user = users[i];
+//             break;
+//         }
+//     }
+//     if (user)
+//     {
+//         user.username = username;
+//         user.email = email;
+//         user.age = age;
+//         user.birthdate = birthdate;
+//         updateServerData(serverDataa);
+//         return res.json({ success: true});
+//     }
+//     else{
+//         return res.status(403).json({ error: 'user doesnt exist', success: false});
+//     }
+// });
 
 
 

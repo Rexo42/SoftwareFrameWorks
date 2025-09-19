@@ -22,7 +22,7 @@ export class Api {
 
     updateProfileRequest(user: {username: string; email: string; age: string; birthdate: string}, token:string)
     {
-      return this.http.post<{success: boolean}>(`${this.baseUrl}/updateProfile`, user, {
+      return this.http.patch<{success: boolean, message:string}>(`${this.baseUrl}/update`, user, {
         headers: {
           Authorization: `Bearer ${token}`
         }
