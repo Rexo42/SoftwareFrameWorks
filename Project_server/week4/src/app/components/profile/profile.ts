@@ -29,7 +29,6 @@ export class Profile implements OnInit
         next: (response) => {
           if (response.valid)
           {
-            // response include username
             console.log("validated successfully");
             console.log(response)
             this.profileForm = this.fb.group(
@@ -87,8 +86,21 @@ export class Profile implements OnInit
         {
           console.log("failed to update profile");
           this.message = response.message;
+          this.router.navigate(['/home']);
+        }
+      },
+      error: (err) => {
+        if (err.status == 500 && err.error && err.error.message)
+        {
+          this.message = err.error.message;
+        }
+        else
+        {
+          this.message = "server error... please try again later";
+          this.router.navigate(['/home']);
         }
       }
+    
     });
     
     
