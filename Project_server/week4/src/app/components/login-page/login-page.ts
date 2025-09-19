@@ -18,32 +18,39 @@ export class LoginPage
   password: string = '';
   message: string = '';
   constructor(private router: Router, private Api : Api) {}
-        ngOnInit(): void
+  ngOnInit(): void
+  {
+    if (localStorage.getItem('currentUser'))
     {
-      if (localStorage.getItem('currentUser'))
-      {
-        this.router.navigate(['/profile']);
-      }
-
+      this.router.navigate(['/profile']);
     }
+  }
 
   login() 
   {
     const user = { username: this.username, password: this.password };
     
-    this.Api.loginRequest(user).subscribe({
+      this.Api.loginRequest(user).subscribe({
       next: (response) => {
         if (response.success) 
         {
           localStorage.setItem('currentUser', JSON.stringify(response.token));
           this.router.navigate(['/profile']);
-        } else {
+        } 
+        else 
+        {
           this.message = 'Invalid login credentials';
         }
       },
       error: (err) => {
-        console.error('Login error:', err);
-        this.message = 'Server error, please try again later.';
+        if (err.status == 401 && err.error && err.error.message)
+        {
+          this.message = err.error.message;
+        }
+        else
+        {
+          this.message = "server error... please try again later";
+        }
       }
     });
   }

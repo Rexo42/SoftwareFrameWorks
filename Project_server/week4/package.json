@@ -1,6 +1,7 @@
 {
   "name": "week4",
   "version": "0.0.0",
+  "type":"module",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -32,6 +33,7 @@
     "express": "^5.1.0",
     "express-session": "^1.18.2",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.20.0",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.1",
     "tslib": "^2.3.0",

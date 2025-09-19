@@ -62,7 +62,7 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
           {
             this.currentUser = response.username;
             console.log(response.username);
-            if (this.currentUser == "super")
+            if (this.currentUser == "test1")
             {
               this.userRole = "SuperAdmin";
             }
@@ -109,9 +109,6 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
        {
          return;
        }
-    // update ui
-    //const userRaw = localStorage.getItem('currentUser');
-    //const currentUser = userRaw ? JSON.parse(userRaw) : null;
     this.messages.push(new chatMessage(this.currentUser,this.message));
     this.socketService.sendMessage(userMessage, this.currentUser);
     this.message ='';

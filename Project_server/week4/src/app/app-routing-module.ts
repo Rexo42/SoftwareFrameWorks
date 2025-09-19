@@ -5,7 +5,6 @@ import {LoginPage} from './components/login-page/login-page';
 import {Profile} from './components/profile/profile';
 import {CreateAccount} from './components/create-account/create-account';
 import {ChatRooms} from './components/chat-rooms/chat-rooms';
-import {Dummy} from './components/dummy/dummy';
 
 const routes: Routes = 
 [
@@ -15,7 +14,6 @@ const routes: Routes =
   {path: 'profile', component: Profile},
   {path: 'create', component: CreateAccount},
   {path: 'chatRooms', component: ChatRooms},
-  {path: 'dummy', component:Dummy}
 
 ];
 
