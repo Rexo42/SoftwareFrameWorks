@@ -7,14 +7,13 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { ObjectId } from 'mongodb';
 import {Server} from 'socket.io';
-
 import {dirname} from 'path';
 import { fileURLToPath } from 'url';
 
 /// routes
 import { userLogin } from './routes/userLoginRoute.js';
 import {verifyToken} from './routes/verifyTokenRoute.js';
-
+import { createUser } from './routes/createUserRoute.js';
 ///
 
 const __filename = fileURLToPath(import.meta.url);
@@ -27,44 +26,14 @@ const http = createServer(app);
 app.use(cors());
 app.use(express.json());
 
-///
 import mongoConnect from '../database/db.js'
-//const mongoConnect = require('../database/db');
-///
 
-// app.use(session({
-//   secret: 'my-secret-key', 
-//   resave: false,
-//   saveUninitialized: false,
-//   cookie: { secure: false }
-// }));
-
-class group
-{
-    constructor(name, creator)
-    {
-        this.groupName = name;
-        this.creator = creator;
-        this.members = []; 
-        this.channels = [];
-        this.members.push(this.creator);
-    }
-}
 class channels
 {
     constructor(name)
     {
         this.channelName = name;
         this.channelMembers = [];
-    }
-}
-
-class serverData
-{
-    constructor()
-    {
-        this.groups = [];
-        this. users = [];
     }
 }
 
@@ -93,6 +62,7 @@ try
     // route setup calls
     userLogin(app, db);
     verifyToken(app, db);
+    createUser(app, db);
 
     ///
 
@@ -251,29 +221,6 @@ app.delete('/api/deleteGroup', (res,req) =>{
 
 })
 
-app.post('/api/create', (req, res) =>{
-    const {username, password, email} = req.body;
-    if (!username || !password || !email)
-    {
-        return res.json({message: 'missing fields', success: false});
-    }
-        // go through existing users and check a username doesnt already exist if not return kino
-    if (!checkValidUsername(undefined, username))
-    {
-        return res.json ({message: 'that username is already taken', success: false})
-    }
-
-    details = new user(username, email, password);
-    console.log(details.username);
-    copy = new user(details.username, details.email, '')
-    users.push(details);
-    console.log("made a user");
-///
-    updateServerData(serverDataa);
-///
-    return res.json({message: 'creation success', success: true, details: copy})
-});
-
 app.post('/api/updateProfile', (req, res) => {
     const {username, email, age, birthdate} = req.body;
     const authHeader = req.headers['authorization'];
@@ -309,37 +256,5 @@ app.post('/api/updateProfile', (req, res) => {
 });
 
 
-function checkValidUsername(userID, username)
-{
-    if (userID == undefined)
-    {
-        for (i = 0; i < users.length; i++)
-        {
-            if(users[i].username == username)
-            {
-                return false;
-            }
-        }
-    }
-    else
-    {
-        for (i = 0; i < users.length; i++)
-        {
-            if(users[i].userID != userID && users[i].username == username)
-            {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-function updateServerData(serverData)
-{
-    serverData.users = users;
-    serverData.group = groups;
-    fs.writeFileSync('serverData.Json', JSON.stringify(serverDataa, null, 2), 'utf-8');
-    console.log("updated server data!");
-}
 
 

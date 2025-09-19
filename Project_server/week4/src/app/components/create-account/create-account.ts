@@ -28,25 +28,29 @@ export class CreateAccount
   {
     const user = {username: this.username, password: this.password, email: this.email}
 
-      this.Api.createAccountRequest(user).subscribe({
-      next: (response) => {
-        if (response.success) 
-        {
-          // we need to set local storage of the values
+    this.Api.createAccountRequest(user).subscribe({
+    next: (response) => {
+      if (response.success) 
+      {
+        // we need to set local storage of the values
 
-         // localStorage.setItem('currentUser', JSON.stringify(response.token))
-         // this.router.navigate(['/profile']);
-          this.message = response.message;
-        } else {
-          this.message = response.message;
-        }
-      },
-      error: (err) => {
-        console.error('Login error:', err);
+        // localStorage.setItem('currentUser', JSON.stringify(response.token))
+        // this.router.navigate(['/profile']);
+        this.message = response.message;
+      } else {
+        this.message = response.message;
+      }
+    },
+    error: (err) => {
+      if (err.status == 401 && err.error && err.error.message)
+      {
+        this.message = err.error.message;
+      }
+      else
+      {
         this.message = 'Server error, please try again later.';
       }
-    });
-    // api makes call sends user as data and creates the account
-      // only check if the username is taken
+    }
+  });
   }
 }
