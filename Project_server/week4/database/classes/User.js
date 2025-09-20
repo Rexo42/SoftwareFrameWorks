@@ -1,9 +1,8 @@
 export class User
 {
-    static ID = 0;
+    //static ID = 0;
     constructor(username, email, password, role)
     {
-        this.userID = ++User.ID;
         this.username = username;
         this.email = email;
         this.password = password;

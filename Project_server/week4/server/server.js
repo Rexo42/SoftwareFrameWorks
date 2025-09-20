@@ -87,6 +87,10 @@ io.on('connection', (socket)=>
         console.log("socket: ",socket.id, " joined room: ", room);
         io.to('0').emit('receiveMessage', "has joined", user);
     });
+
+    socket.on('assignSocketToUser', (username)=>{
+        socket.username = username;
+    });
     // need a leave room function 
     socket.on('sendMessage', (message, username)=>{
         console.log("message recieved from:", socket.id, " :: ", message);
@@ -109,49 +113,49 @@ io.on('connection', (socket)=>
     });
     socket.on('disconnect',()=>
     {
-        io.to('0').emit('receiveMessage', "has disconnected", socket.id);
+        io.to('0').emit('receiveMessage', "has disconnected", socket.username);
         console.log("user disconnected: ", socket.id);
     });
 
 });
 
-app.get('/api/getGroups', (req, res) =>{
-    console.log("PULLING USER GROUP");
-    let groupNames = [];
-    const authHeader = req.headers.authorization;
-    if (!authHeader)
-    {
-        console.log('No auth header found');
-        return res.json({valid : false});
-    }
+// app.get('/api/getGroups', (req, res) =>{
+//     console.log("PULLING USER GROUP");
+//     let groupNames = [];
+//     const authHeader = req.headers.authorization;
+//     if (!authHeader)
+//     {
+//         console.log('No auth header found');
+//         return res.json({valid : false});
+//     }
 
-    const token = authHeader.split(' ')[1];
-    console.log(`token recieved from user: ${token}`);
-    data = validateToken(token);
-    if (data == null)
-    {
-        return res.json({valid: false});
-    }
-    //console.log("KINO");
-    for (let user of users)
-    {
-        //console.log(data.username);
-        //console.log(user.userID);
-        if (user.userID == data.username)
-        {
-            if (user.roles[0] == "Super Administrator")
-            {
-                groupNames = groups.map(group => group.groupName)
-                //console.log(groupNames);
-                //console.log(groups);
-                return res.json({groups: groupNames});
-            }
-            groupNames = user.groups.map(group => group.groupName)
-            return res.json({groups: groupNames});
-        }
-    }
-    //return res.json({groups : groupNames})
-});
+//     const token = authHeader.split(' ')[1];
+//     console.log(`token recieved from user: ${token}`);
+//     data = validateToken(token);
+//     if (data == null)
+//     {
+//         return res.json({valid: false});
+//     }
+//     //console.log("KINO");
+//     for (let user of users)
+//     {
+//         //console.log(data.username);
+//         //console.log(user.userID);
+//         if (user.userID == data.username)
+//         {
+//             if (user.roles[0] == "Super Administrator")
+//             {
+//                 groupNames = groups.map(group => group.groupName)
+//                 //console.log(groupNames);
+//                 //console.log(groups);
+//                 return res.json({groups: groupNames});
+//             }
+//             groupNames = user.groups.map(group => group.groupName)
+//             return res.json({groups: groupNames});
+//         }
+//     }
+//     //return res.json({groups : groupNames})
+// });
 
 app.post('/api/createGroup',(req, res)=>{
     // send through group name and the creator user id

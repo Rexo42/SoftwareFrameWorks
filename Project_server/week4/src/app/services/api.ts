@@ -51,7 +51,7 @@ export class Api {
     {
 
       //console.log(token);
-      return this.http.post<{ valid: boolean, username: string, email: string, age: string, birthdate: string }>(`${this.baseUrl}/verify`,null, {
+      return this.http.post<{ valid: boolean, role: string, username: string, email: string, age: string, birthdate: string }>(`${this.baseUrl}/verify`,null, {
         headers: {
           Authorization: `Bearer ${token}`
         }

@@ -1,4 +1,5 @@
 import { validateToken } from "../functions/validateToken.js";
+import { ObjectId } from "mongodb";
 export async function updateProfile(app, db)
 {
     app.patch('/api/update', async (req, res) =>{
@@ -19,7 +20,7 @@ export async function updateProfile(app, db)
         }
         const {username , email, age, birthdate} = req.body;
         await db.collection("Users").updateOne(
-            {userID: decryptedToken.userID}, {$set: req.body}
+            {_id: new ObjectId(decryptedToken.userID)}, {$set: req.body}
         );
         console.log("successfully updated profile of userID: ", decryptedToken.userID);
         return res.json({success: true, message: "profile successfully updated"});

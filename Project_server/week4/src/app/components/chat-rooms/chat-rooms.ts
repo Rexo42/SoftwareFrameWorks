@@ -62,19 +62,14 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
           {
             this.currentUser = response.username;
             console.log(response.username);
-            if (this.currentUser == "test1")
-            {
-              this.userRole = "SuperAdmin";
-            }
+            this.userRole = response.role.trim();
+            console.log(this.userRole.trim());
             this.socketService.connect('0', response.username)
             this.channelName = "Public Room";
-            this.api.getGroups(cleanToken).subscribe({
-              next: (response) =>{
-                this.groups = response.groups;
-              }
-            })
-
-
+            // would need to get groups and display them
+              // in the route to get groups, we can filter based on role == superAdmin or is a member
+                // super admin see all groups 
+                  // user sees only ones they are a member of
           }
           else
           {
@@ -82,6 +77,11 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
             localStorage.clear();
             this.router.navigate(['/home'])
           }
+        },
+        error: (err) => {
+          console.log("something has gone really wrong");
+          localStorage.clear();
+          this.router.navigate(['/home']);
         }
       });
     }

@@ -28,15 +28,18 @@ export class SocketService
         if (room && user)
         {
           this.joinRoom(room, user);
+          this.socket?.emit('assignSocketToUser', user);
         }
 
         if (this.messageCallback) 
         {
+          this.socket?.off('receiveMessage');
           this.socket?.on('receiveMessage', this.messageCallback);
         }
 
         if (this.updateGroupsCallback) 
         {
+          this.socket?.off('updateGroups');
           this.socket?.on('updateGroups', this.updateGroupsCallback);
         }
 
