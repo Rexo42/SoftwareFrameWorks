@@ -1,4 +1,4 @@
-import { generateToken } from "../functions/generateToken.js";
+import { generateToken } from "../../functions/generateToken.js";
 export async function userLogin(app, db)
 {
     app.post('/api/auth', async (req, res) =>{

@@ -1,5 +1,5 @@
-import { User } from "../../database/classes/User.js";
-import { checkValidUsername } from "../functions/checkUsername.js";
+import { User } from "../../../database/classes/User.js";
+import { checkValidUsername } from "../../functions/checkUsername.js";
 
 export async function createUser(app, db)
 {

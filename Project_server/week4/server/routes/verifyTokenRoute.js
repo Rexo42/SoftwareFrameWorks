@@ -19,7 +19,7 @@ export async function verifyToken(app, db)
                 console.log("token unable to be decrypted...")
                 return res.json({valid: false});
             }
-            const user = await db.collection("Users").findOne({_id: new ObjectId(decryptedToken.userID)});
+            const user = await db.collection("Users").findOne({_id: new ObjectId(String(decryptedToken.userID))});
             if (user)
             {
                 return res.json({valid: true, role: user.role, username: user.username, email: user.email, age: user.age, birthdate: user.birthdate})
