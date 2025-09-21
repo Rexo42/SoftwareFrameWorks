@@ -106,7 +106,7 @@ export class AdminDashboard implements OnInit
       },
       error: (err) =>
       {
-        console.error("Server error:  ",username);
+        console.error(err.error.message);
       }
     })
   }

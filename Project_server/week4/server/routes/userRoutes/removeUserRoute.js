@@ -4,6 +4,10 @@ export async function removeUser(app, db)
         try
         {
             const username = req.params.username;
+            if (username == "test1")
+            {
+                return res.status(401).json({success: false, message: "cannot delete origin user"});
+            }
             const result = await db.collection("Users").deleteOne({username: username});
             if (result.deletedCount != 0)
             {
@@ -17,6 +21,5 @@ export async function removeUser(app, db)
         {
             return res.status(401).json({success: false, message: "serverside error trying to delete user"})
         }
-
     })
 }
