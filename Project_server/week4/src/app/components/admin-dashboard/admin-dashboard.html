@@ -8,13 +8,13 @@
 
       <!-- Buttons for actions -->
       <div>
-        <button class="btn btn-danger btn-sm mx-1" (click)="deleteUser(user.ID, user.username)" >
+        <button [disabled]="user.username == 'test1'" class="btn btn-danger btn-sm mx-1" (click)="deleteUser(user.ID, user.username)" >
           Delete
         </button>
-        <button class="btn btn-warning btn-sm mx-1" >
+        <button [disabled]="user.role == 'GroupAdmin' || user.username == 'test1'" class="btn btn-warning btn-sm mx-1" >
           Promote to Group Admin
         </button>
-        <button class="btn btn-primary btn-sm mx-1" >
+        <button [disabled]="user.role == 'SuperAdmin'" class="btn btn-primary btn-sm mx-1" >
           Promote to Super Admin
         </button>
       </div>

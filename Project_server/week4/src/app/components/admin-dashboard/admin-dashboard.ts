@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, UrlSerializer } from '@angular/router';
 import {Api} from '../../services/api'
+import { IntegerType } from 'mongodb';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -76,27 +77,28 @@ export class AdminDashboard implements OnInit
         if (response.success)
         {
           console.log("successfully deleted user: ", username);
-          this.api.getUsersRequest().subscribe({
+          this.formattedData = this.formattedData.filter(user=> user.username !== username);
+        //   this.api.getUsersRequest().subscribe({
       
-          next: (response) =>
-          {
-            if (response.success)
-            {
-              this.users = response.users;
-              this.Ids = response.ids;
-              this.roles = response.roles;
-              this.formattedData = this.users.map((user, index) =>({
-                username: user,
-                role: this.roles[index],
-                ID: this.Ids[index],
-              }))
-            }
-          },
-          error:(err) =>
-          {
-            console.error("error getting users from database: ", err);
-          }
-        })
+        //   next: (response) =>
+        //   {
+        //     if (response.success)
+        //     {
+        //       this.users = response.users;
+        //       this.Ids = response.ids;
+        //       this.roles = response.roles;
+        //       this.formattedData = this.users.map((user, index) =>({
+        //         username: user,
+        //         role: this.roles[index],
+        //         ID: this.Ids[index],
+        //       }))
+        //     }
+        //   },
+        //   error:(err) =>
+        //   {
+        //     console.error("error getting users from database: ", err);
+        //   }
+        // })
         }
 
         else
@@ -109,5 +111,19 @@ export class AdminDashboard implements OnInit
         console.error(err.error.message);
       }
     })
+  }
+
+  updateUserRole(roleValue : IntegerType)
+  {
+    switch (roleValue)
+    {
+      // 0 = User, 1 = groupAdmin, 2 = SuperAdmin
+      case(0):
+        break;
+      case (1):
+        break;
+      case(2):
+        break;
+    }
   }
 }

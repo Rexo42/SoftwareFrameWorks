@@ -17,6 +17,7 @@ import { createUser } from './routes/userRoutes/createUserRoute.js';
 import { removeUser } from './routes/userRoutes/removeUserRoute.js';
 import { updateProfile } from './routes/userRoutes/updateProfileRoute.js';
 import { getUsers } from './routes/userRoutes/getUsersRoute.js';
+import { updateRole } from './routes/userRoutes/updateUserRole.js';
 ///
 
 
@@ -69,6 +70,7 @@ try
     removeUser(app,db);
     updateProfile(app,db);
     getUsers(app, db);
+    updateRole(app, db);
     ///
 
 

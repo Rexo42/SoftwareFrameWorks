@@ -7,7 +7,7 @@ const jwtKey = process.env.jwtKey;
 
 export function generateToken(payload) 
 {
-    const token = jwt.sign(payload, jwtKey, { expiresIn: '15m' });
+    const token = jwt.sign(payload, jwtKey, { expiresIn: '45m' });
     console.log("Generated Token:", token);
     return token;
 }
