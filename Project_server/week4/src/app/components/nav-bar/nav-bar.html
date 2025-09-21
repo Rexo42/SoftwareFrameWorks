@@ -18,6 +18,9 @@
       <li class="nav-item">
         <a class="nav-link" *ngIf="isLoggedIn" routerLink="/chatRooms">ChatRooms</a> 
       </li>
+      <li class="nav-item" *ngIf="isLoggedIn && isSuperAdmin">
+        <a class="nav-link" routerLink="/adminDashboard" style="cursor: pointer;">Admin Dashboard</a>
+      </li>
       <li class="nav-item" *ngIf="!isLoggedIn">
         <a class="nav-link" (click)="create()" style="cursor: pointer;">Create Account</a>
       </li>

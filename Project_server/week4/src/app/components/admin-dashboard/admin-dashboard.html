@@ -1,0 +1,23 @@
+<app-nav-bar></app-nav-bar>
+<div class="container mt-3">
+    <h5>Users</h5>
+  <ul class="list-group">
+    <li *ngFor="let user of formattedData" class="list-group-item d-flex justify-content-between align-items-center py-2">
+      <!-- Display the username -->
+      <span>UserID: {{user.ID}} | Username: {{ user.username }} | Role: {{user.role}}</span>
+
+      <!-- Buttons for actions -->
+      <div>
+        <button class="btn btn-danger btn-sm mx-1" (click)="deleteUser(user.ID, user.username)" >
+          Delete
+        </button>
+        <button class="btn btn-warning btn-sm mx-1" >
+          Promote to Group Admin
+        </button>
+        <button class="btn btn-primary btn-sm mx-1" >
+          Promote to Super Admin
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>

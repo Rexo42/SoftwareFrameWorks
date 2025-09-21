@@ -28,6 +28,16 @@ export class Api {
         }
       })
     }
+    deleteUserRequest(userID : string, username : string)
+    {
+      return this.http.delete<{success: boolean, message: string}>(`${this.baseUrl}/delete/${username}`)
+    }
+
+    getUsersRequest()
+    {
+      return this.http.get<{success: boolean, users: string[], ids: string[], roles: string[]}>(`${this.baseUrl}/getUsers`, {
+      })
+    }
 
     createGroup(token: string, groupName: string, username: string)
     {

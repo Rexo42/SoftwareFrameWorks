@@ -1,5 +1,9 @@
 import jwt from 'jsonwebtoken';
-const jwtKey = 'testkey123';
+//require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
+//const jwtKey = 'testkey123';
+const jwtKey = process.env.jwtKey;
 
 export function generateToken(payload) 
 {

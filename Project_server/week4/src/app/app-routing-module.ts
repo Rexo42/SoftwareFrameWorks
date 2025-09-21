@@ -5,6 +5,7 @@ import {LoginPage} from './components/login-page/login-page';
 import {Profile} from './components/profile/profile';
 import {CreateAccount} from './components/create-account/create-account';
 import {ChatRooms} from './components/chat-rooms/chat-rooms';
+import { AdminDashboard } from './components/admin-dashboard/admin-dashboard';
 
 const routes: Routes = 
 [
@@ -14,7 +15,7 @@ const routes: Routes =
   {path: 'profile', component: Profile},
   {path: 'create', component: CreateAccount},
   {path: 'chatRooms', component: ChatRooms},
-
+  {path: 'adminDashboard', component: AdminDashboard},
 ];
 
 @NgModule({

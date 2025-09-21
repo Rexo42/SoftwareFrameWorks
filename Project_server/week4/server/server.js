@@ -16,6 +16,7 @@ import {verifyToken} from './routes/verifyTokenRoute.js';
 import { createUser } from './routes/userRoutes/createUserRoute.js';
 import { removeUser } from './routes/userRoutes/removeUserRoute.js';
 import { updateProfile } from './routes/userRoutes/updateProfileRoute.js';
+import { getUsers } from './routes/userRoutes/getUsersRoute.js';
 ///
 
 
@@ -67,6 +68,7 @@ try
     createUser(app, db);
     removeUser(app,db);
     updateProfile(app,db);
+    getUsers(app, db);
     ///
 
 

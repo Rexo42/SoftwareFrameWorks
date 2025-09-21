@@ -4,8 +4,8 @@ export async function removeUser(app, db)
         try
         {
             const username = req.params.username;
-            const res = await db.find("Users").deleteOne({username: username});
-            if (res.deletedCount != 0)
+            const result = await db.collection("Users").deleteOne({username: username});
+            if (result.deletedCount != 0)
             {
                 console.log("successfully deleted user from database: ", username);
                 return res.json({success: true, message: "successfully deleted user: ", username});
