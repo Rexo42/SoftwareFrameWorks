@@ -48,25 +48,28 @@ export class Api {
       return this.http.patch<{success: boolean, message:string}>(`${this.baseUrl}/updateRole/${username}`,roleObject);
     }
 
-
-
-
-
-    createGroup(token: string, groupName: string, username: string)
+    createGroup(groupName: string, username: string)
     {
-      return this.http.post<{ valid: boolean}>(`${this.baseUrl}/createGroup`,({groupName: groupName, username: username}), {
-      headers: {
-      Authorization: `Bearer ${token}`
-      }
+      return this.http.post<{ valid: boolean}>(`${this.baseUrl}/createGroup`,({groupName: groupName, username: username}), {});
+    }
+
+    getGroups(page: number, limit: number)
+    {
+      // const headers = new HttpHeaders({
+      //   'Authorization': `Bearer ${token}`
+      // });
+      return this.http.get<{success: boolean, groups: string[], ids: string[], creators: string[], pageLimit: number}>(`${this.baseUrl}/getGroups`, {
+        params: {
+          page: page.toString(),
+          limit: limit.toString(),
+        }
+
       });
     }
 
-    getGroups(token : string)
+    deleteGroup(groupName: string)
     {
-      const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      });
-      return this.http.get<{groups: string[]}>(`${this.baseUrl}/getGroups`, { headers });
+      return this.http.delete<{success: boolean, message: string}>(`${this.baseUrl}/deleteGroup/${groupName}`);
     }
   
 

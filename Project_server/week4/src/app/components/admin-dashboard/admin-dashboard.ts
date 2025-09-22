@@ -11,17 +11,23 @@ import { IntegerType } from 'mongodb';
 })
 export class AdminDashboard implements OnInit
 {
+  ///
   users: string[] = [];
   Ids: string[] = [];
   roles: string[] = [];
+  ///
+  groups: string[] = [];
+  groupIds: string[] = [];
+  creators: string[] = [];
+
 
   // page data
   formattedData: {username: string, role: string, ID: string}[]=[];
   formattedGroupData: {groupName: string, groupCreator: string, groupID: string}[]=[]
+  formattedGroupNames: string[] = [];
   pageType: 'Users' | 'Groups' = 'Users';
   pageNumber : number = 1;
-  totalPages : number = 0;
-  //
+  totalPages : number = 0;  //
   constructor(private router : Router, private api : Api){}
   ngOnInit(): void 
   { // on init we get all users
@@ -69,27 +75,6 @@ export class AdminDashboard implements OnInit
         {
           console.log("successfully deleted user: ", username);
           this.refreshUsers();
-        //   this.api.getUsersRequest(this.pageNumber, 8).subscribe({
-        //   next: (response) =>
-        //   {
-        //     if (response.success)
-        //     {
-        //       this.users = response.users;
-        //       this.Ids = response.ids;
-        //       this.roles = response.roles;
-        //       this.formattedData = this.users.map((user, index) =>({
-        //         username: user,
-        //         role: this.roles[index],
-        //         ID: this.Ids[index],
-        //       }))
-        //     }
-        //   },
-
-        //   error: (err) =>
-        //   {
-        //     console.error("error getting users for page: ", err);
-        //   }
-        // })
         }
 
         else
@@ -100,6 +85,28 @@ export class AdminDashboard implements OnInit
       error: (err) =>
       {
         console.error(err.error.message);
+      }
+    })
+  }
+
+  deleteGroup(groupName: string)
+  {
+    this.api.deleteGroup(groupName).subscribe({
+      next: (response) =>
+      {
+        if (response.success)
+        {
+          this.refreshGroups();
+          console.log(response.message);
+        }
+        else
+        {
+          console.error(response.message);
+        }
+      },
+      error: (err) =>
+      {
+        console.error("error deleting group: ", err);
       }
     })
   }
@@ -150,28 +157,37 @@ export class AdminDashboard implements OnInit
       }
     }
     this.pageNumber = desired;
+    if (this.pageType == "Users")
+    {
+      this.refreshUsers();
+    }
+    else
+    {
+      this.refreshGroups();
+    }
 
-    this.api.getUsersRequest(this.pageNumber, 8).subscribe({
-      next: (response) =>
-      {
-        if (response.success)
-        {
-          this.users = response.users;
-          this.Ids = response.ids;
-          this.roles = response.roles;
-          this.formattedData = this.users.map((user, index) =>({
-            username: user,
-            role: this.roles[index],
-            ID: this.Ids[index],
-          }))
-        }
-      },
 
-      error: (err) =>
-      {
-        console.error("error getting users for page: ", err);
-      }
-    })
+    // this.api.getUsersRequest(this.pageNumber, 8).subscribe({
+    //   next: (response) =>
+    //   {
+    //     if (response.success)
+    //     {
+    //       this.users = response.users;
+    //       this.Ids = response.ids;
+    //       this.roles = response.roles;
+    //       this.formattedData = this.users.map((user, index) =>({
+    //         username: user,
+    //         role: this.roles[index],
+    //         ID: this.Ids[index],
+    //       }))
+    //     }
+    //   },
+
+    //   error: (err) =>
+    //   {
+    //     console.error("error getting users for page: ", err);
+    //   }
+    // })
 
 
   }
@@ -200,5 +216,51 @@ export class AdminDashboard implements OnInit
       console.error("error getting users for page: ", err);
     }
   })
+  }
+
+  refreshGroups()
+  {
+    console.log(this.pageNumber);
+    this.api.getGroups(this.pageNumber, 5).subscribe({
+      next: (response) => 
+      {
+        if (response.success)
+        {
+          this.groupIds = response.ids;
+          this.groups = response.groups;
+          this.creators = response.creators;
+          this.totalPages = response.pageLimit;
+
+          this.formattedGroupData = this.groups.map((group, index) =>({
+          groupName: group,
+          groupCreator: this.creators[index],
+          groupID: this.groupIds[index],
+        }))
+        this.formattedGroupNames = this.formattedGroupData.map(group => group.groupName);
+        
+        }
+      },
+
+      error: (err) =>
+      {
+
+      }
+    })
+
+  }
+
+  changePageCategory()
+  {
+    const prevType = this.pageType;
+    this.pageType = this.pageType == "Users" ? "Groups" : "Users";
+    if (this.pageType == "Users")
+    {
+      this.refreshUsers();
+    }
+    else
+    {
+      console.log("here")
+      this.refreshGroups();
+    }
   }
 }

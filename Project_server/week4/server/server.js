@@ -18,6 +18,9 @@ import { removeUser } from './routes/userRoutes/removeUserRoute.js';
 import { updateProfile } from './routes/userRoutes/updateProfileRoute.js';
 import { getUsers } from './routes/userRoutes/getUsersRoute.js';
 import { updateRole } from './routes/userRoutes/updateUserRole.js';
+import { getGroups } from './routes/groupRoutes/getGroupsRoute.js';
+import { createGroup } from './routes/groupRoutes/createGroupRoute.js';
+import { deleteGroup } from './routes/groupRoutes/deleteGroupRoute.js';
 ///
 
 
@@ -34,6 +37,8 @@ app.use(express.json());
 
 import mongoConnect from '../database/db.js'
 import { socketSetup } from '../socketHandler/socketHandler.js';
+//import { deleteGroup } from './routes/groupRoutes/deleteGroupRoute.js';
+//import { getgroups } from 'process';
 
 class channels
 {
@@ -71,6 +76,10 @@ try
     updateProfile(app,db);
     getUsers(app, db);
     updateRole(app, db);
+
+    getGroups(app, db);
+    createGroup(app, db);
+    deleteGroup(app, db);
     ///
 
 

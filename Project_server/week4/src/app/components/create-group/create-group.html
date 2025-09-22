@@ -1,0 +1,29 @@
+<form (ngSubmit)="createGroup()" class="list-group-item py-2">
+  <div class="row g-2 align-items-center">
+    
+    <!-- Group Name Input -->
+    <div class="col-md-9">
+      <input
+        type="text"
+        class="form-control form-control-sm"
+        [(ngModel)]="groupName"
+        name="groupName"
+        placeholder="Enter Group Name"
+        required
+      />
+    </div>
+
+    <!-- Create Button -->
+    <div class="col-md-3 d-grid">
+      <button type="submit" class="btn btn-success btn-sm">
+        Create Group
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Optional Message Display -->
+  <div *ngIf="message" class="mt-2 alert alert-info text-center p-1 m-0">
+    {{ message }}
+  </div>
+</form>

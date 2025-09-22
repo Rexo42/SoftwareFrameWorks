@@ -16,7 +16,7 @@
         <a class="nav-link" (click)="logout()" style="cursor: pointer;">Logout</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" *ngIf="isLoggedIn" routerLink="/chatRooms">ChatRooms</a> 
+        <a class="nav-link" *ngIf="isLoggedIn" routerLink="/chatRooms">Chat Rooms</a> 
       </li>
       <li class="nav-item" *ngIf="isLoggedIn && isSuperAdmin">
         <a class="nav-link" routerLink="/adminDashboard" style="cursor: pointer;">Admin Dashboard</a>

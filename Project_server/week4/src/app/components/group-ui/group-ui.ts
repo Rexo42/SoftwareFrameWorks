@@ -27,18 +27,7 @@ export class GroupUI {
         next: (response) =>{
           if (response.valid)
           {
-            this.Api.createGroup(cleanToken, this.groupName, response.username).subscribe({
-              next: (response) =>{
-                if (response.valid)
-                {
-                  console.log("created group: ", this.groupName)
-                }
-                else
-                {
-                  console.log("error creating group!");
-                }
-              }
-            })
+
           }
           else
           {

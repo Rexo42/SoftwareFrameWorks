@@ -16,6 +16,8 @@ import { CreateAccount } from './components/create-account/create-account';
 import { ChatRooms } from './components/chat-rooms/chat-rooms';
 import { GroupUI } from './components/group-ui/group-ui';
 import { AdminDashboard } from './components/admin-dashboard/admin-dashboard';
+import { CreateChannel } from './components/create-channel/create-channel';
+import { CreateGroup } from './components/create-group/create-group';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { AdminDashboard } from './components/admin-dashboard/admin-dashboard';
     CreateAccount,
     ChatRooms,
     GroupUI,
-    AdminDashboard
+    AdminDashboard,
+    CreateChannel,
+    CreateGroup,
   ],
   imports: [
     BrowserModule,

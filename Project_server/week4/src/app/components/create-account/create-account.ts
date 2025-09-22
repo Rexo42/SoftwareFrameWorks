@@ -16,7 +16,7 @@ export class CreateAccount
   email: string = '';
   message: string = '';
   constructor(private router: Router, private Api : Api) {}
-        ngOnInit(): void
+    ngOnInit(): void
     {
       //if (localStorage.getItem('currentUser'))
       //{

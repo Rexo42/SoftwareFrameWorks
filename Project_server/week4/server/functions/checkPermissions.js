@@ -1,4 +1,5 @@
-export async function checkPermissions(db, userID, permissionLevel, groupName, ChannelName )
+import { ObjectId } from "mongodb";
+export async function checkPermissions(db, userID, permissionLevel)
 {
     //// permission Level is the desired level needed to return true
     // value of 2 means super administrator only --- creating users, removing them
@@ -8,6 +9,7 @@ export async function checkPermissions(db, userID, permissionLevel, groupName, C
     try
     {
         const user = await db.collection("Users").findOne({_id: new ObjectId(String(userID))});
+        
         if (user)
         {
             switch (permissionLevel)

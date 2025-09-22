@@ -13,7 +13,7 @@
       <a 
         class="nav-link" 
         [class.active]="pageType === 'Users'" 
-        (click)="pageType = 'Users'; pageNumber = 1; refreshUsers()"
+        (click)="pageType = 'Groups'; pageNumber = 1; changePageCategory()"
         style="cursor: pointer; font-size: 1.25rem; font-weight: 500;"
       >
         Users
@@ -23,7 +23,7 @@
       <a 
         class="nav-link" 
         [class.active]="pageType === 'Groups'" 
-        (click)="pageType = 'Groups'; pageNumber = 1; refreshUsers()"
+        (click)="pageType = 'Users'; pageNumber = 1; changePageCategory()"
         style="cursor: pointer; font-size: 1.25rem; font-weight: 500;"
       >
         Groups
@@ -33,8 +33,12 @@
     </li>
   </ul>
     <!-- wrap this in an if pagetype easy clap -->
-  <ul *ngIf= "pageType==='Users'" class="list-group">
-    <li *ngFor="let user of formattedData" class="list-group-item d-flex justify-content-between align-items-center py-2">
+  @if (pageType === 'Users')
+  {
+  <ul class="list-group">
+    @for (user of formattedData; track user.ID)
+    {
+    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
       <span>UserID: {{user.ID}} | Username: {{ user.username }} | Role: {{user.role}}</span>
       <div>
         <button [disabled]="user.username == 'test1'" class="btn btn-danger btn-sm mx-1" (click)="deleteUser(user.ID, user.username)" >
@@ -51,7 +55,27 @@
         </button>
       </div>
     </li>
+  }
   </ul>
+}
+
+@if (pageType==='Groups')
+{
+  <ul class="list-group">
+    @for (group of formattedGroupData; track group.groupID)
+    {
+    <li  class="list-group-item d-flex justify-content-between align-items-center py-2">
+      <span>GroupID: {{group.groupID}} | Group-Name: {{ group.groupName }} | Creator: {{group.groupCreator}}</span>
+      <div>
+        <button [disabled]="group.groupName == 'test1'" class="btn btn-danger btn-sm mx-1" (click)="deleteGroup(group.groupName)" >
+          Delete
+        </button>
+        <!-- I could nest another for loop to list channels under a group, these could be paginated -->
+      </div>
+    </li>
+  }
+  </ul>
+}
   <!--  -->
   <br>
   
@@ -65,7 +89,15 @@
     </button>
   </div>
   <p>page {{pageNumber}} of {{totalPages}}</p>
+  @if (pageType == 'Users')
+  {
     <div *ngIf="pageType==='Users' "class="list-group-item d-flex justify-content-between align-items-center py-2" style="max-width: 800px">
       <app-create-account (userCreated)="refreshUsers()"></app-create-account>
     </div>
+  }
+  @else
+  {
+    <app-create-group (groupCreated)="refreshGroups()"></app-create-group>
+    <app-create-channel [groupList]="formattedGroupNames"></app-create-channel>
+  }
 </div>
