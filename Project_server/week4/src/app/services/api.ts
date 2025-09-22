@@ -33,9 +33,13 @@ export class Api {
       return this.http.delete<{success: boolean, message: string}>(`${this.baseUrl}/delete/${username}`)
     }
 
-    getUsersRequest()
+    getUsersRequest(page: number, limit: number)
     {
-      return this.http.get<{success: boolean, users: string[], ids: string[], roles: string[]}>(`${this.baseUrl}/getUsers`, {
+      return this.http.get<{success: boolean, users: string[], ids: string[], roles: string[], pageLimit: number}>(`${this.baseUrl}/getUsers`, {
+        params: {
+          page: page.toString(),
+          limit: limit.toString(),
+        }
       })
     }
     updateUserRole(username : string, role: string)

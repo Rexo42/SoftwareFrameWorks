@@ -20,4 +20,15 @@
       </div>
     </li>
   </ul>
+  <br>
+  <div>
+    <button [disabled]='pageNumber == 1' class="btn btn-primary btn-sm mx-1" (click)="pageUpdate(0)">
+      Previous
+    </button>
+
+    <button [disabled]='pageNumber == totalPages' class="btn btn-primary btn-sm mx-1" (click)="pageUpdate(1)">
+      Next
+    </button>
+  </div>
+  <p>page {{pageNumber}} of {{totalPages}}</p>
 </div>

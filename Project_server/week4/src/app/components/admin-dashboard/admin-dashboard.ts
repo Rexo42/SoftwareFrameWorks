@@ -19,6 +19,8 @@ export class AdminDashboard implements OnInit
   formattedData: {username: string, role: string, ID: string}[]=[];
   formattedGroupData: {groupName: string, groupCreator: string, groupID: string}[]=[]
   pageType: 'Users' | 'Groups' = 'Users';
+  pageNumber : number = 1;
+  totalPages : number = 0;
   //
   constructor(private router : Router, private api : Api){}
   ngOnInit(): void 
@@ -48,17 +50,18 @@ export class AdminDashboard implements OnInit
     }
 
 
-    this.api.getUsersRequest().subscribe({
+    this.api.getUsersRequest(this.pageNumber,8).subscribe({
       next: (response) =>
       {
         if (response.success)
         {
-          console.log(response.ids);
-          console.log(response.users);
-          console.log(response.roles);
+          // console.log(response.ids);
+          // console.log(response.users);
+          // console.log(response.roles);
           this.users = response.users;
           this.Ids = response.ids;
           this.roles = response.roles;
+          this.totalPages = response.pageLimit;
           this.formattedData = this.users.map((user, index) =>({
             username: user,
             role: this.roles[index],
@@ -87,7 +90,28 @@ export class AdminDashboard implements OnInit
         if (response.success)
         {
           console.log("successfully deleted user: ", username);
-          this.formattedData = this.formattedData.filter(user=> user.username !== username);
+
+          this.api.getUsersRequest(this.pageNumber, 8).subscribe({
+          next: (response) =>
+          {
+            if (response.success)
+            {
+              this.users = response.users;
+              this.Ids = response.ids;
+              this.roles = response.roles;
+              this.formattedData = this.users.map((user, index) =>({
+                username: user,
+                role: this.roles[index],
+                ID: this.Ids[index],
+              }))
+            }
+          },
+
+          error: (err) =>
+          {
+            console.error("error getting users for page: ", err);
+          }
+        })
         }
 
         else
@@ -125,6 +149,52 @@ export class AdminDashboard implements OnInit
       }
 
     })
+
+  }
+
+  pageUpdate(num : number)
+  {
+    let desired = this.pageNumber;
+    if (num == 0) // previous
+    {
+      desired --;
+      if (desired < 1)
+      {
+        return;
+      }
+    }
+    else if (num == 1) // next
+    {
+      desired ++;
+      if (desired > this.totalPages)
+      {
+        return;
+      }
+    }
+    this.pageNumber = desired;
+
+    this.api.getUsersRequest(this.pageNumber, 8).subscribe({
+      next: (response) =>
+      {
+        if (response.success)
+        {
+          this.users = response.users;
+          this.Ids = response.ids;
+          this.roles = response.roles;
+          this.formattedData = this.users.map((user, index) =>({
+            username: user,
+            role: this.roles[index],
+            ID: this.Ids[index],
+          }))
+        }
+      },
+
+      error: (err) =>
+      {
+        console.error("error getting users for page: ", err);
+      }
+    })
+
 
   }
 }
