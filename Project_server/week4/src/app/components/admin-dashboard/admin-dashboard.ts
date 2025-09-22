@@ -32,13 +32,15 @@ export class AdminDashboard implements OnInit
       this.api.verifyToken(rawToken.replace(/^"|"$/g, '')).subscribe({
         next: (response) =>
         {
-          if (response.role == "User")
+          if (!response.valid || response.role == "User")
           {
+            localStorage.clear();
             this.router.navigate(['/home']);
           }
         },
         error: (err) =>
         {
+          localStorage.clear();
           this.router.navigate(['/home']);
         }
 
@@ -49,31 +51,7 @@ export class AdminDashboard implements OnInit
       this.router.navigate(['/home'])
     }
 
-
-    this.api.getUsersRequest(this.pageNumber,8).subscribe({
-      next: (response) =>
-      {
-        if (response.success)
-        {
-          // console.log(response.ids);
-          // console.log(response.users);
-          // console.log(response.roles);
-          this.users = response.users;
-          this.Ids = response.ids;
-          this.roles = response.roles;
-          this.totalPages = response.pageLimit;
-          this.formattedData = this.users.map((user, index) =>({
-            username: user,
-            role: this.roles[index],
-            ID: this.Ids[index],
-          }))
-        }
-      },
-      error:(err) =>
-      {
-        console.error("error getting users from database: ", err);
-      }
-    })
+    this.refreshUsers();
   }
 
 
@@ -90,28 +68,28 @@ export class AdminDashboard implements OnInit
         if (response.success)
         {
           console.log("successfully deleted user: ", username);
+          this.refreshUsers();
+        //   this.api.getUsersRequest(this.pageNumber, 8).subscribe({
+        //   next: (response) =>
+        //   {
+        //     if (response.success)
+        //     {
+        //       this.users = response.users;
+        //       this.Ids = response.ids;
+        //       this.roles = response.roles;
+        //       this.formattedData = this.users.map((user, index) =>({
+        //         username: user,
+        //         role: this.roles[index],
+        //         ID: this.Ids[index],
+        //       }))
+        //     }
+        //   },
 
-          this.api.getUsersRequest(this.pageNumber, 8).subscribe({
-          next: (response) =>
-          {
-            if (response.success)
-            {
-              this.users = response.users;
-              this.Ids = response.ids;
-              this.roles = response.roles;
-              this.formattedData = this.users.map((user, index) =>({
-                username: user,
-                role: this.roles[index],
-                ID: this.Ids[index],
-              }))
-            }
-          },
-
-          error: (err) =>
-          {
-            console.error("error getting users for page: ", err);
-          }
-        })
+        //   error: (err) =>
+        //   {
+        //     console.error("error getting users for page: ", err);
+        //   }
+        // })
         }
 
         else
@@ -196,5 +174,31 @@ export class AdminDashboard implements OnInit
     })
 
 
+  }
+
+  refreshUsers()
+  {
+    this.api.getUsersRequest(this.pageNumber, 8).subscribe({
+    next: (response) =>
+    {
+      if (response.success)
+      {
+        this.users = response.users;
+        this.Ids = response.ids;
+        this.roles = response.roles;
+        this.totalPages = response.pageLimit;
+        this.formattedData = this.users.map((user, index) =>({
+          username: user,
+          role: this.roles[index],
+          ID: this.Ids[index],
+        }))
+      }
+    },
+
+    error: (err) =>
+    {
+      console.error("error getting users for page: ", err);
+    }
+  })
   }
 }

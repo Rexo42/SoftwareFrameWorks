@@ -1,7 +1,39 @@
 <app-nav-bar></app-nav-bar>
 <div class="container mt-3">
-    <h5>{{pageType}}</h5>
-  <ul class="list-group">
+  <!-- <div class="d-flex justify-content-start align-items-center gap-3">
+    <button [disabled]="pageType == 'Users'" class="btn btn-dark btn-sm mx-1">
+      Users
+    </button>
+    <button [disabled]="pageType == 'Groups'" class="btn btn-dark btn-sm mx-1">
+      Groups
+    </button>
+  </div> -->
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <a 
+        class="nav-link" 
+        [class.active]="pageType === 'Users'" 
+        (click)="pageType = 'Users'; pageNumber = 1; refreshUsers()"
+        style="cursor: pointer; font-size: 1.25rem; font-weight: 500;"
+      >
+        Users
+      </a>
+    </li>
+    <li class="nav-item">
+      <a 
+        class="nav-link" 
+        [class.active]="pageType === 'Groups'" 
+        (click)="pageType = 'Groups'; pageNumber = 1; refreshUsers()"
+        style="cursor: pointer; font-size: 1.25rem; font-weight: 500;"
+      >
+        Groups
+      </a>
+      <!-- on clicking a new button tab it should call a function to swap pagetype which then will display the other stuff below via if pagetype -->
+
+    </li>
+  </ul>
+    <!-- wrap this in an if pagetype easy clap -->
+  <ul *ngIf= "pageType==='Users'" class="list-group">
     <li *ngFor="let user of formattedData" class="list-group-item d-flex justify-content-between align-items-center py-2">
       <span>UserID: {{user.ID}} | Username: {{ user.username }} | Role: {{user.role}}</span>
       <div>
@@ -20,7 +52,9 @@
       </div>
     </li>
   </ul>
+  <!--  -->
   <br>
+  
   <div>
     <button [disabled]='pageNumber == 1' class="btn btn-primary btn-sm mx-1" (click)="pageUpdate(0)">
       Previous
@@ -31,4 +65,7 @@
     </button>
   </div>
   <p>page {{pageNumber}} of {{totalPages}}</p>
+    <div *ngIf="pageType==='Users' "class="list-group-item d-flex justify-content-between align-items-center py-2" style="max-width: 800px">
+      <app-create-account (userCreated)="refreshUsers()"></app-create-account>
+    </div>
 </div>

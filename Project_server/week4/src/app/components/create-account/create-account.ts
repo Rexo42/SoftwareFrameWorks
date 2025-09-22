@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Api } from '../../services/api';
 
@@ -10,6 +10,7 @@ import { Api } from '../../services/api';
 })
 export class CreateAccount 
 {
+  @Output() userCreated = new EventEmitter<void>();
   username: string = '';
   password: string = '';
   email: string = '';
@@ -32,12 +33,11 @@ export class CreateAccount
     next: (response) => {
       if (response.success) 
       {
-        // we need to set local storage of the values
-
-        // localStorage.setItem('currentUser', JSON.stringify(response.token))
-        // this.router.navigate(['/profile']);
         this.message = response.message;
-      } else {
+        this.userCreated.emit();
+      } 
+      else
+      {
         this.message = response.message;
       }
     },

@@ -13,7 +13,7 @@ export async function checkPermissions(db, userID, permissionLevel, groupName, C
             switch (permissionLevel)
             {
                 case (1):
-                    if (user.role == "GroupAdmin")
+                    if (user.role == "GroupAdmin" || user.role == "SuperAdmin")
                     {
                         return true;
                     }

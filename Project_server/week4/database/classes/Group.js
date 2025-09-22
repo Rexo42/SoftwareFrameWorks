@@ -1,4 +1,4 @@
-export class group
+export class Group
 {
     constructor(name, creator)
     {
