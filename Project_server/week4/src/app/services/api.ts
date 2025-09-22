@@ -38,6 +38,15 @@ export class Api {
       return this.http.get<{success: boolean, users: string[], ids: string[], roles: string[]}>(`${this.baseUrl}/getUsers`, {
       })
     }
+    updateUserRole(username : string, role: string)
+    {
+      const roleObject = {role};
+      return this.http.patch<{success: boolean, message:string}>(`${this.baseUrl}/updateRole/${username}`,roleObject);
+    }
+
+
+
+
 
     createGroup(token: string, groupName: string, username: string)
     {

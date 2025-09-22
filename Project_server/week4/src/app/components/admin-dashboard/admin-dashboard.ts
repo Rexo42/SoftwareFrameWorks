@@ -14,8 +14,12 @@ export class AdminDashboard implements OnInit
   users: string[] = [];
   Ids: string[] = [];
   roles: string[] = [];
-  formattedData: {username: string, role: string, ID: string}[]=[];
 
+  // page data
+  formattedData: {username: string, role: string, ID: string}[]=[];
+  formattedGroupData: {groupName: string, groupCreator: string, groupID: string}[]=[]
+  pageType: 'Users' | 'Groups' = 'Users';
+  //
   constructor(private router : Router, private api : Api){}
   ngOnInit(): void 
   { // on init we get all users
@@ -69,6 +73,12 @@ export class AdminDashboard implements OnInit
     })
   }
 
+
+  // formatted data will be  the main data shown 
+    // buttons etc determined by an if on the category name
+
+
+
   deleteUser(userID : string, username : string)
   {
     this.api.deleteUserRequest(userID, username).subscribe({
@@ -78,27 +88,6 @@ export class AdminDashboard implements OnInit
         {
           console.log("successfully deleted user: ", username);
           this.formattedData = this.formattedData.filter(user=> user.username !== username);
-        //   this.api.getUsersRequest().subscribe({
-      
-        //   next: (response) =>
-        //   {
-        //     if (response.success)
-        //     {
-        //       this.users = response.users;
-        //       this.Ids = response.ids;
-        //       this.roles = response.roles;
-        //       this.formattedData = this.users.map((user, index) =>({
-        //         username: user,
-        //         role: this.roles[index],
-        //         ID: this.Ids[index],
-        //       }))
-        //     }
-        //   },
-        //   error:(err) =>
-        //   {
-        //     console.error("error getting users from database: ", err);
-        //   }
-        // })
         }
 
         else
@@ -113,17 +102,29 @@ export class AdminDashboard implements OnInit
     })
   }
 
-  updateUserRole(roleValue : IntegerType)
+  updateUserRole(roleValue : string, username : string)
   {
-    switch (roleValue)
-    {
-      // 0 = User, 1 = groupAdmin, 2 = SuperAdmin
-      case(0):
-        break;
-      case (1):
-        break;
-      case(2):
-        break;
-    }
+    this.api.updateUserRole(username, roleValue.toString()).subscribe({
+      next: (response) =>
+      {
+        if (response.success)
+        {
+          this.formattedData = this.formattedData.map(user => {
+            if (user.username === username)
+            {
+              return {...user, role: roleValue};
+            }
+            return user;
+          })
+          console.log("successfully updated user: ", username," to role: ", roleValue);
+        }
+      },
+      error: (err) =>
+      { 
+        console.error("error updating user role: ", err);
+      }
+
+    })
+
   }
 }

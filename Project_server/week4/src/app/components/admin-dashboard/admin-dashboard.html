@@ -1,20 +1,20 @@
 <app-nav-bar></app-nav-bar>
 <div class="container mt-3">
-    <h5>Users</h5>
+    <h5>{{pageType}}</h5>
   <ul class="list-group">
     <li *ngFor="let user of formattedData" class="list-group-item d-flex justify-content-between align-items-center py-2">
-      <!-- Display the username -->
       <span>UserID: {{user.ID}} | Username: {{ user.username }} | Role: {{user.role}}</span>
-
-      <!-- Buttons for actions -->
       <div>
         <button [disabled]="user.username == 'test1'" class="btn btn-danger btn-sm mx-1" (click)="deleteUser(user.ID, user.username)" >
           Delete
         </button>
-        <button [disabled]="user.role == 'GroupAdmin' || user.username == 'test1'" class="btn btn-warning btn-sm mx-1" >
+        <button [disabled]="user.role == 'User' || user.username == 'test1'" class="btn btn-dark btn-sm mx-1" (click)="updateUserRole('User', user.username)">
+          Demote to User
+        </button>
+        <button [disabled]="user.role == 'GroupAdmin' || user.username == 'test1'" class="btn btn-warning btn-sm mx-1" (click)="updateUserRole('GroupAdmin', user.username)" >
           Promote to Group Admin
         </button>
-        <button [disabled]="user.role == 'SuperAdmin'" class="btn btn-primary btn-sm mx-1" >
+        <button [disabled]="user.role == 'SuperAdmin'" class="btn btn-primary btn-sm mx-1" (click)="updateUserRole('SuperAdmin', user.username)">
           Promote to Super Admin
         </button>
       </div>
