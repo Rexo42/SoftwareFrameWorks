@@ -6,7 +6,7 @@ export class Group
         this.groupName = name;
         this.members = []; 
         this.channels = [];
-        this.memberWaitlist = [];
-        this.members.push(creator);
+        this.waitList = [];
+        this.members.push(creator.username);
     }
 }

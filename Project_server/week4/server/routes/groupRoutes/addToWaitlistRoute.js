@@ -4,6 +4,7 @@ export async function addToWaitList(app, db)
     { 
         try
         {
+            console.log("checker");
             const username = req.params.username;
             const groupName = req.params.groupName;
             
@@ -13,8 +14,7 @@ export async function addToWaitList(app, db)
             {
                 return res.status(402).json({valid:false, message: "something wierd going on huh"});
             }
-
-            const check = group.waitList?.includes(username);
+            const check = group.waitList?.includes(username) || group.members?.includes(username);
             if (check)
             {
                 return res.status(401).json({valid: false, message: "already in the waitlist for this group"});

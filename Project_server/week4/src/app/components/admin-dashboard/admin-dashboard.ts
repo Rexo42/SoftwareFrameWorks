@@ -19,17 +19,20 @@ export class AdminDashboard implements OnInit
   groups: string[] = [];
   groupIds: string[] = [];
   creators: string[] = [];
+  waitlists: string[][] = [];
 
 
   // page data
   formattedData: {username: string, role: string, ID: string}[]=[];
-  formattedGroupData: {groupName: string, groupCreator: string, groupID: string}[]=[]
+  formattedGroupData: {groupName: string, groupCreator: string, groupID: string, groupWaitList: string[]}[]=[]
   formattedGroupNames: string[] = [];
   pageType: 'Users' | 'Groups' = 'Users';
   pageNumber : number = 1;
   totalPages : number = 0;  //
   isSuperAdmin : boolean = false;
   username: string = '';
+
+  selectedGroup:string = '';
 
   constructor(private router : Router, private api : Api){}
   ngOnInit(): void 
@@ -105,7 +108,7 @@ export class AdminDashboard implements OnInit
     this.api.deleteGroup(groupName).subscribe({
       next: (response) =>
       {
-        if (response.success)
+        if (response.valid)
         {
           this.refreshGroups();
           console.log(response.message);
@@ -176,31 +179,6 @@ export class AdminDashboard implements OnInit
     {
       this.refreshGroups();
     }
-
-
-    // this.api.getUsersRequest(this.pageNumber, 8).subscribe({
-    //   next: (response) =>
-    //   {
-    //     if (response.success)
-    //     {
-    //       this.users = response.users;
-    //       this.Ids = response.ids;
-    //       this.roles = response.roles;
-    //       this.formattedData = this.users.map((user, index) =>({
-    //         username: user,
-    //         role: this.roles[index],
-    //         ID: this.Ids[index],
-    //       }))
-    //     }
-    //   },
-
-    //   error: (err) =>
-    //   {
-    //     console.error("error getting users for page: ", err);
-    //   }
-    // })
-
-
   }
 
   refreshUsers()
@@ -237,7 +215,7 @@ export class AdminDashboard implements OnInit
       {
         if (response.success)
         {
-          
+          this.waitlists = response.waitLists;
           this.groupIds = response.ids;
           this.groups = response.groups;
           this.creators = response.creators;
@@ -247,6 +225,7 @@ export class AdminDashboard implements OnInit
           groupName: group,
           groupCreator: this.creators[index],
           groupID: this.groupIds[index],
+          groupWaitList: this.waitlists[index],
         }))
         this.formattedGroupNames = this.formattedGroupData.map(group => group.groupName);
         
@@ -259,7 +238,7 @@ export class AdminDashboard implements OnInit
 
       error: (err) =>
       {
-        console.error("HAWK");
+        console.error("error refreshing groups");
       }
     })
 

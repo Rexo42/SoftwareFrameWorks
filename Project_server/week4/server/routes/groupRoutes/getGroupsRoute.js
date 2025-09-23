@@ -23,7 +23,7 @@ export async function getGroups(app, db)
                 {
                     
                     totalUsers = await db.collection('Groups').countDocuments({creator: user.username});
-                    groups = await db.collection('Groups').find({creator: user.username}, {projection: { groupName: 1, _id: 1, creator: 1 }})
+                    groups = await db.collection('Groups').find({creator: user.username}, {projection: { groupName: 1, _id: 1, creator: 1, waitList: 1 }})
                     .skip(skip)
                     .limit(limit)
                     .toArray();
@@ -32,7 +32,7 @@ export async function getGroups(app, db)
                 {
                     //console.log(user.role);
                     totalUsers = await db.collection('Groups').countDocuments();
-                    groups = await db.collection('Groups').find({}, {projection: { groupName: 1, _id: 1, creator: 1 }})
+                    groups = await db.collection('Groups').find({}, {projection: { groupName: 1, _id: 1, creator: 1, waitList: 1 }})
                     .skip(skip)
                     .limit(limit)
                     .toArray();
@@ -40,8 +40,9 @@ export async function getGroups(app, db)
                 const groupNames = groups.map(group => group.groupName);
                 const groupCreators = groups.map(group => group.creator);
                 const Ids = groups.map(group => group._id.toString());
+                const groupWaitlists = groups.map(group => group.waitList);
 
-                return res.json({success: true, groups: groupNames, ids: Ids, creators: groupCreators, pageLimit: Math.ceil(totalUsers / limit)});
+                return res.json({success: true, groups: groupNames, ids: Ids, creators: groupCreators, pageLimit: Math.ceil(totalUsers / limit), waitLists: groupWaitlists});
             }
             else
             {

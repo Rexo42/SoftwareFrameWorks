@@ -58,7 +58,7 @@ export class Api {
       // const headers = new HttpHeaders({
       //   'Authorization': `Bearer ${token}`
       // });
-      return this.http.get<{success: boolean, groups: string[], ids: string[], creators: string[], pageLimit: number}>(`${this.baseUrl}/getGroups`, {
+      return this.http.get<{success: boolean, groups: string[], ids: string[], creators: string[], pageLimit: number, waitLists: string[][]}>(`${this.baseUrl}/getGroups`, {
         params: {
           page: page.toString(),
           limit: limit.toString(),
@@ -66,6 +66,11 @@ export class Api {
         }
 
       });
+    }
+    addUserToGroup(username: string, groupName: string)
+    {
+      
+      return this.http.patch<{success: boolean, message:string}>(`${this.baseUrl}/addUser/${groupName}/${username}`,{});
     }
 
     getGroupsToEnrol(page: number, limit: number, username: string)
@@ -81,9 +86,14 @@ export class Api {
       });
     }
 
+    joinGroupWaitlist(username :string, groupName : string)
+    {
+      return this.http.patch<{success: boolean, message:string}>(`${this.baseUrl}/addWaitList/${username}/${groupName}`,{});
+    }
+
     deleteGroup(groupName: string)
     {
-      return this.http.delete<{success: boolean, message: string}>(`${this.baseUrl}/deleteGroup/${groupName}`);
+      return this.http.delete<{valid: boolean, message: string}>(`${this.baseUrl}/deleteGroup/${groupName}`);
     }
 
     createChannel(username: string, groupName: string, channelName: string)

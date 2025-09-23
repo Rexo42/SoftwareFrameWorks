@@ -200,9 +200,11 @@
         <app-create-account (userCreated)="refreshUsers()"></app-create-account>
       </div>
     }
-    @else {
+    @else 
+    {
       <app-create-group (groupCreated)="refreshGroups()"></app-create-group>
       <app-create-channel [groupList]="formattedGroupNames" (channelCreated)="refreshGroups()"></app-create-channel>
+      <app-approve-member [groupList]="formattedGroupData" (userApproved)="refreshGroups()"></app-approve-member>
     }
   </div>
 </div>

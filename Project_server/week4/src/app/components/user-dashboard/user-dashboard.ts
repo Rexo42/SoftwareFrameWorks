@@ -15,7 +15,7 @@ export class UserDashboard
   formattedGroupNames: string[] = [];
 
 
-    groups: string[] = [];
+  groups: string[] = [];
   groupIds: string[] = [];
   creators: string[] = [];
 
@@ -54,7 +54,18 @@ export class UserDashboard
 
   enrol(groupName : string)
   {
-
+    this.api.joinGroupWaitlist(this.currentUser, groupName).subscribe({
+      next: (response) =>
+      {
+        this.message = response.message;
+        return;
+      },
+      error:(err)=>
+      {
+        this.message = err.error.message;
+        return;
+      }
+    })
   }
 
   refreshGroups()

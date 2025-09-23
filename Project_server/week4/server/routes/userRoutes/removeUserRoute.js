@@ -12,6 +12,7 @@ export async function removeUser(app, db)
             if (result.deletedCount != 0)
             {
                 console.log("successfully deleted user from database: ", username);
+                await db.collection("Groups").updateMany({$or: [{members: username}, {waitList: username}]}, {$pull: {members: username, waitList: username}});
                 return res.json({success: true, message: "successfully deleted user: ", username});
             }
             return res.status(404).json({success:false, message: "no user exists with the given username..."})

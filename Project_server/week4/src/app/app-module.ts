@@ -19,6 +19,7 @@ import { AdminDashboard } from './components/admin-dashboard/admin-dashboard';
 import { CreateChannel } from './components/create-channel/create-channel';
 import { CreateGroup } from './components/create-group/create-group';
 import { UserDashboard } from './components/user-dashboard/user-dashboard';
+import { ApproveMember } from './components/approve-member/approve-member';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { UserDashboard } from './components/user-dashboard/user-dashboard';
     CreateChannel,
     CreateGroup,
     UserDashboard,
+    ApproveMember,
   ],
   imports: [
     BrowserModule,

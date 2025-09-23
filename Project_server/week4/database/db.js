@@ -32,8 +32,8 @@ async function mongoConnect()
 
 async function setup()
 {
-    // await db.collection('Users').deleteMany({});
-    await db.collection('Groups').deleteMany({}); // clear user db on start if needed
+    //await db.collection('Users').deleteMany({});
+    //await db.collection('Groups').deleteMany({}); // clear user db on start if needed
     const collectionNames = ["Users", "Groups"];
     try
     {
