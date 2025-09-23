@@ -37,7 +37,6 @@ export class ApproveMember
           const index = this.selectedWaitlist.indexOf(this.selectedWaitlistUser);
           this.selectedWaitlist.splice(index, 1);
           this.selectedWaitlistUser = '';
-          //this.groupChange(this.selectedGroupName);
         }
         this.message = response.message;
       },
