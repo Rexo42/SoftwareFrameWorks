@@ -1,103 +1,7 @@
-<!-- <app-nav-bar></app-nav-bar>
-<div class="container mt-3">
-  <ul class="nav nav-tabs mb-3">
-    @if (isSuperAdmin)
-  {
-    <li class="nav-item">
-      <a 
-        class="nav-link" 
-        [class.active]="pageType === 'Users'" 
-        (click)="pageType = 'Groups'; pageNumber = 1; changePageCategory()"
-        style="cursor: pointer; font-size: 1.25rem; font-weight: 500;"
-      >
-        Users
-      </a>
-    </li>
-  }
-    <li class="nav-item">
-      <a 
-        class="nav-link" 
-        [class.active]="pageType === 'Groups'" 
-        (click)="pageType = 'Users'; pageNumber = 1; changePageCategory()"
-        style="cursor: pointer; font-size: 1.25rem; font-weight: 500;"
-      >
-        Groups
-      </a>
-
-    </li>
-  </ul>
-  @if (pageType === 'Users')
-  {
-  <ul class="list-group">
-    @for (user of formattedData; track user.ID)
-    {
-    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
-      <span>UserID: {{user.ID}} | Username: {{ user.username }} | Role: {{user.role}}</span>
-      <div>
-        <button [disabled]="user.username == 'test1'" class="btn btn-danger btn-sm mx-1" (click)="deleteUser(user.ID, user.username)" >
-          Delete
-        </button>
-        <button [disabled]="user.role == 'User' || user.username == 'test1'" class="btn btn-dark btn-sm mx-1" (click)="updateUserRole('User', user.username)">
-          Demote to User
-        </button>
-        <button [disabled]="user.role == 'GroupAdmin' || user.username == 'test1'" class="btn btn-warning btn-sm mx-1" (click)="updateUserRole('GroupAdmin', user.username)" >
-          Promote to Group Admin
-        </button>
-        <button [disabled]="user.role == 'SuperAdmin'" class="btn btn-primary btn-sm mx-1" (click)="updateUserRole('SuperAdmin', user.username)">
-          Promote to Super Admin
-        </button>
-      </div>
-    </li>
-  }
-  </ul>
-}
-
-@if (pageType==='Groups')
-{
-  <ul class="list-group">
-    @for (group of formattedGroupData; track group.groupID)
-    {
-    <li  class="list-group-item d-flex justify-content-between align-items-center py-2">
-      <span>GroupID: {{group.groupID}} | Group-Name: {{ group.groupName }} | Creator: {{group.groupCreator}}</span>
-      <div>
-        <button [disabled]="group.groupName == 'test1'" class="btn btn-danger btn-sm mx-1" (click)="deleteGroup(group.groupName)" >
-          Delete
-        </button>
-      </div>
-    </li>
-  }
-  </ul>
-}
-  <br>
-  
-  <div>
-    <button [disabled]='pageNumber == 1' class="btn btn-primary btn-sm mx-1" (click)="pageUpdate(0)">
-      Previous
-    </button>
-
-    <button [disabled]='pageNumber == totalPages' class="btn btn-primary btn-sm mx-1" (click)="pageUpdate(1)">
-      Next
-    </button>
-  </div>
-  <p>page {{pageNumber}} of {{totalPages}}</p>
-  @if (pageType == 'Users' && isSuperAdmin)
-  {
-    <div *ngIf="pageType==='Users' "class="list-group-item d-flex justify-content-between align-items-center py-2" style="max-width: 800px">
-      <app-create-account (userCreated)="refreshUsers()"></app-create-account>
-    </div>
-  }
-  @else
-  {
-    <app-create-group (groupCreated)="refreshGroups()"></app-create-group>
-    <app-create-channel [groupList]="formattedGroupNames" (channelCreated)="refreshGroups()"></app-create-channel>
-  }
-</div> -->
-
 <app-nav-bar></app-nav-bar>
 
 <div class="container mt-3">
 
-  <!-- Nav Tabs -->
   <ul class="nav nav-tabs mb-3">
     @if (isSuperAdmin) {
       <li class="nav-item">
@@ -123,7 +27,6 @@
     </li>
   </ul>
 
-  <!-- Users Section -->
   @if (pageType === 'Users') {
     <ul class="list-group">
       @for (user of formattedData; track user.ID) {
@@ -152,7 +55,6 @@
     </ul>
   }
 
-  <!-- Groups Section -->
   @if (pageType === 'Groups') {
     <ul class="list-group">
       @for (group of formattedGroupData; track group.groupID) {
@@ -172,7 +74,6 @@
     </ul>
   }
 
-  <!-- Pagination Controls -->
   <div class="d-flex justify-content-between align-items-center mt-4">
     <button 
       class="btn btn-outline-secondary btn-sm"
@@ -193,7 +94,6 @@
     </button>
   </div>
 
-  <!-- Conditional Create Section -->
   <div class="mt-4">
     @if (pageType === 'Users' && isSuperAdmin) {
       <div class="list-group-item py-3" style="max-width: 800px; margin: auto;">
