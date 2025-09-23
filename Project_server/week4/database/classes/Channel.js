@@ -4,6 +4,6 @@ export class channel
     {
         this.channelName = channelName;
         this.channelCreator = channelCreator;
-        this.channelMembers = [];
+        this.messageHistory =[];
     }
 }

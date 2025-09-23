@@ -16,7 +16,7 @@ export async function createGroup(app, db)
                 //console.log("kino");
                 //console.log(groupName, username);
                 const memberDetails = {_id: user._id, username: username, role: user.role};
-                console.log(memberDetails, "LOOK HERE");
+                //console.log(memberDetails, "LOOK HERE");
                 const collection = await db.collection("Groups");
                 const newGroup = new Group(groupName, memberDetails);
                 await collection.insertOne(newGroup);

@@ -4,6 +4,12 @@ export async function createChannel(app, db)
         try
         {
         const {username, groupName, channelName} = req.body;
+        const targetGroup = await db.collection("Groups").findOne({groupName: groupName});
+        const channels = targetGroup.channels;
+        if (channels.includes(channelName))
+        {
+            return res.status(401).json({valid: false})
+        }
         await db.collection("Groups").updateOne(
             {groupName: groupName},
             {$push:{channels: channelName}}

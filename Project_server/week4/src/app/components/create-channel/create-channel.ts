@@ -49,6 +49,10 @@ export class CreateChannel
                 this.message = ("successfully created channel in group: "+this.selectedGroup);
                 this.channelCreated.emit();
               }
+            },
+            error: (err) =>
+            {
+              this.message = ("unable to create channel: (server error or channel already exists within group)")
             }
           })
         }
