@@ -1,0 +1,91 @@
+<!-- <app-nav-bar></app-nav-bar>
+
+<div class="container my-4">
+  <h3 class="mb-3 text-center">Available Groups</h3>
+
+  <ul class="list-group shadow-sm">
+    @for (group of formattedGroupData; track group.groupID) {
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="me-3">
+          <div><strong>Group ID:</strong> {{ group.groupID }}</div>
+          <div><strong>Group Name:</strong> {{ group.groupName }}</div>
+          <div><strong>Creator:</strong> {{ group.groupCreator }}</div>
+        </div>
+
+        <button
+          class="btn btn-outline-primary btn-sm"
+          [disabled]="group.groupName === 'test1'"
+          (click)="enrol(group.groupName)"
+        >
+          Express Interest
+        </button>
+      </li>
+    }
+  </ul>
+
+  <div *ngIf="formattedGroupData.length === 0" class="text-center mt-4 text-muted">
+    No groups available to join at the moment.
+  </div>
+</div>
+
+  <div>
+    <button [disabled]='pageNumber == 1' class="btn btn-primary btn-sm mx-1" (click)="pageUpdate(0)">
+      Previous
+    </button>
+
+    <button [disabled]='pageNumber == totalPages' class="btn btn-primary btn-sm mx-1" (click)="pageUpdate(1)">
+      Next
+    </button>
+  </div>
+  <p>page {{pageNumber}} of {{totalPages}}</p> -->
+
+<app-nav-bar></app-nav-bar>
+
+<div class="container my-4">
+  <h3 class="mb-3 text-center">Available Groups</h3>
+
+  <ul class="list-group shadow-sm">
+    @for (group of formattedGroupData; track group.groupID) {
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="me-3">
+          <div><strong>Group ID:</strong> {{ group.groupID }}</div>
+          <div><strong>Group Name:</strong> {{ group.groupName }}</div>
+          <div><strong>Creator:</strong> {{ group.groupCreator }}</div>
+        </div>
+
+        <button
+          class="btn btn-outline-primary btn-sm"
+          [disabled]="group.groupName === 'test1'"
+          (click)="enrol(group.groupName)"
+        >
+          Express Interest
+        </button>
+      </li>
+    }
+  </ul>
+
+  <div *ngIf="formattedGroupData.length === 0" class="text-center mt-4 text-muted">
+    No groups available to join at the moment.
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="d-flex justify-content-between align-items-center mt-4">
+    <button
+      class="btn btn-outline-secondary btn-sm"
+      [disabled]="pageNumber === 1"
+      (click)="pageUpdate(0)"
+    >
+      &laquo; Previous
+    </button>
+
+    <p class="mb-0 fw-medium">Page {{ pageNumber }} of {{ totalPages }}</p>
+
+    <button
+      class="btn btn-outline-secondary btn-sm"
+      [disabled]="pageNumber === totalPages"
+      (click)="pageUpdate(1)"
+    >
+      Next &raquo;
+    </button>
+  </div>
+</div>

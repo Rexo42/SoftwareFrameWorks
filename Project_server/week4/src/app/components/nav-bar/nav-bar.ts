@@ -13,6 +13,7 @@ export class NavBar implements OnInit
   isLoggedIn: boolean = false;
   isSuperAdmin: boolean = false;
   role: string = '';
+  user: string = '';
   constructor(private router: Router, private api: Api){}
 
   ngOnInit(): void 
@@ -30,6 +31,7 @@ export class NavBar implements OnInit
           }
           (response.valid)
           {
+            this.user = response.username;
             this.role = response.role;
           }
         },

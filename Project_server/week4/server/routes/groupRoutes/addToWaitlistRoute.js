@@ -1,11 +1,11 @@
 export async function addToWaitList(app, db)
 {
-    app.patch('/api/addWaitList/:username', async(req,res)=>
+    app.patch('/api/addWaitList/:username/:groupName', async(req,res)=>
     { 
         try
         {
             const username = req.params.username;
-            const groupName = req.body;
+            const groupName = req.params.groupName;
             
             const user = await db.collection("Users").findOne({username: username});
             const group = await db.collection("Groups").findOne({groupName: groupName});

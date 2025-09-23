@@ -18,6 +18,7 @@ import { GroupUI } from './components/group-ui/group-ui';
 import { AdminDashboard } from './components/admin-dashboard/admin-dashboard';
 import { CreateChannel } from './components/create-channel/create-channel';
 import { CreateGroup } from './components/create-group/create-group';
+import { UserDashboard } from './components/user-dashboard/user-dashboard';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { CreateGroup } from './components/create-group/create-group';
     AdminDashboard,
     CreateChannel,
     CreateGroup,
+    UserDashboard,
   ],
   imports: [
     BrowserModule,

@@ -68,6 +68,19 @@ export class Api {
       });
     }
 
+    getGroupsToEnrol(page: number, limit: number, username: string)
+    {
+      return this.http.get<{success: boolean, groups: string[], ids: string[], creators: string[], pageLimit: number}>(`${this.baseUrl}/getGroups`, {
+        params: {
+          page: page.toString(),
+          limit: limit.toString(),
+          username: username.toString(),
+          useCase: 1,
+        }
+
+      });
+    }
+
     deleteGroup(groupName: string)
     {
       return this.http.delete<{success: boolean, message: string}>(`${this.baseUrl}/deleteGroup/${groupName}`);
