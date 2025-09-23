@@ -28,6 +28,9 @@ export class AdminDashboard implements OnInit
   pageType: 'Users' | 'Groups' = 'Users';
   pageNumber : number = 1;
   totalPages : number = 0;  //
+  isSuperAdmin : boolean = false;
+  username: string = '';
+
   constructor(private router : Router, private api : Api){}
   ngOnInit(): void 
   { // on init we get all users
@@ -42,6 +45,14 @@ export class AdminDashboard implements OnInit
           {
             localStorage.clear();
             this.router.navigate(['/home']);
+          }
+          this.isSuperAdmin = (response.role == "SuperAdmin");
+          this.username = response.username;
+          if (!this.isSuperAdmin)
+          {
+            this.pageType = "Groups"
+            this.refreshGroups();
+            return;
           }
         },
         error: (err) =>
@@ -221,11 +232,12 @@ export class AdminDashboard implements OnInit
   refreshGroups()
   {
     console.log(this.pageNumber);
-    this.api.getGroups(this.pageNumber, 5).subscribe({
+    this.api.getGroups(this.pageNumber, 5, this.username).subscribe({
       next: (response) => 
       {
         if (response.success)
         {
+          
           this.groupIds = response.ids;
           this.groups = response.groups;
           this.creators = response.creators;
@@ -239,11 +251,15 @@ export class AdminDashboard implements OnInit
         this.formattedGroupNames = this.formattedGroupData.map(group => group.groupName);
         
         }
+        else
+        {
+
+        }
       },
 
       error: (err) =>
       {
-
+        console.error("HAWK");
       }
     })
 

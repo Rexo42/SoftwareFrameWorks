@@ -21,6 +21,7 @@ import { updateRole } from './routes/userRoutes/updateUserRole.js';
 import { getGroups } from './routes/groupRoutes/getGroupsRoute.js';
 import { createGroup } from './routes/groupRoutes/createGroupRoute.js';
 import { deleteGroup } from './routes/groupRoutes/deleteGroupRoute.js';
+import { createChannel } from './routes/channelRoutes/createChannel.js';
 ///
 
 
@@ -80,6 +81,8 @@ try
     getGroups(app, db);
     createGroup(app, db);
     deleteGroup(app, db);
+
+    createChannel(app,db);
     ///
 
 

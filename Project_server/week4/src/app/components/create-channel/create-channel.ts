@@ -10,7 +10,7 @@ import { Api } from '../../services/api';
 })
 export class CreateChannel 
 {
-  @Output() groupCreated = new EventEmitter<void>();
+  @Output() channelCreated = new EventEmitter<void>();
   @Input() groupList: string[] = [];
   groupName: string = '';
   creator: string = '';
@@ -24,56 +24,35 @@ export class CreateChannel
   {
     
   }
-
-  createGroup()
+  createChannel()
   {
-    if (this.groupName == '')
+    if (!this.selectedGroup || !this.channelName.trim())
     {
-      this.message = "Group name field cannot be left empty!";
+      this.message = "please select a group and enter a name for the channel";
       return;
     }
     const rawToken = localStorage.getItem('currentUser');
     if (!rawToken)
     {
-      this.message = "get out of there";
       return;
     }
     this.Api.verifyToken(rawToken.replace(/^"|"$/g, '')).subscribe({
-      next: (response) =>
+      next: (respone) =>
       {
-        if (response.valid)
+        if (respone.valid)
         {
-          this.Api.createGroup(this.groupName, response.username).subscribe({
-            next: (response) =>
+          this.Api.createChannel(respone.username, this.selectedGroup, this.channelName).subscribe({
+            next: (res) =>
             {
-              if (response.valid)
+              if (res.valid)
               {
-                this.message = "successully created group";
+                this.message = ("successfully created channel in group: "+this.selectedGroup);
+                this.channelCreated.emit();
               }
-            },
-            error: (err) =>
-            {
-              this.message = ("error making group: " + err);
             }
           })
         }
-        else
-        {
-          this.message = "you shouldnt be doing this";
-          return;
-        }
-      },
-      error: (err) =>
-      {
-        this.message = "server error: ", err;
-        return;
       }
     })
-
-  }
-
-  createChannel()
-  {
-    
   }
 }

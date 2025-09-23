@@ -53,7 +53,7 @@ export class Api {
       return this.http.post<{ valid: boolean}>(`${this.baseUrl}/createGroup`,({groupName: groupName, username: username}), {});
     }
 
-    getGroups(page: number, limit: number)
+    getGroups(page: number, limit: number, username: string)
     {
       // const headers = new HttpHeaders({
       //   'Authorization': `Bearer ${token}`
@@ -62,6 +62,7 @@ export class Api {
         params: {
           page: page.toString(),
           limit: limit.toString(),
+          username: username.toString(),
         }
 
       });
@@ -71,12 +72,15 @@ export class Api {
     {
       return this.http.delete<{success: boolean, message: string}>(`${this.baseUrl}/deleteGroup/${groupName}`);
     }
+
+    createChannel(username: string, groupName: string, channelName: string)
+    {
+      return this.http.post<{ valid: boolean}>(`${this.baseUrl}/createChannel`,({username: username, groupName: groupName, channelName: channelName}), {});
+    }
   
 
     verifyToken(token: string) 
     {
-
-      //console.log(token);
       return this.http.post<{ valid: boolean, role: string, username: string, email: string, age: string, birthdate: string }>(`${this.baseUrl}/verify`,null, {
         headers: {
           Authorization: `Bearer ${token}`

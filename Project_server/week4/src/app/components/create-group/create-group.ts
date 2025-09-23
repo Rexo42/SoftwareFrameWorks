@@ -22,6 +22,7 @@ export class CreateGroup
   {
     if (this.groupName == '')
     {
+      this.message = "cannot leave fields empty!";
       return;
     }
     const rawToken = localStorage.getItem('currentUser');

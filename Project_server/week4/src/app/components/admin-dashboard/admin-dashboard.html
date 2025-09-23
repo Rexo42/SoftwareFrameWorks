@@ -8,7 +8,10 @@
       Groups
     </button>
   </div> -->
+
   <ul class="nav nav-tabs mb-3">
+    @if (isSuperAdmin)
+  {
     <li class="nav-item">
       <a 
         class="nav-link" 
@@ -19,6 +22,7 @@
         Users
       </a>
     </li>
+  }
     <li class="nav-item">
       <a 
         class="nav-link" 
@@ -88,7 +92,7 @@
     </button>
   </div>
   <p>page {{pageNumber}} of {{totalPages}}</p>
-  @if (pageType == 'Users')
+  @if (pageType == 'Users' && isSuperAdmin)
   {
     <div *ngIf="pageType==='Users' "class="list-group-item d-flex justify-content-between align-items-center py-2" style="max-width: 800px">
       <app-create-account (userCreated)="refreshUsers()"></app-create-account>
@@ -97,6 +101,6 @@
   @else
   {
     <app-create-group (groupCreated)="refreshGroups()"></app-create-group>
-    <app-create-channel [groupList]="formattedGroupNames"></app-create-channel>
+    <app-create-channel [groupList]="formattedGroupNames" (channelCreated)="refreshGroups()"></app-create-channel>
   }
 </div>

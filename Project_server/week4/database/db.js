@@ -1,4 +1,5 @@
 import {MongoClient} from 'mongodb';
+import { ObjectId } from "mongodb";
 import {User} from './classes/User.js';
 import { Group } from './classes/Group.js';
 import dotenv from 'dotenv';
@@ -32,7 +33,7 @@ async function mongoConnect()
 async function setup()
 {
     // await db.collection('Users').deleteMany({});
-    //await db.collection('Groups').deleteMany({}); // clear user db on start if needed
+    await db.collection('Groups').deleteMany({}); // clear user db on start if needed
     const collectionNames = ["Users", "Groups"];
     try
     {
@@ -58,7 +59,7 @@ async function setup()
             }
             else if (count == 0 && collectionNames[i] == "Groups")
             {
-                let newGroup = new Group("publicGroup", "test1");
+                let newGroup = new Group("publicGroup", {_id: new ObjectId("68d0d83153414afa520a4a25"), username: "test1", role: "GroupAdmin"});
                 await target.insertOne(newGroup);
                 console.log("successfully created group: ",newGroup.groupName, " to the database");
             }

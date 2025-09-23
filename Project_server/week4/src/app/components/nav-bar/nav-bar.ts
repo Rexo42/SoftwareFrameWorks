@@ -12,6 +12,7 @@ export class NavBar implements OnInit
 {
   isLoggedIn: boolean = false;
   isSuperAdmin: boolean = false;
+  role: string = '';
   constructor(private router: Router, private api: Api){}
 
   ngOnInit(): void 
@@ -23,9 +24,13 @@ export class NavBar implements OnInit
       this.api.verifyToken(rawToken.replace(/^"|"$/g, '')).subscribe({
         next: (response) =>
         {
-          if (response.valid && response.role == "SuperAdmin")
+          if (response.valid && (response.role == "SuperAdmin" || response.role == "GroupAdmin"))
           {
             this.isSuperAdmin = true;
+          }
+          (response.valid)
+          {
+            this.role = response.role;
           }
         },
         error: (err) =>

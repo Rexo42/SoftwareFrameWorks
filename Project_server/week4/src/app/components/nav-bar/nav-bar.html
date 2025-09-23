@@ -24,6 +24,9 @@
       <li class="nav-item" *ngIf="!isLoggedIn">
         <a class="nav-link" (click)="create()" style="cursor: pointer;">Create Account</a>
       </li>
+      <li class="nav-item" *ngIf="role != ''">
+        <a class="nav-link"  style="cursor: pointer;">{{role}}</a>
+      </li>
     </ul>
 
   </div>

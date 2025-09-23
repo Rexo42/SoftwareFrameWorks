@@ -33,7 +33,10 @@
     </div>
   </div>
 
-  <div *ngIf="message" class="mt-2 alert alert-info text-center p-1 m-0">
+  @if (message != '')
+  {
+  <div class="mt-2 alert alert-info text-center p-1 m-0">
     {{ message }}
   </div>
+  }
 </form>
