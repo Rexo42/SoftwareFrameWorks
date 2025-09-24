@@ -11,6 +11,8 @@ import { Api } from '../../services/api';
 export class ApproveMember 
 {
   @Output() userApproved = new EventEmitter<void>();
+  @Output() handleMessage = new EventEmitter<string>();
+
   @Input() groupList: {groupName: string, groupCreator: string, groupID: string, groupWaitList: string[]}[]=[];
   // @Input() username: string = '';
   selectedGroupName: string = '';
@@ -45,6 +47,7 @@ export class ApproveMember
         this.message = err.error.message;
       }
     })
+    this.handleMessage.emit(this.message);
     // call api route to approve the user via selected groupName and selected waitlist user
   }
 }

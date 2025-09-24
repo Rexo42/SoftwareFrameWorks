@@ -97,14 +97,20 @@
   <div class="mt-4">
     @if (pageType === 'Users' && isSuperAdmin) {
       <div class="list-group-item py-3" style="max-width: 800px; margin: auto;">
-        <app-create-account (userCreated)="refreshUsers()"></app-create-account>
+        <app-create-account (userCreated)="refreshUsers()" (handleMessage)="handleMessage($event)"></app-create-account>
       </div>
     }
     @else 
     {
-      <app-create-group (groupCreated)="refreshGroups()"></app-create-group>
-      <app-create-channel [groupList]="formattedGroupNames" (channelCreated)="refreshGroups()"></app-create-channel>
-      <app-approve-member [groupList]="formattedGroupData" (userApproved)="refreshGroups()"></app-approve-member>
+      <app-create-group (groupCreated)="refreshGroups()" (handleMessage)="handleMessage($event)"></app-create-group>
+      <app-create-channel [groupList]="formattedGroupNames" (channelCreated)="refreshGroups()" (handleMessage)="handleMessage($event)"></app-create-channel>
+      <app-approve-member [groupList]="formattedGroupData" (userApproved)="refreshGroups()" (handleMessage)="handleMessage($event)"></app-approve-member>
     }
   </div>
+  @if(errorMsg)
+  {
+  <div *ngIf="errorMsg" class="mt-2 alert alert-info text-center p-1 m-0">
+    {{ errorMsg }}
+  </div>
+  }
 </div>

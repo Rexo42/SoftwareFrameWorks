@@ -11,6 +11,7 @@ import { Api } from '../../services/api';
 export class CreateAccount 
 {
   @Output() userCreated = new EventEmitter<void>();
+  @Output() handleMessage = new EventEmitter<string>();
   username: string = '';
   password: string = '';
   email: string = '';
@@ -45,5 +46,6 @@ export class CreateAccount
       this.message = err.error.message;
     }
   });
+  this.handleMessage.emit(this.message);
   }
 }

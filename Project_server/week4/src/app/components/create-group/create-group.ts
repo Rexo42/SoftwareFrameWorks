@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 export class CreateGroup 
 {
   @Output() groupCreated = new EventEmitter<void>();
+  @Output() handleMessage = new EventEmitter<string>();
   groupName: string = '';
   message: string = '';
   constructor(private router: Router, private Api : Api) {}
@@ -23,6 +24,7 @@ export class CreateGroup
     if (this.groupName == '')
     {
       this.message = "cannot leave fields empty!";
+      this.handleMessage.emit(this.message);
       return;
     }
     const rawToken = localStorage.getItem('currentUser');
@@ -52,15 +54,15 @@ export class CreateGroup
         }
         else
         {
-          return;
+          this.message = "something bad happened";
         }
       },
       error: (err) =>
       {
-        console.error("error creating group: ", err);
-        return;
+        this.message = err.error.message;
       }
     })
+    this.handleMessage.emit(this.message);
 
   }
 }

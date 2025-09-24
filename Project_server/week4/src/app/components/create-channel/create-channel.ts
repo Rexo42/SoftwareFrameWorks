@@ -11,6 +11,7 @@ import { Api } from '../../services/api';
 export class CreateChannel 
 {
   @Output() channelCreated = new EventEmitter<void>();
+  @Output() handleMessage = new EventEmitter<string>();
   @Input() groupList: string[] = [];
   groupName: string = '';
   creator: string = '';
@@ -29,6 +30,7 @@ export class CreateChannel
     if (!this.selectedGroup || !this.channelName.trim())
     {
       this.message = "please select a group and enter a name for the channel";
+      this.handleMessage.emit(this.message);
       return;
     }
     const rawToken = localStorage.getItem('currentUser');
@@ -58,5 +60,6 @@ export class CreateChannel
         }
       }
     })
+    this.handleMessage.emit(this.message);
   }
 }

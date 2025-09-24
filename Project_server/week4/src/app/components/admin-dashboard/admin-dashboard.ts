@@ -31,8 +31,9 @@ export class AdminDashboard implements OnInit
   totalPages : number = 0;  //
   isSuperAdmin : boolean = false;
   username: string = '';
-
   selectedGroup:string = '';
+
+  errorMsg: string = '';
 
   constructor(private router : Router, private api : Api){}
   ngOnInit(): void 
@@ -257,5 +258,10 @@ export class AdminDashboard implements OnInit
       console.log("here")
       this.refreshGroups();
     }
+  }
+
+  handleMessage(newMsg: string)
+  {
+    this.errorMsg = newMsg;
   }
 }
