@@ -24,6 +24,7 @@ import { deleteGroup } from './routes/groupRoutes/deleteGroupRoute.js';
 import { createChannel } from './routes/channelRoutes/createChannel.js';
 import { addToWaitList } from './routes/groupRoutes/addToWaitlistRoute.js';
 import { addUserToGroup } from './routes/groupRoutes/addUserToGroupRoute.js';
+import { deleteChannel } from './routes/channelRoutes/deleteChannel.js';
 ///
 
 
@@ -88,6 +89,7 @@ try
     addUserToGroup(app,db);
 
     createChannel(app,db);
+    deleteChannel(app, db);
     ///
 
 

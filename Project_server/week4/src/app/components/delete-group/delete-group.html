@@ -1,0 +1,24 @@
+<form (ngSubmit)="deleteGroup()" class="list-group-item py-2">
+  <div class="row g-2 align-items-center">
+    <!-- Dropdown to select a group -->
+    <div class="col-md-4">
+      <select
+        class="form-select form-select-sm"
+        [(ngModel)]="selectedGroup"
+        name="group"
+        required
+      >
+        <option value="" disabled selected>Select Group</option>
+        <option *ngFor="let group of groupList" [value]="group">
+          {{ group }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Submit button -->
+    <div class="col-md-4 d-grid">
+      <button type="submit" class="btn btn-danger btn-sm">Delete Group</button>
+    </div>
+  </div>
+
+</form>

@@ -50,6 +50,7 @@ export class CreateChannel
               {
                 this.message = ("successfully created channel in group: "+this.selectedGroup);
                 this.channelCreated.emit();
+                this.handleMessage.emit(this.message);
               }
             },
             error: (err) =>

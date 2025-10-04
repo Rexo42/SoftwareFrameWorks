@@ -1,0 +1,39 @@
+<form (ngSubmit)="deleteChannel()" class="list-group-item py-2">
+  <div class="row g-2 align-items-center">
+    <!-- Dropdown to select a group -->
+    <div class="col-md-4">
+      <select
+        class="form-select form-select-sm"
+        [(ngModel)]="selectedGroup"
+        name="group"
+        required
+      >
+        <option value=null disabled selected>Select Group</option>
+        <option *ngFor="let group of groupList" [ngValue]="group">
+          {{ group.groupName }}
+        </option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+    <select
+        class="form-select form-select-sm"
+        [(ngModel)]="selectedChannel"
+        name="selectedChannel"
+        required
+        [disabled]="!selectedGroup"
+    >
+        <option value="" disabled selected>Select Channel</option>
+        <option *ngFor="let channel of selectedGroup?.channelNames" [value]="channel">
+        {{ channel }}
+        </option>
+    </select>
+    </div>
+
+    <!-- Submit button -->
+    <div class="col-md-4 d-grid">
+      <button type="submit" class="btn btn-danger btn-sm">Delete Channel</button>
+    </div>
+  </div>
+
+</form>

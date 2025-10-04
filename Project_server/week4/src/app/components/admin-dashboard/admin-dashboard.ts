@@ -20,11 +20,12 @@ export class AdminDashboard implements OnInit
   groupIds: string[] = [];
   creators: string[] = [];
   waitlists: string[][] = [];
+  channelNames: string[][] = [];
 
 
   // page data
   formattedData: {username: string, role: string, ID: string}[]=[];
-  formattedGroupData: {groupName: string, groupCreator: string, groupID: string, groupWaitList: string[]}[]=[]
+  formattedGroupData: {groupName: string, groupCreator: string, groupID: string, groupWaitList: string[], channelNames: string[]}[]=[]
   formattedGroupNames: string[] = [];
   pageType: 'Users' | 'Groups' = 'Users';
   pageNumber : number = 1;
@@ -109,7 +110,7 @@ export class AdminDashboard implements OnInit
     this.api.deleteGroup(groupName).subscribe({
       next: (response) =>
       {
-        if (response.valid)
+        if (response.success)
         {
           this.refreshGroups();
           console.log(response.message);
@@ -125,6 +126,26 @@ export class AdminDashboard implements OnInit
       }
     })
   }
+
+  deleteChannel(event: {groupName: string, channelName: string})
+  {
+    const {groupName, channelName} = event;
+    console.log(groupName, channelName);
+    this.api.deleteChannel(this.username, groupName, channelName).subscribe({
+      next: (response) =>
+      {
+        if (response.valid)
+        {
+          this.handleMessage("successfully deleted channel: "+channelName+ " from group: "+groupName);
+          this.refreshGroups();
+        }
+        else
+        {
+          console.log("something freaky going on");
+        }
+      }
+    })
+  } 
 
   updateUserRole(roleValue : string, username : string)
   {
@@ -221,13 +242,20 @@ export class AdminDashboard implements OnInit
           this.groups = response.groups;
           this.creators = response.creators;
           this.totalPages = response.pageLimit;
+          this.channelNames = response.channelNames;
+          //console.log(this.channelNames);
+          // handle no Channels
 
           this.formattedGroupData = this.groups.map((group, index) =>({
           groupName: group,
           groupCreator: this.creators[index],
           groupID: this.groupIds[index],
           groupWaitList: this.waitlists[index],
-        }))
+          channelNames: (this.channelNames && this.channelNames[index]) ? this.channelNames[index] : [],
+          }))
+          
+
+        console.log(this.formattedGroupData[0].channelNames);
         this.formattedGroupNames = this.formattedGroupData.map(group => group.groupName);
         
         }

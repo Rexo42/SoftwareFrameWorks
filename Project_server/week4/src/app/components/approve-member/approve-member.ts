@@ -13,7 +13,7 @@ export class ApproveMember
   @Output() userApproved = new EventEmitter<void>();
   @Output() handleMessage = new EventEmitter<string>();
 
-  @Input() groupList: {groupName: string, groupCreator: string, groupID: string, groupWaitList: string[]}[]=[];
+  @Input() groupList: {groupName: string, groupCreator: string, groupID: string, groupWaitList: string[], channelNames: string[]}[]=[];
   // @Input() username: string = '';
   selectedGroupName: string = '';
   selectedWaitlist: string[] = [];

@@ -58,8 +58,9 @@ export class Api {
       // const headers = new HttpHeaders({
       //   'Authorization': `Bearer ${token}`
       // });
-      return this.http.get<{success: boolean, groups: string[], ids: string[], creators: string[], pageLimit: number, waitLists: string[][]}>(`${this.baseUrl}/getGroups`, {
-        params: {
+      return this.http.get<{success: boolean, groups: string[], ids: string[], creators: string[], pageLimit: number, waitLists: string[][], channelNames: string[][]}>(`${this.baseUrl}/getGroups`, {
+        params: 
+        {
           page: page.toString(),
           limit: limit.toString(),
           username: username.toString(),
@@ -67,9 +68,9 @@ export class Api {
 
       });
     }
+
     addUserToGroup(username: string, groupName: string)
     {
-      
       return this.http.patch<{success: boolean, message:string}>(`${this.baseUrl}/addUser/${groupName}/${username}`,{});
     }
 
@@ -93,13 +94,26 @@ export class Api {
 
     deleteGroup(groupName: string)
     {
-      return this.http.delete<{valid: boolean, message: string}>(`${this.baseUrl}/deleteGroup/${groupName}`);
+      return this.http.delete<{success: boolean, message: string}>(`${this.baseUrl}/deleteGroup/${groupName}`);
     }
 
     createChannel(username: string, groupName: string, channelName: string)
     {
       return this.http.post<{ valid: boolean}>(`${this.baseUrl}/createChannel`,({username: username, groupName: groupName, channelName: channelName}), {});
     }
+    deleteChannel(username: string, groupName: string, channelName: string)
+    {
+      return this.http.delete<{valid: boolean, message: string}>(`${this.baseUrl}/deleteChannel`,
+        {
+          params: {
+            username: username,
+            groupName: groupName,
+            channelName: channelName,
+          }
+        }
+      );
+    }
+
   
 
     verifyToken(token: string) 
