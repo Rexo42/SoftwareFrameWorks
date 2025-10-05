@@ -52,6 +52,10 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
       this.groups.push(groupName);
     })
 
+    // need one for updateChannels
+      // remove Groups
+      // remove Channel
+
     const rawToken = localStorage.getItem('currentUser');
     if (rawToken)
     {
@@ -96,11 +100,6 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
               }
             });
             })();
-
-            // would need to get groups and display them
-              // in the route to get groups, we can filter based on role == superAdmin or is a member
-                // super admin see all groups 
-                  // user sees only ones they are a member of
           }
           
           else
