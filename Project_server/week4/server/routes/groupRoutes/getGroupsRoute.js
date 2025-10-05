@@ -37,28 +37,35 @@ export async function getGroups(app, db)
                     .limit(limit)
                     .toArray();
                 }
-                const groupNames = groups.map(group => group.groupName);
-                const groupCreators = groups.map(group => group.creator);
-                const Ids = groups.map(group => group._id.toString());
-                const groupWaitlists = groups.map(group => group.waitList);
-                const groupChannels = groups.map(group => group.channels);
-                // calling here
-                return res.json({success: true, groups: groupNames, ids: Ids, creators: groupCreators, pageLimit: Math.ceil(totalUsers / limit), waitLists: groupWaitlists, channelNames: groupChannels});
+
             }
             else
-            {
-                totalUsers = await db.collection('Groups').countDocuments();
-                groups = await db.collection('Groups').find({}, {projection: { groupName: 1, _id: 1, creator: 1 }})
-                .skip(skip)
-                .limit(limit)
-                .toArray();
-                const groupNames = groups.map(group => group.groupName);
-                const groupCreators = groups.map(group => group.creator);
-                const Ids = groups.map(group => group._id.toString());
-                const groupChannels = groups.map(group => group.channels);
-
-                return res.json({success: true, groups: groupNames, ids: Ids, creators: groupCreators, pageLimit: Math.ceil(totalUsers / limit), groupChannels: groupChannels});
+            { 
+                // this is for chatroom usage
+                if (useCase == "SuperAdmin")
+                {
+                    totalUsers = await db.collection('Groups').countDocuments();
+                    groups = await db.collection('Groups').find({}, {projection: { groupName: 1, _id: 1, creator: 1, waitList: 1, channels: 1 }})  
+                    .skip(skip)
+                    .limit(limit)
+                    .toArray();
+                }
+                else
+                {
+                    totalUsers = await db.collection('Groups').countDocuments({members: user.username});
+                    groups = await db.collection('Groups').find({members: user.username}, {projection: { groupName: 1, _id: 1, creator: 1, waitList: 1, channels: 1  }})
+                    .skip(skip)
+                    .limit(limit)
+                    .toArray();
+                }
             }
+            const groupNames = groups.map(group => group.groupName);
+            const groupCreators = groups.map(group => group.creator);
+            const Ids = groups.map(group => group._id.toString());
+            const groupWaitlists = groups.map(group => group.waitList);
+            const groupChannels = groups.map(group => group.channels);
+            // calling here
+            return res.json({success: true, groups: groupNames, ids: Ids, creators: groupCreators, pageLimit: Math.ceil(totalUsers / limit), waitLists: groupWaitlists, channelNames: groupChannels});
         }
         catch(error)
         {

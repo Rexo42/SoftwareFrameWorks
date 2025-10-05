@@ -16,6 +16,7 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   message : string = "";
   messages :chatMessage[] = [];
   groups: string[] = [];
+  channels: string[][] = [];
   userRole : string = "";
   channelName : string = "";
   showAdminPanel :boolean = true;
@@ -65,7 +66,21 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
             this.userRole = response.role.trim();
             console.log(this.userRole.trim());
             this.socketService.connect('0', response.username)
-            this.channelName = "Public Room";
+            this.channelName = "Not Connected";
+            const useCase = response.role == "SuperAdmin" ? "SuperAdmin" : "1";
+
+            this.api.getGroups(1, 10, this.currentUser, useCase).subscribe({
+              next: (response) =>
+              {
+                if (response.success)
+                {
+                  this.groups = response.groups;
+                  this.channels = response.channelNames;
+                  console.log(this.channels);
+                }
+              }
+            })
+
             // would need to get groups and display them
               // in the route to get groups, we can filter based on role == superAdmin or is a member
                 // super admin see all groups 
@@ -94,7 +109,11 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
 
   ngAfterViewChecked():void
   {
-    this.scroll();
+    if (this.channelName != "Not Connected")
+    {
+      this.scroll();
+    }
+    
   }
 
   ngOnDestroy(): void 
@@ -110,42 +129,22 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
          return;
        }
     this.messages.push(new chatMessage(this.currentUser,this.message));
-    this.socketService.sendMessage(userMessage, this.currentUser);
+    this.socketService.sendMessage(userMessage, this.currentUser, this.channelName);
     this.message ='';
   }
-
-  createGroup()
+  onChannelClick(channelName: string)
   {
-    const currentGroupName = this.groupName;
-    if (!currentGroupName || !this.currentUser)
+    // I need some way for the joinRoom service to retrieve message history
+      // socketservice.leaveRoom
+    if (this.channelName != "Not Connected")
     {
-      this.errorMsg = "Missing fields";
-      return;
+      this.socketService.leaveRoom(this.channelName);
     }
-    
-    this.socketService.newGroup(currentGroupName, this.currentUser).then(response => {
-    if (response.valid) 
-    {
-    this.errorMsg = response.message;
-    } 
-    else 
-    {
-    this.errorMsg = response.message;
-    }
-});
-
-    //this.socketService.newGroup(currentGroupName, this.currentUser);
-
-    this.groupName = '';
-  }
-
-  toggleAdminPanel()
-  {
-    if (this.showAdminPanel)
-    {
-      this.errorMsg = '';
-    }
-    this.showAdminPanel = !this.showAdminPanel;
+    //this.socketService.leaveRoom(this.channelName);
+    this.socketService.joinRoom(channelName, this.currentUser);
+    this.channelName = channelName;
+    this.messages = [];
+    console.log(channelName);
   }
 
 

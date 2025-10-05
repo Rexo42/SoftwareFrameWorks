@@ -53,19 +53,21 @@ export class Api {
       return this.http.post<{ valid: boolean}>(`${this.baseUrl}/createGroup`,({groupName: groupName, username: username}), {});
     }
 
-    getGroups(page: number, limit: number, username: string)
+    getGroups(page: number, limit: number, username: string, useCase?:string)
     {
-      // const headers = new HttpHeaders({
-      //   'Authorization': `Bearer ${token}`
-      // });
-      return this.http.get<{success: boolean, groups: string[], ids: string[], creators: string[], pageLimit: number, waitLists: string[][], channelNames: string[][]}>(`${this.baseUrl}/getGroups`, {
-        params: 
-        {
+      const params: any = {
           page: page.toString(),
           limit: limit.toString(),
           username: username.toString(),
-        }
+      }
+      if (useCase)
+      {
+        params.useCase = useCase;
+      }
 
+      return this.http.get<{success: boolean, groups: string[], ids: string[], creators: string[], pageLimit: number, waitLists: string[][], channelNames: string[][]}>(`${this.baseUrl}/getGroups`, 
+      {
+        params
       });
     }
 

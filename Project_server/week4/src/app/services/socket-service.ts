@@ -62,16 +62,22 @@ export class SocketService
     {
       this.socket.emit('joinRoom', room, user);
     }
-    
   }
-
-  sendMessage(message: string, username: string)
+  leaveRoom(room:string)
   {
     if (this.socket && this.socket.connected)
     {
-      this.socket.emit('sendMessage', message, username);  
+      this.socket.emit('leaveRoom', room);
     }
-    
+  }
+
+  sendMessage(message: string, username: string, channel:string)
+  {
+    if (this.socket && this.socket.connected)
+    {
+      this.socket.emit('sendMessage', message, username, channel);  
+    }
+
   }
 
   receiveMessage(callback: (message: any, user: any) => void)
