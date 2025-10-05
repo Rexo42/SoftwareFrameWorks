@@ -1,7 +1,8 @@
+import { response } from "express";
 import {Group} from "../.../../../../database/classes/Group.js"
 import { checkPermissions } from "../../functions/checkPermissions.js";
 
-export async function createGroup(app, db)
+export async function createGroup(app, db, io)
 {
     app.post('/api/createGroup', async (req, res) =>{
         try
@@ -13,13 +14,15 @@ export async function createGroup(app, db)
             //console.log("kino");
             if (await checkPermissions(db,user._id ,1))
             {
-                //console.log("kino");
-                //console.log(groupName, username);
                 const memberDetails = {_id: user._id, username: username, role: user.role};
-                //console.log(memberDetails, "LOOK HERE");
+
                 const collection = await db.collection("Groups");
                 const newGroup = new Group(groupName, memberDetails);
                 await collection.insertOne(newGroup);
+                // update super admin UI
+                io.to('0').emit('updateGroups', groupName);
+                // handles if a groupAdmin made the group
+                io.to(groupName).emit('updateGroups', groupName);
                 return res.json({valid: true});
             }
             else

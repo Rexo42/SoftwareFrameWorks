@@ -82,7 +82,7 @@ try
     updateRole(app, db);
 
     getGroups(app, db);
-    createGroup(app, db);
+    createGroup(app, db, io);
     deleteGroup(app, db);
     
     addToWaitList(app, db);

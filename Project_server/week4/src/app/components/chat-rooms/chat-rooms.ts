@@ -61,13 +61,30 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
         next: (response) => {
           if (response.valid)
           {
+            (async() =>{ 
             this.currentUser = response.username;
             console.log(response.username);
             this.userRole = response.role.trim();
             console.log(this.userRole.trim());
-            this.socketService.connect('0', response.username)
+
+            // each user has their own join room
+            await this.socketService.connect(this.currentUser, response.username)
             this.channelName = "Not Connected";
             const useCase = response.role == "SuperAdmin" ? "SuperAdmin" : "1";
+            // room 0 is superAdmins so goes to all
+            if (response.role == "SuperAdmin")
+            {
+              this.socketService.joinRoom("0", this.currentUser);
+            }
+            else
+            {
+              // for normal users join socket to groups they are apart of 
+              for (let i = 0; i < this.groups.length; i++)
+              {
+                this.socketService.joinRoom(this.groups[i], this.currentUser)
+              }
+            }
+
 
             this.api.getGroups(1, 10, this.currentUser, useCase).subscribe({
               next: (response) =>
@@ -79,19 +96,22 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
                   console.log(this.channels);
                 }
               }
-            })
+            });
+            })();
 
             // would need to get groups and display them
               // in the route to get groups, we can filter based on role == superAdmin or is a member
                 // super admin see all groups 
                   // user sees only ones they are a member of
           }
+          
           else
           {
             console.log("invalid token");
             localStorage.clear();
             this.router.navigate(['/home'])
           }
+          
         },
         error: (err) => {
           console.log("something has gone really wrong");

@@ -42,17 +42,6 @@ export async function socketSetup(server, io)
         });
         socket.on('newGroup', (groupName, username, callback)=>
         {
-            for (let group of groups)
-            {
-            if (group.groupName == groupName)
-            {
-                return callback({valid: false, message: 'Group Already Exists'});
-            }
-            }
-            console.log("creating new group from socket: ", socket.id);
-            console.log (username, "created new group: ", groupName)
-            groups.push(new group(groupName, username));
-            updateServerData(serverDataa);
             io.to('0').emit('updateGroups', groupName);
             return callback({valid:true, message: "Group Created Successfully"});
         });

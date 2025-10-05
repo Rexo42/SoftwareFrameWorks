@@ -19,8 +19,11 @@ export class SocketService
 
   constructor(){}
 
-  connect(room: string, user: string)
+  async connect(room: string, user: string): Promise<void>
   {
+    return new Promise((resolve, reject) =>{
+
+    
     if (!this.socket || !this.socket.connected)
     {
       this.socket = io(this.URL);
@@ -42,9 +45,14 @@ export class SocketService
           this.socket?.off('updateGroups');
           this.socket?.on('updateGroups', this.updateGroupsCallback);
         }
-
+        resolve();
       });
     }
+    else
+    {
+      resolve();
+    }
+    });
   }
 
   disconnect()
