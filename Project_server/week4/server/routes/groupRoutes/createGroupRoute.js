@@ -18,11 +18,11 @@ export async function createGroup(app, db, io)
 
                 const collection = await db.collection("Groups");
                 const newGroup = new Group(groupName, memberDetails);
-                await collection.insertOne(newGroup);
+                const result = await collection.insertOne(newGroup);
                 // update super admin UI
                 io.to('0').emit('updateGroups', groupName);
                 // handles if a groupAdmin made the group
-                io.to(groupName).emit('updateGroups', groupName);
+                io.to(result.insertedId).emit('updateGroups', groupName);
                 return res.json({valid: true});
             }
             else

@@ -50,6 +50,18 @@ export async function getGroups(app, db)
                     .limit(limit)
                     .toArray();
                 }
+                else if(useCase == 1)
+                {
+                    totalUsers = await db.collection('Groups').countDocuments({
+                        members: {$ne: username}
+                    });
+                    groups = await db.collection('Groups').find({
+                        members: {$ne: username}
+                    }, {projection: { groupName: 1, _id: 1, creator: 1, waitList: 1, channels: 1 }})  
+                    .skip(skip)
+                    .limit(limit)
+                    .toArray();
+                }
                 else
                 {
                     totalUsers = await db.collection('Groups').countDocuments({members: user.username});

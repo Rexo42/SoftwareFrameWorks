@@ -70,22 +70,7 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
             // each user has their own join room
             await this.socketService.connect(this.currentUser, response.username)
             this.channelName = "Not Connected";
-            const useCase = response.role == "SuperAdmin" ? "SuperAdmin" : "1";
-            // room 0 is superAdmins so goes to all
-            if (response.role == "SuperAdmin")
-            {
-              this.socketService.joinRoom("0", this.currentUser);
-            }
-            else
-            {
-              // for normal users join socket to groups they are apart of 
-              for (let i = 0; i < this.groups.length; i++)
-              {
-                this.socketService.joinRoom(this.groups[i], this.currentUser)
-              }
-            }
-
-
+            const useCase = response.role == "SuperAdmin" ? "SuperAdmin" : "2";
             this.api.getGroups(1, 10, this.currentUser, useCase).subscribe({
               next: (response) =>
               {
@@ -93,6 +78,19 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
                 {
                   this.groups = response.groups;
                   this.channels = response.channelNames;
+                  // room 0 is superAdmins so recieve all updates regardless of membership
+                  if (useCase == "SuperAdmin")
+                  {
+                    this.socketService.joinRoom("0", this.currentUser);
+                  }
+                  // joining to rooms they are apart of
+                  else
+                  {
+                    for (let i = 0; i < this.groups.length; i++)
+                    {
+                      this.socketService.joinRoom(response.ids[i], this.currentUser)
+                    }
+                  }
                   console.log(this.channels);
                 }
               }

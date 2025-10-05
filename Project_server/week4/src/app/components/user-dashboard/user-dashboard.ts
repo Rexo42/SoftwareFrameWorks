@@ -80,6 +80,10 @@ export class UserDashboard
         this.creators = response.creators;
         this.totalPages = response.pageLimit;
 
+        this.groups = this.groups.filter((_, i) => this.creators[i] !== this.currentUser);
+        this.groupIds = this.groupIds.filter((_, i) => this.creators[i] !== this.currentUser);
+        this.creators = this.creators.filter((creator) => creator !== this.currentUser);
+
         this.formattedGroupData = this.groups.map((group, index) =>({
         groupName: group,
         groupCreator: this.creators[index],

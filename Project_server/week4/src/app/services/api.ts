@@ -55,6 +55,11 @@ export class Api {
 
     getGroups(page: number, limit: number, username: string, useCase?:string)
     {
+      // usescases
+      // SuperAdmin -- get all
+      // 1 -- getting groups a user is not a member of IE for the enrollment page
+      // 2 -- getting groups a user is a member of 
+      // 
       const params: any = {
           page: page.toString(),
           limit: limit.toString(),
