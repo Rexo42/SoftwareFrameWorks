@@ -249,14 +249,3 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
 
 
 }
-class chatMessage
-{
-  constructor(public sender : string, public message: string, public timeStamp: Date = new Date()){}
-    getFormattedTime(): string 
-  {
-    return this.timeStamp.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  }
-}
