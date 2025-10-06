@@ -40,11 +40,16 @@ export async function socketSetup(server, io)
             console.log("message recieved from:", socket.id, " :: ", message);
             socket.to(channel).emit('receiveMessage', message, username);
         });
-        socket.on('newGroup', (groupName, username, callback)=>
-        {
-            io.to('0').emit('updateGroups', groupName);
-            return callback({valid:true, message: "Group Created Successfully"});
-        });
+        // socket.on('newGroup', (groupName, username, callback)=>
+        // {
+        //     io.to('0').emit('updateGroups', groupName);
+        //     return callback({valid:true, message: "Group Created Successfully"});
+        // });
+        // socket.on('newChannel', (groupID, channelName, callback)=>
+        // {
+        //     io.to(groupID).emit('updateChannels', groupID, channelName);
+        //     return callback({valid: true, message: "channel created Successfully"});
+        // });
 
     socket.on('disconnect',()=>
     {

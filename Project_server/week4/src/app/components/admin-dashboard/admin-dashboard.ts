@@ -243,8 +243,6 @@ export class AdminDashboard implements OnInit
           this.creators = response.creators;
           this.totalPages = response.pageLimit;
           this.channelNames = response.channelNames;
-          //console.log(this.channelNames);
-          // handle no Channels
 
           this.formattedGroupData = this.groups.map((group, index) =>({
           groupName: group,

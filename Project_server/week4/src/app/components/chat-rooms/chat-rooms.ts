@@ -16,6 +16,7 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   message : string = "";
   messages :chatMessage[] = [];
   groups: string[] = [];
+  groupIds: string[] = [];
   channels: string[][] = [];
   userRole : string = "";
   channelName : string = "";
@@ -48,8 +49,66 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
       console.log('message recieved: ', message);
     });
 
-    this.socketService.updateGroups((groupName: string, ) => {
+    this.socketService.updateGroups((groupName: string, groupID: string ) => {
+      console.log(groupID, groupName);
       this.groups.push(groupName);
+      this.groupIds.push(groupID);
+      this.channels.push([]);
+    })
+
+    this.socketService.updateChannels((groupName:string, channelName:string ) =>{
+      console.log(groupName, channelName);
+      for (let i = 0; i < this.groups.length; i++)
+      {
+        if (this.groupIds[i] == groupName)
+        {
+          this.channels[i].push(channelName);
+          console.log(this.channels[i]);
+          console.log(this.groups[i]);
+        }
+      }
+      
+    })
+
+      this.socketService.removeChannel((groupName:string, channelName:string ) =>{
+      console.log(groupName, channelName);
+      for (let i = 0; i < this.groups.length; i++)
+      {
+        if (this.groupIds[i] == groupName)
+        {
+          const index = this.channels[i].indexOf(channelName);
+          if (index != -1)
+          {
+            this.channels[i].splice(index, 1);
+            this.socketService.leaveRoom(channelName);
+            if (this.channelName == channelName)
+            {
+              this.channelName = "Not Connected";
+            }
+            console.log('Removed channel:', channelName);
+          }
+        }
+      }
+      
+    })
+    this.socketService.removeGroup((groupName:string) =>
+    {
+        console.log(groupName);
+
+        const index = this.groupIds.findIndex(id => id === groupName);
+        for (let i = 0; i < this.channels[index].length; i++)
+        {
+          if (this.channels[index][i] == this.channelName)
+          {
+            this.socketService.leaveRoom(this.channelName);
+            this.channelName = "Not Connected";
+          }
+        }
+        this.groups.splice(index, 1);
+        this.groupIds.splice(index,1);
+        this.channels.splice(index,1);
+        this.socketService.leaveRoom(groupName);
+        
     })
 
     // need one for updateChannels
@@ -82,6 +141,7 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
                 {
                   this.groups = response.groups;
                   this.channels = response.channelNames;
+                  this.groupIds = response.ids;
                   // room 0 is superAdmins so recieve all updates regardless of membership
                   if (useCase == "SuperAdmin")
                   {

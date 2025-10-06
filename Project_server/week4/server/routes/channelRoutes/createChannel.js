@@ -1,19 +1,23 @@
-export async function createChannel(app, db)
+import { ObjectId } from 'mongodb';
+export async function createChannel(app, db, io)
 {
     app.post('/api/createChannel', async(req, res) =>{
         try
         {
         const {username, groupName, channelName} = req.body;
-        const targetGroup = await db.collection("Groups").findOne({groupName: groupName});
+        console.log(username, groupName, channelName);
+        const targetGroup = await db.collection("Groups").findOne({_id: new ObjectId(groupName)});
         const channels = targetGroup.channels;
         if (channels.includes(channelName))
         {
             return res.status(401).json({valid: false})
         }
         await db.collection("Groups").updateOne(
-            {groupName: groupName},
+            {_id: new ObjectId(groupName)},
             {$push:{channels: channelName}}
         )
+        io.to(groupName).emit('updateChannels', groupName, channelName);
+        io.to('0').emit('updateChannels', groupName, channelName);
         return res.json({valid: true});
         }
         catch(error)

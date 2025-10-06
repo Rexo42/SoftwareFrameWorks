@@ -65,7 +65,7 @@
             <strong>Creator:</strong> {{ group.groupCreator }}
           </span>
           <div>
-            <button [disabled]="group.groupName === 'test1'" class="btn btn-danger btn-sm mx-1" (click)="deleteGroup(group.groupName)">
+            <button [disabled]="group.groupName === 'test1'" class="btn btn-danger btn-sm mx-1" (click)="deleteGroup(group.groupID)">
               Delete
             </button>
           </div>
@@ -104,7 +104,7 @@
     {
       <app-create-group (groupCreated)="refreshGroups()" (handleMessage)="handleMessage($event)"></app-create-group>
       <app-delete-channel [groupList] ="formattedGroupData" (channelDeleted) = "deleteChannel($event)"> </app-delete-channel>
-      <app-create-channel [groupList]="formattedGroupNames" (channelCreated)="refreshGroups()" (handleMessage)="handleMessage($event)"></app-create-channel>
+      <app-create-channel [groupList]="formattedGroupData" (channelCreated)="refreshGroups()" (handleMessage)="handleMessage($event)"></app-create-channel>
       <app-approve-member [groupList]="formattedGroupData" (userApproved)="refreshGroups()" (handleMessage)="handleMessage($event)"></app-approve-member>
     }
   </div>

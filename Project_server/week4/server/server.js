@@ -83,13 +83,13 @@ try
 
     getGroups(app, db);
     createGroup(app, db, io);
-    deleteGroup(app, db);
+    deleteGroup(app, db, io);
     
     addToWaitList(app, db);
     addUserToGroup(app,db);
 
-    createChannel(app,db);
-    deleteChannel(app, db);
+    createChannel(app,db, io);
+    deleteChannel(app, db, io);
     ///
 
 

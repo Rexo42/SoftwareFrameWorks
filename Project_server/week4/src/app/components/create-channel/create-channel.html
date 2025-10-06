@@ -8,9 +8,10 @@
         name="group"
         required
       >
-        <option value="" disabled selected>Select Group</option>
-        <option *ngFor="let group of groupList" [value]="group">
-          {{ group }}
+        <option [ngValue]="null" disabled disabled selected>Select Group</option>
+        <option *ngFor="let group of groupList" [ngValue]="group">
+
+          {{ group.groupName }}
         </option>
       </select>
     </div>
@@ -33,10 +34,4 @@
     </div>
   </div>
 
-  <!-- @if (message != '')
-  {
-  <div class="mt-2 alert alert-info text-center p-1 m-0">
-    {{ message }}
-  </div>
-  } -->
 </form>

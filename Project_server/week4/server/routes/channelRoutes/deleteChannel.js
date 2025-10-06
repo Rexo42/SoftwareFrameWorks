@@ -1,4 +1,4 @@
-export async function deleteChannel(app, db)
+export async function deleteChannel(app, db,io)
 {
     app.delete('/api/deleteChannel', async(req, res)=>
     {
@@ -21,6 +21,8 @@ export async function deleteChannel(app, db)
             {
                 return res.status(404).json({valid: false, message: "Channel not found"})
             }
+            io.to('0').emit('removeChannel', targetGroup._id, channelName);
+            io.to(targetGroup._id).emit('removeChannel', targetGroup._id, channelName);
             return res.json({valid:true, message: "successfully deleted channel from database"});
         }
         catch(error)

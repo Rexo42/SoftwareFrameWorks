@@ -4,7 +4,6 @@ export async function addUserToGroup(app, db)
     {
         try
         {
-            
             const groupName = req.params.groupName;
             const userName = req.params.username;
             if (!groupName || !userName)
@@ -13,7 +12,7 @@ export async function addUserToGroup(app, db)
             }
             
             const user = await db.collection("Users").findOne({username: userName});
-            const group = await db.collection("Groups").findOne({groupName: groupName});
+            const group = await db.collection("Groups").findOne({_id: groupName});
 
             if (!user || !group)
             {

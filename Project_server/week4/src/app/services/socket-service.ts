@@ -14,7 +14,10 @@ export class SocketService
 
   ////
   private messageCallback: ((message: any, user: any) => void) | null = null;
-  private updateGroupsCallback: ((groupName: string) => void) | null = null;
+  private updateGroupsCallback: ((groupName: string, groupID:string) => void) | null = null;
+  private updateChannelsCallback: ((groupName: string, channelName:string) => void) | null = null;
+  private removeChannelCallback: ((groupName: string, channelName:string) => void) | null = null;
+  private removeGroupCallback: ((groupName: string) => void) | null = null;
 ////
 
   constructor(){}
@@ -44,6 +47,21 @@ export class SocketService
         {
           this.socket?.off('updateGroups');
           this.socket?.on('updateGroups', this.updateGroupsCallback);
+        }
+        if (this.updateChannelsCallback)
+        {
+          this.socket?.off('updateChannels');
+          this.socket?.on('updateChannels', this.updateChannelsCallback);
+        }
+        if (this.removeChannelCallback)
+        {
+          this.socket?.off('removeChannel');
+          this.socket?.on('removeChannel', this.removeChannelCallback);
+        }
+        if (this.removeGroupCallback)
+        {
+          this.socket?.off('removeGroup');
+          this.socket?.on('removeGroup', this.removeGroupCallback);
         }
         resolve();
       });
@@ -98,25 +116,36 @@ export class SocketService
       }
   }
 
-
-newGroup(groupName: string, username: string): Promise<{ valid: boolean; message: string }> {
-  return new Promise((resolve, reject) => {
-    if (this.socket && this.socket.connected) {
-      this.socket.emit('newGroup', groupName, username, (response: { valid: boolean; message: string }) => {
-        resolve(response);
-      });
-    } else {
-      reject({ valid: false, message: 'Socket not connected' });
-    }
-  });
-}
-
-  updateGroups(callback: (groupName: string) => void)
+  updateGroups(callback: (groupName: string, groupID: string) => void)
   {
     this.updateGroupsCallback = callback;
       if (this.socket && this.socket.connected)
       {
          this.socket.on('updateGroups', callback);
       }
+  }
+  updateChannels(callback: (groupName: string, channelName:string) => void)
+  {
+    this.updateChannelsCallback = callback;
+    if (this.socket && this.socket.connected)
+    {
+      this.socket.on('updateChannels', callback);
+    }
+  }
+  removeChannel(callback: (groupName: string, channelName:string) => void)
+  {
+    this.removeChannelCallback = callback;
+    if (this.socket && this.socket.connected)
+    {
+      this.socket.on('removeChannel', callback);
+    }
+  }
+  removeGroup(callback: (groupName: string) => void)
+  {
+    this.removeGroupCallback = callback;
+    if (this.socket && this.socket.connected)
+    {
+      this.socket.on('removeGroup', callback);
+    }
   }
 }

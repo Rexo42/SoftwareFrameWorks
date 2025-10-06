@@ -12,12 +12,20 @@ export class CreateChannel
 {
   @Output() channelCreated = new EventEmitter<void>();
   @Output() handleMessage = new EventEmitter<string>();
-  @Input() groupList: string[] = [];
+  @Input() groupList: {groupName: string, groupCreator: string, groupID: string, groupWaitList: string[], channelNames: string[]}[]=[];
   groupName: string = '';
   creator: string = '';
   message: string = '';
 
-  selectedGroup: string = '';
+  //selectedGroup: string = '';
+    selectedGroup: 
+  {
+    groupName: string;
+    groupCreator: string;
+    groupID: string;
+    groupWaitList: string[];
+    channelNames: string[];
+  } | null = null;
   //groupList: string[] = [];
   channelName: string = '';
   constructor(private router: Router, private Api : Api) {}
@@ -25,6 +33,7 @@ export class CreateChannel
   {
     
   }
+
   createChannel()
   {
     if (!this.selectedGroup || !this.channelName.trim())
@@ -41,14 +50,15 @@ export class CreateChannel
     this.Api.verifyToken(rawToken.replace(/^"|"$/g, '')).subscribe({
       next: (respone) =>
       {
-        if (respone.valid)
+        if (respone.valid && this.selectedGroup)
         {
-          this.Api.createChannel(respone.username, this.selectedGroup, this.channelName).subscribe({
+          this.Api.createChannel(respone.username, this.selectedGroup.groupID, this.channelName).subscribe({
             next: (res) =>
             {
-              if (res.valid)
+              if (res.valid && this.selectedGroup)
               {
-                this.message = ("successfully created channel in group: "+this.selectedGroup);
+                this.message = ("successfully created channel in group: "+this.selectedGroup.groupName);
+                this.selectedGroup = null;
                 this.channelCreated.emit();
                 this.handleMessage.emit(this.message);
               }

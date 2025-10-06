@@ -20,9 +20,9 @@ export async function createGroup(app, db, io)
                 const newGroup = new Group(groupName, memberDetails);
                 const result = await collection.insertOne(newGroup);
                 // update super admin UI
-                io.to('0').emit('updateGroups', groupName);
+                io.to('0').emit('updateGroups', groupName, result.insertedId);
                 // handles if a groupAdmin made the group
-                io.to(result.insertedId).emit('updateGroups', groupName);
+                io.to(result.insertedId).emit('updateGroups', groupName, result.insertedId);
                 return res.json({valid: true});
             }
             else
