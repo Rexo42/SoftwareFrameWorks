@@ -196,6 +196,7 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
 
   ngOnDestroy(): void 
   {
+    this.socketService.leaveRoom(this.channelName);
     this.socketService.disconnect();    
   }
 
@@ -206,15 +207,11 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
        {
          return;
        }
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const time = `${hours}:${minutes}`;
-    const formattedMessage = `(${time}) ${this.currentUser}: ${this.message}`;
-    this.messages.push(formattedMessage);
+    this.messages.push(this.formatMessage(this.currentUser, this.message));
     this.socketService.sendMessage(userMessage, this.currentUser, this.channelName, this.groupName);
     this.message ='';
   }
+
   onChannelClick(channelName: string, groupName:string)
   {
     // I need some way for the joinRoom service to retrieve message history
@@ -245,6 +242,15 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
       }
     })
     console.log(channelName);
+  }
+
+  formatMessage(username:string, message:string)
+  {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const time = `${hours}:${minutes}`;
+    return `(${time}) ${username}: ${message}`;
   }
 
 
