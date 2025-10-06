@@ -1,5 +1,5 @@
 import {Server} from 'socket.io';
-export async function socketSetup(server, io)
+export async function socketSetup(server, io, db)
 {
     io = new Server(server, {
     cors: {
@@ -13,11 +13,15 @@ export async function socketSetup(server, io)
     {
         console.log("user connected via socket: ", socket.id);
 
-        socket.on('joinRoom', (room, user)=>
+        socket.on('joinRoom', (room, user, useCase)=>
         {
             socket.join(room);
             console.log("socket: ",socket.id, " joined room: ", room);
-            io.to(room).emit('receiveMessage', "has joined", user);
+            if (useCase == 1)
+            {
+                io.to(room).emit('receiveMessage', "has joined", user);
+            }
+            
         });
 
         socket.on('leaveRoom', (room) =>
@@ -35,9 +39,36 @@ export async function socketSetup(server, io)
             //socket.username = username;
         });
         // need a leave room function 
-        socket.on('sendMessage', (message, username, channel)=>
+        socket.on('sendMessage', (message, username, channel, group)=>
         {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const time = `${hours}:${minutes}`;
+
+
+            const formattedMessage = `(${time}) ${username}: ${message}`
             console.log("message recieved from:", socket.id, " :: ", message);
+            // in here we can update message history
+            try
+            {
+                db.collection("Groups").updateOne(
+                    {
+                        groupName: group,
+                        "channels.channelName": channel,
+                    },
+                    {
+                        $push: {
+                            "channels.$.messageHistory": formattedMessage
+                        }
+                    }
+                )
+            }
+            catch(error)
+            {
+
+            }
+
             socket.to(channel).emit('receiveMessage', message, username);
         });
         // socket.on('newGroup', (groupName, username, callback)=>
@@ -56,7 +87,9 @@ export async function socketSetup(server, io)
         io.to('0').emit('receiveMessage', "has disconnected", socket.username);
         console.log("user disconnected: ", socket.id);
     });
+    
 
     });
     return io;
+    
 }

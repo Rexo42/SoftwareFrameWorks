@@ -14,19 +14,15 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   currentUser : string = "";
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   message : string = "";
-  messages :chatMessage[] = [];
+  messages :string[] = [];
   groups: string[] = [];
   groupIds: string[] = [];
   channels: string[][] = [];
   userRole : string = "";
   channelName : string = "";
+  groupName : string = "";
   showAdminPanel :boolean = true;
   errorMsg: string = '';
-
-
-  ///
-  groupName = "";
-  ///
 
   
 
@@ -45,7 +41,12 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   {
     this.socketService.receiveMessage((message: string, username: string)=>
     {
-      this.messages.push(new chatMessage(username, message));
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const time = `${hours}:${minutes}`;
+      const formattedMessage = `(${time}) ${username}: ${message}`;
+      this.messages.push(formattedMessage);
       console.log('message recieved: ', message);
     });
 
@@ -145,14 +146,14 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
                   // room 0 is superAdmins so recieve all updates regardless of membership
                   if (useCase == "SuperAdmin")
                   {
-                    this.socketService.joinRoom("0", this.currentUser);
+                    this.socketService.joinRoom("0", this.currentUser, 2);
                   }
                   // joining to rooms they are apart of
                   else
                   {
                     for (let i = 0; i < this.groups.length; i++)
                     {
-                      this.socketService.joinRoom(response.ids[i], this.currentUser)
+                      this.socketService.joinRoom(response.ids[i], this.currentUser, 2)
                     }
                   }
                   console.log(this.channels);
@@ -205,22 +206,44 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
        {
          return;
        }
-    this.messages.push(new chatMessage(this.currentUser,this.message));
-    this.socketService.sendMessage(userMessage, this.currentUser, this.channelName);
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const time = `${hours}:${minutes}`;
+    const formattedMessage = `(${time}) ${this.currentUser}: ${this.message}`;
+    this.messages.push(formattedMessage);
+    this.socketService.sendMessage(userMessage, this.currentUser, this.channelName, this.groupName);
     this.message ='';
   }
-  onChannelClick(channelName: string)
+  onChannelClick(channelName: string, groupName:string)
   {
     // I need some way for the joinRoom service to retrieve message history
       // socketservice.leaveRoom
+
     if (this.channelName != "Not Connected")
     {
       this.socketService.leaveRoom(this.channelName);
     }
+    this.groupName = groupName;
     //this.socketService.leaveRoom(this.channelName);
-    this.socketService.joinRoom(channelName, this.currentUser);
+    this.socketService.joinRoom(channelName, this.currentUser, 1);
     this.channelName = channelName;
-    this.messages = [];
+    this.api.getMessages(groupName, channelName).subscribe({
+      next: (response) =>
+      {
+        if (response.valid)
+        {
+
+          const now = new Date();
+          const hours = now.getHours().toString().padStart(2, '0');
+          const minutes = now.getMinutes().toString().padStart(2, '0');
+          const time = `${hours}:${minutes}`;
+          const formattedMessage = `(${time}) ${this.currentUser}: has joined`;
+          this.messages = response.messages;
+          this.messages.push(formattedMessage);
+        }
+      }
+    })
     console.log(channelName);
   }
 

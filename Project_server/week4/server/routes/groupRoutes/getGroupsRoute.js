@@ -75,7 +75,7 @@ export async function getGroups(app, db)
             const groupCreators = groups.map(group => group.creator);
             const Ids = groups.map(group => group._id.toString());
             const groupWaitlists = groups.map(group => group.waitList);
-            const groupChannels = groups.map(group => group.channels);
+            const groupChannels = groups.map(group => group.channels.map(channel => channel.channelName));
             // calling here
             return res.json({success: true, groups: groupNames, ids: Ids, creators: groupCreators, pageLimit: Math.ceil(totalUsers / limit), waitLists: groupWaitlists, channelNames: groupChannels});
         }

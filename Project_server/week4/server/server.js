@@ -25,6 +25,7 @@ import { createChannel } from './routes/channelRoutes/createChannel.js';
 import { addToWaitList } from './routes/groupRoutes/addToWaitlistRoute.js';
 import { addUserToGroup } from './routes/groupRoutes/addUserToGroupRoute.js';
 import { deleteChannel } from './routes/channelRoutes/deleteChannel.js';
+import { getChannelMessages } from './routes/channelRoutes/getChannelMessages.js';
 ///
 
 
@@ -69,7 +70,7 @@ try
 
     // initializing mongo and socket.io instance
     db = await mongoConnect();
-    io = await socketSetup(server, io);
+    io = await socketSetup(server, io, db);
     //
     
     // route setup calls
@@ -90,6 +91,7 @@ try
 
     createChannel(app,db, io);
     deleteChannel(app, db, io);
+    getChannelMessages(app, db);
     ///
 
 

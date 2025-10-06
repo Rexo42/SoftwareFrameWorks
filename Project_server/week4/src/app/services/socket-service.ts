@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroupName } from '@angular/forms';
+import { IntegerType } from 'mongodb';
 import {io, Socket} from 'socket.io-client';
 
 
@@ -33,7 +34,7 @@ export class SocketService
       this.socket.on('connect', ()=>{
         if (room && user)
         {
-          this.joinRoom(room, user);
+          this.joinRoom(room, user, 2);
           this.socket?.emit('assignSocketToUser', user);
         }
 
@@ -82,11 +83,11 @@ export class SocketService
     }
   }
 
-  joinRoom(room: string, user: string)
+  joinRoom(room: string, user: string, useCase : Number)
   {
     if (this.socket && this.socket.connected)
     {
-      this.socket.emit('joinRoom', room, user);
+      this.socket.emit('joinRoom', room, user, useCase);
     }
   }
   leaveRoom(room:string)
@@ -97,11 +98,11 @@ export class SocketService
     }
   }
 
-  sendMessage(message: string, username: string, channel:string)
+  sendMessage(message: string, username: string, channel:string, group:string)
   {
     if (this.socket && this.socket.connected)
     {
-      this.socket.emit('sendMessage', message, username, channel);  
+      this.socket.emit('sendMessage', message, username, channel, group);  
     }
 
   }
@@ -111,7 +112,6 @@ export class SocketService
     this.messageCallback = callback;
       if (this.socket && this.socket.connected)
       {
-        console.log("trying to do something");
          this.socket.on('receiveMessage', callback);
       }
   }

@@ -121,6 +121,18 @@ export class Api {
       );
     }
 
+    getMessages(groupName : string, channelName : string)
+    {
+      return this.http.get<{valid: boolean, messages: string[]}>(`${this.baseUrl}/getMessages`,
+        {
+          params: {
+            groupName: groupName,
+            channelName: channelName,
+          }
+        }
+      );
+    }
+
   
 
     verifyToken(token: string) 
