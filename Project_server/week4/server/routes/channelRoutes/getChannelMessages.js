@@ -19,7 +19,7 @@ export async function getChannelMessages(app, db)
                     projection: {"channels.$":1}
                 }
             )
-            console.log(result.channels[0].messageHistory);
+            //console.log(result.channels[0].messageHistory);
             return res.json({valid:true, messages: result.channels[0].messageHistory});
         }
         catch(error)
