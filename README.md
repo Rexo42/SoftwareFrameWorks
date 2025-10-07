@@ -1,9 +1,12 @@
 # Software Frameworks Documentation
 
-Instructions:
-default seeded user:
-username: test1
-password: 1234
+## Instructions
+
+> **Default Seeded User Credentials:**  
+> - **Username:** `test1`  
+> - **Password:** `1234`
+
+---
 
 ## Section 1) Git Repository Organisation
 
