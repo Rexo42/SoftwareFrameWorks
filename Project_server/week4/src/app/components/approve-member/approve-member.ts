@@ -15,21 +15,33 @@ export class ApproveMember
 
   @Input() groupList: {groupName: string, groupCreator: string, groupID: string, groupWaitList: string[], channelNames: string[]}[]=[];
   // @Input() username: string = '';
-  selectedGroupName: string = '';
+  //selectedGroupName: string = '';
+  selectedGroup: 
+  {
+    groupName: string;
+    groupCreator: string;
+    groupID: string;
+    groupWaitList: string[];
+    channelNames: string[];
+  } | null = null;
   selectedWaitlist: string[] = [];
   selectedWaitlistUser: string ='';
   message : string = '';
   constructor(private router: Router, private Api : Api) {}
 
-  groupChange(groupName: string)
+  groupChange()
   {
-    const selected = this.groupList.find(g=> g.groupName === groupName);
-    this.selectedWaitlist = selected?.groupWaitList || [];
+    console.log(this.selectedGroup?.groupName);
+    this.selectedWaitlist = this.selectedGroup?.groupWaitList || [];
   }
 
   approveUser() 
   {
-    this.Api.addUserToGroup(this.selectedWaitlistUser, this.selectedGroupName).subscribe({
+    if (!this.selectedGroup)
+    {
+      return;
+    }
+    this.Api.addUserToGroup(this.selectedWaitlistUser, this.selectedGroup?.groupID).subscribe({
       next:(response) =>
       {
         if (response.success)

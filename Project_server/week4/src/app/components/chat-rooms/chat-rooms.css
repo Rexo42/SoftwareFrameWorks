@@ -1,3 +1,10 @@
 .clickable{
     cursor: pointer;
 }
+.profile-picture {
+  width: 22.5px;
+  height: 22.5x;
+  object-fit: cover;    /* Ensures the image covers the area without distortion */
+  border-radius: 20%;   /* Optional: circle shape */
+  border: 2px solid #ccc; /* Optional: border */
+}

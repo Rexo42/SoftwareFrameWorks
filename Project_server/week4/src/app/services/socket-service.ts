@@ -14,7 +14,7 @@ export class SocketService
   //private readonly URL = '121.222.65.60:3000'
 
   ////
-  private messageCallback: ((message: any, user: any) => void) | null = null;
+  private messageCallback: ((message: any, user: any, profilePicture:any) => void) | null = null;
   private updateGroupsCallback: ((groupName: string, groupID:string) => void) | null = null;
   private updateChannelsCallback: ((groupName: string, channelName:string) => void) | null = null;
   private removeChannelCallback: ((groupName: string, channelName:string) => void) | null = null;
@@ -23,7 +23,7 @@ export class SocketService
 
   constructor(){}
 
-  async connect(room: string, user: string): Promise<void>
+  async connect(room: string, user: string, profilePicture:string): Promise<void>
   {
     return new Promise((resolve, reject) =>{
 
@@ -35,7 +35,7 @@ export class SocketService
         if (room && user)
         {
           this.joinRoom(room, user, 2);
-          this.socket?.emit('assignSocketToUser', user);
+          this.socket?.emit('assignSocketToUser', user, profilePicture);
         }
 
         if (this.messageCallback) 
@@ -98,16 +98,16 @@ export class SocketService
     }
   }
 
-  sendMessage(message: string, username: string, channel:string, group:string)
+  sendMessage(message: string, username: string, channel:string, group:string, profilePicture:string)
   {
     if (this.socket && this.socket.connected)
     {
-      this.socket.emit('sendMessage', message, username, channel, group);  
+      this.socket.emit('sendMessage', message, username, channel, group, profilePicture);  
     }
 
   }
 
-  receiveMessage(callback: (message: any, user: any) => void)
+  receiveMessage(callback: (message: any, user: any, profilePicture:any) => void)
   {
     this.messageCallback = callback;
       if (this.socket && this.socket.connected)

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { Message } from '../models/message.model';
 
 @Injectable({
   providedIn: 'root'
@@ -125,7 +125,7 @@ export class Api {
 
     getMessages(groupName : string, channelName : string)
     {
-      return this.http.get<{valid: boolean, messages: string[]}>(`${this.baseUrl}/getMessages`,
+      return this.http.get<{valid: boolean, messages: Message[]}>(`${this.baseUrl}/getMessages`,
         {
           params: {
             groupName: groupName,

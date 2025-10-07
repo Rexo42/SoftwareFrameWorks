@@ -1,24 +1,22 @@
 <form class="list-group-item py-2">
   <div class="row g-2 align-items-center">
 
-    <!-- Group Dropdown -->
     <div class="col-md-4">
       <select
         id="group-select"
         class="form-select form-select-sm"
-        [(ngModel)]="selectedGroupName"
-        (change)="groupChange(selectedGroupName)"
+        [(ngModel)]="selectedGroup"
+        (change)="groupChange()"
         name="groupSelect"
         required
       >
-        <option value="" disabled selected>Select Group</option>
-        <option *ngFor="let group of groupList" [value]="group.groupName">
+        <option [ngValue]="null" disabled selected>Select Group</option>
+        <option *ngFor="let group of groupList" [ngValue]="group">
           {{ group.groupName }}
         </option>
       </select>
     </div>
 
-    <!-- Waitlist Dropdown -->
     <div class="col-md-4">
       <select
         id="waitlist-select"
@@ -37,13 +35,12 @@
       </select>
     </div>
 
-    <!-- Approve Button -->
     <div class="col-md-4 d-grid">
       <button
         type="button"
         class="btn btn-success btn-sm"
         (click)="approveUser()"
-        [disabled]="!selectedGroupName || !selectedWaitlistUser"
+        [disabled]="!selectedGroup || !selectedWaitlistUser"
       >
         Approve User
       </button>

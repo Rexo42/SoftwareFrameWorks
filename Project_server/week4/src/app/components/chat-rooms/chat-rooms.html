@@ -39,7 +39,10 @@
            style="height: 300px; overflow-y: auto; background-color: #f8f9fa;">
         <div *ngFor="let msg of messages">
           <p class="mb-1">
-            {{msg}}
+           <img *ngIf="msg.profilePicture != 'notification-Join' && msg.profilePicture != 'notification-Leave'" [src]="'http://localhost:3000/uploads/' + msg.profilePicture" alt="Profile Picture" class="profile-picture" />
+            <span *ngIf="msg.profilePicture =='notification-Join' " style="font-size: 16px;">🔵</span>
+            <span *ngIf="msg.profilePicture =='notification-Leave' " style="font-size: 16px;">🔴</span>
+           ({{msg.timeStamp}}) {{msg.username}}: {{msg.message}}
           </p>
         </div>
       </div>

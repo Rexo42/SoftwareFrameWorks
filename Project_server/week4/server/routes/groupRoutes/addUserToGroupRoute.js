@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 export async function addUserToGroup(app, db)
 {
     app.patch('/api/addUser/:groupName/:username', async(req, res) =>
@@ -12,14 +13,16 @@ export async function addUserToGroup(app, db)
             }
             
             const user = await db.collection("Users").findOne({username: userName});
-            const group = await db.collection("Groups").findOne({_id: groupName});
+            const group = await db.collection("Groups").findOne({_id: new ObjectId(groupName)});
 
             if (!user || !group)
             {
+                console.log(userName);
+                console.log(groupName);
                 return res.status(401).json({success: false, message: "no user/group given that exists"});
             }
             await db.collection("Groups").updateOne(
-            {groupName},
+            {_id: new ObjectId(groupName)},
             {$pull: {waitList: userName}, $addToSet: {members: userName}})
             return res.json({success: true, message: "successfully added user to group"});
         }

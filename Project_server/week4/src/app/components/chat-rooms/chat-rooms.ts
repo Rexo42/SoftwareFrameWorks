@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked} 
 import {SocketService} from '../../services/socket-service'
 import { Router } from '@angular/router';
 import {Api} from '../../services/api'
+import { Message } from '../../models/message.model';
 
 @Component({
   selector: 'app-chat-rooms',
@@ -14,7 +15,8 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   currentUser : string = "";
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   message : string = "";
-  messages :string[] = [];
+  messages :Message[] = [];
+  profilPicture:string = '';
   groups: string[] = [];
   groupIds: string[] = [];
   channels: string[][] = [];
@@ -39,11 +41,10 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   constructor(private router : Router, private socketService : SocketService, private api : Api){}
   ngOnInit(): void 
   {
-    this.socketService.receiveMessage((message: string, username: string)=>
+    this.socketService.receiveMessage((raw:any)=>
     {
-
-      this.messages.push(this.formatMessage(username, message));
-      console.log('message recieved: ', message);
+      this.messages.push(new Message(raw.username, raw.message, raw.profilePicture));
+      console.log('message recieved: ', raw);
     });
 
     this.socketService.updateGroups((groupName: string, groupID: string ) => {
@@ -107,11 +108,6 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
         this.socketService.leaveRoom(groupName);
         
     })
-
-    // need one for updateChannels
-      // remove Groups
-      // remove Channel
-
     const rawToken = localStorage.getItem('currentUser');
     if (rawToken)
     {
@@ -127,8 +123,10 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
             this.userRole = response.role.trim();
             console.log(this.userRole.trim());
 
+            this.profilPicture = response.profilePicture;
+
             // each user has their own join room
-            await this.socketService.connect(this.currentUser, response.username)
+            await this.socketService.connect(this.currentUser, response.username, response.profilePicture)
             this.channelName = "Not Connected";
             const useCase = response.role == "SuperAdmin" ? "SuperAdmin" : "2";
             this.api.getGroups(1, 10, this.currentUser, useCase).subscribe({
@@ -203,8 +201,8 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
        {
          return;
        }
-    this.messages.push(this.formatMessage(this.currentUser, this.message));
-    this.socketService.sendMessage(userMessage, this.currentUser, this.channelName, this.groupName);
+    this.messages.push(new Message(this.currentUser, this.message, this.profilPicture));
+    this.socketService.sendMessage(userMessage, this.currentUser, this.channelName, this.groupName, this.profilPicture);
     this.message ='';
   }
 
@@ -226,39 +224,22 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
       {
         if (response.valid)
         {
-
-          const now = new Date();
-          const hours = now.getHours().toString().padStart(2, '0');
-          const minutes = now.getMinutes().toString().padStart(2, '0');
-          const time = `${hours}:${minutes}`;
-          const formattedMessage = `(${time}) ${this.currentUser}: has joined`;
           this.messages = response.messages;
-          this.messages.push(formattedMessage);
+          console.log(this.messages);
+          this.messages.push(new Message(this.currentUser, "has joined", "notification-Join"));
         }
       }
     })
     console.log(channelName);
   }
 
-  formatMessage(username:string, message:string)
-  {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const time = `${hours}:${minutes}`;
-    return `(${time}) ${username}: ${message}`;
-  }
-
+  // formatMessage(username:string, message:string)
+  // {
+  //   const now = new Date();
+  //   const hours = now.getHours().toString().padStart(2, '0');
+  //   const minutes = now.getMinutes().toString().padStart(2, '0');
+  //   const time = `${hours}:${minutes}`;
+  //   return `(${time}) ${username}: ${message}`;
+  // }
+  
 }
-  class message 
-  {
-    username: string;
-    message:string;
-    profilePicture:string;
-    constructor(username : string, message: string, profilePicture: string)
-    {
-      this.username = username;
-      this.message = message;
-      this.profilePicture = profilePicture;
-    }
-  }
