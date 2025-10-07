@@ -20,9 +20,9 @@ export class Api {
       return this.http.post<{success: boolean, token : string, message : string}>(`${this.baseUrl}/create`, user)
     }
 
-    updateProfileRequest(user: {username: string; email: string; age: string; birthdate: string}, token:string)
+    updateProfileRequest(data : FormData, token:string)
     {
-      return this.http.patch<{success: boolean, message:string}>(`${this.baseUrl}/update`, user, {
+      return this.http.patch<{success: boolean, message:string, profilePicture:string}>(`${this.baseUrl}/update`, data, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -42,6 +42,7 @@ export class Api {
         }
       })
     }
+    
     updateUserRole(username : string, role: string)
     {
       const roleObject = {role};
@@ -108,6 +109,7 @@ export class Api {
     {
       return this.http.post<{ valid: boolean}>(`${this.baseUrl}/createChannel`,({username: username, groupName: groupName, channelName: channelName}), {});
     }
+
     deleteChannel(username: string, groupName: string, channelName: string)
     {
       return this.http.delete<{valid: boolean, message: string}>(`${this.baseUrl}/deleteChannel`,
@@ -137,7 +139,7 @@ export class Api {
 
     verifyToken(token: string) 
     {
-      return this.http.post<{ valid: boolean, role: string, username: string, email: string, age: string, birthdate: string }>(`${this.baseUrl}/verify`,null, {
+      return this.http.post<{ valid: boolean, role: string, username: string, email: string, age: string, birthdate: string, profilePicture:string }>(`${this.baseUrl}/verify`,null, {
         headers: {
           Authorization: `Bearer ${token}`
         }

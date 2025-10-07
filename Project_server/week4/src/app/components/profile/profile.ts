@@ -11,6 +11,8 @@ import { Api } from '../../services/api';
 })
 export class Profile implements OnInit
 {
+  selectedFile: File | null = null;
+  profilePicture: string | null = null;
   message : string = "";
   profileForm!: FormGroup
   constructor(private fb: FormBuilder, private router:Router, private Api : Api){}
@@ -21,6 +23,7 @@ export class Profile implements OnInit
     email: [''],
     age: [''],
     birthdate: [''],
+    profilePicture: [''],
   });
     const storedUser = localStorage.getItem('currentUser')
     if (storedUser)
@@ -31,13 +34,19 @@ export class Profile implements OnInit
           {
             console.log("validated successfully");
             console.log(response)
+            if (response.profilePicture)
+            {
+              this.profilePicture = response.profilePicture;
+            }
             this.profileForm = this.fb.group(
             {
               username: [response.username || ''],
               email: [response.email || ''],
               age: [response.age || ''],
               birthdate: [response.birthdate || ''],
+              profilePicture: [response.profilePicture || ''],
             });
+            console.log(response.profilePicture);
 
           }
           else
@@ -56,6 +65,16 @@ export class Profile implements OnInit
       this.router.navigate(['/home']);
     }
   }
+
+  onFileSelected(event: Event): void 
+  {
+    const input = event.target as HTMLInputElement;
+    if (input?.files?.length) 
+    {
+      this.selectedFile = input.files[0];
+    }
+  }
+
   onSubmit(): void
   {
     const token = localStorage.getItem('currentUser');
@@ -65,22 +84,35 @@ export class Profile implements OnInit
       this.router.navigate(['/home']);
       return;
     }
-   
+    
     const values = this.profileForm.value;
-    const user = {
-      username : values.username,
-      email : values.email,
-      age : values.age,
-      birthdate: values.birthdate,
-    };
-    console.log(user, token);
+    const data = new FormData();
+
+    data.append('username', values.username);
+    data.append('email', values.email);
+    data.append('age', values.age);
+    data.append('birthdate', values.birthdate);
+    
+    console.log(data, token);
     const cleanToken = token.replace(/^"|"$/g, '');
-    this.Api.updateProfileRequest(user, cleanToken).subscribe({
+    if (this.selectedFile)
+    {
+      data.append('profilePicture', this.selectedFile);
+    }
+
+    this.Api.updateProfileRequest(data, cleanToken).subscribe(
+    {
       next: (response) =>{
         if (response.success)
         {
+          if (this.selectedFile)
+          {
+            this.profilePicture = response.profilePicture;
+          }
+          
           console.log("updated credentials");
           this.message = "Profile Updated Successfully!";
+          this.selectedFile = null;
         }
         else
         {

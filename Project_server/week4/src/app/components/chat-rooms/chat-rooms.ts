@@ -41,11 +41,7 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
   {
     this.socketService.receiveMessage((message: string, username: string)=>
     {
-      // const now = new Date();
-      // const hours = now.getHours().toString().padStart(2, '0');
-      // const minutes = now.getMinutes().toString().padStart(2, '0');
-      // const time = `${hours}:${minutes}`;
-      // const formattedMessage = `(${time}) ${username}: ${message}`;
+
       this.messages.push(this.formatMessage(username, message));
       console.log('message recieved: ', message);
     });
@@ -253,5 +249,16 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
     return `(${time}) ${username}: ${message}`;
   }
 
-
 }
+  class message 
+  {
+    username: string;
+    message:string;
+    profilePicture:string;
+    constructor(username : string, message: string, profilePicture: string)
+    {
+      this.username = username;
+      this.message = message;
+      this.profilePicture = profilePicture;
+    }
+  }

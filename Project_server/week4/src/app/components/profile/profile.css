@@ -1,0 +1,10 @@
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;    /* Ensures the image covers the area without distortion */
+  border-radius: 20%;   /* Optional: circle shape */
+  border: 2px solid #ccc; /* Optional: border */
+}
+.profilePictureContainer{
+    text-align: center;
+}

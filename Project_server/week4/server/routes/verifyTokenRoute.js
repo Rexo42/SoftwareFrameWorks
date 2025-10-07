@@ -22,7 +22,7 @@ export async function verifyToken(app, db)
             const user = await db.collection("Users").findOne({_id: new ObjectId(String(decryptedToken.userID))});
             if (user)
             {
-                return res.json({valid: true, role: user.role, username: user.username, email: user.email, age: user.age, birthdate: user.birthdate})
+                return res.json({valid: true, role: user.role, username: user.username, email: user.email, age: user.age, birthdate: user.birthdate, profilePicture: user.profilePicture})
             }
             return res.json({valid:false});
         }

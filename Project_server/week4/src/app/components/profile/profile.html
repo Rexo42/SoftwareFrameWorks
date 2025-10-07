@@ -31,10 +31,18 @@
              formControlName="email" placeholder="Enter your Email" required />
     </div>
 
+    <div class = "mb-3">
+      <label for="profilePicture">Profile Picture</label>
+        <input type="file" (change)="onFileSelected($event)" />
+    </div>
+
     <div class="d-grid">
       <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid">
         Update Profile
       </button>
+      <div class="profilePictureContainer">
+        <img *ngIf="profilePicture != null" [src]="'http://localhost:3000/uploads/' + profilePicture" alt="Profile Picture" class="profile-picture" />
+      </div>
     </div>
   </form>
 

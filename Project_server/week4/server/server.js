@@ -1,12 +1,7 @@
 import express from 'express';
 import {createServer} from 'http';
 import path from 'path';
-//import jwt from 'jsonwebtoken';
-//import fs from 'fs';
 import cors from 'cors';
-//import bodyParser from 'body-parser';
-//import { ObjectId } from 'mongodb';
-//import {Server} from 'socket.io';
 import {dirname} from 'path';
 import { fileURLToPath } from 'url';
 
@@ -39,6 +34,7 @@ const http = createServer(app);
 
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 import mongoConnect from '../database/db.js'
 import { socketSetup } from '../socketHandler/socketHandler.js';
