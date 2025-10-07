@@ -136,3 +136,37 @@ form button:hover {
     height: 26px;
   }
 }
+
+.list-group > .list-group-item {
+  border: 1px solid #ced4da; 
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #f1f3f5; 
+  padding: 10px;
+}
+
+.list-group > .list-group-item > .list-group > .list-group-item {
+  border: 1px solid #adb5bd; 
+  border-radius: 4px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 6px 10px;
+  background-color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.list-group > .list-group-item > .list-group > .list-group-item:hover {
+  background-color: #e9ecef; 
+}
+
+.list-group > .list-group-item > .list-group {
+  margin-top: 8px;
+}
+
+.list-group > .list-group-item > .list-group > .list-group-item.clickable.active {
+  background-color: #d0ebff;
+  font-weight: bold;
+  border-color: #339af0;
+}
+
