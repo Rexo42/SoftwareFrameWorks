@@ -4,7 +4,135 @@
 .profile-picture {
   width: 22.5px;
   height: 22.5x;
-  object-fit: cover;    /* Ensures the image covers the area without distortion */
-  border-radius: 20%;   /* Optional: circle shape */
-  border: 2px solid #ccc; /* Optional: border */
+  object-fit: cover; 
+  border-radius: 20%;  
+  border: 2px solid #ccc; 
+}
+
+.container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h6 {
+  font-weight: 600;
+}
+
+.border {
+  border-radius: 8px;
+}
+
+.bg-light,
+[style*="background-color: #e9ecef;"] {
+  background-color: #f5f7fa !important;
+}
+
+.list-group-item {
+  border: none;
+}
+
+.group-item-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.channel-item {
+  border-radius: 5px;
+  padding: 6px 10px;
+  margin-bottom: 3px;
+  background-color: #ffffff;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.channel-item:hover {
+  background-color: #e0e7ff;
+}
+
+.channel-item.active {
+  background-color: #dbeafe;
+  font-weight: 600;
+}
+
+.status-dot {
+  font-size: 18px;
+}
+
+.chat-box {
+  height: 300px;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  scroll-behavior: smooth;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  border-bottom: 1px solid #ececec;
+}
+
+.chat-message:last-child {
+  border-bottom: none;
+}
+
+.chat-message img.profile-picture {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}
+
+.chat-message p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.chat-message strong {
+  color: #0d6efd;
+}
+
+.chat-message .text-muted {
+  color: #6c757d;
+  font-size: 13px;
+}
+
+form label {
+  font-weight: 500;
+}
+
+form input[type="text"] {
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+form button {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+form button:hover {
+  background-color: #0b5ed7;
+}
+
+@media (max-width: 768px) {
+  .channel-item {
+    font-size: 13px;
+  }
+
+  .chat-message p {
+    font-size: 13px;
+  }
+
+  .chat-message img.profile-picture {
+    width: 26px;
+    height: 26px;
+  }
 }
