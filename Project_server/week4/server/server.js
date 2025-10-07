@@ -38,17 +38,6 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 import mongoConnect from '../database/db.js'
 import { socketSetup } from '../socketHandler/socketHandler.js';
-//import { deleteGroup } from './routes/groupRoutes/deleteGroupRoute.js';
-//import { getgroups } from 'process';
-
-class channels
-{
-    constructor(name)
-    {
-        this.channelName = name;
-        this.channelMembers = [];
-    }
-}
 
 let io;
 let db;

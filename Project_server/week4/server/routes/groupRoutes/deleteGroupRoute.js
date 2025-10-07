@@ -12,7 +12,6 @@ export async function deleteGroup(app, db, io)
                 return res.status(401).json({success: false, message: "what are you doing bruh"});
             }
 
-            // logic to delete channnels visually
             const data = await db.collection("Groups").findOne({_id: new ObjectId(groupName)});
             for (let i = 0; i < data.channels.length; i++)
             {
@@ -22,8 +21,6 @@ export async function deleteGroup(app, db, io)
             }
             io.to('0').emit('removeGroup', groupName);
             io.to(groupName).emit('removeGroup', groupName);
-
-            ////
 
             const result = await db.collection("Groups").deleteOne({_id: new ObjectId(groupName)});
             if (result.deletedCount != 0)

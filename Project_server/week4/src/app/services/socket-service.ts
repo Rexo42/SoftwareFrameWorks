@@ -11,9 +11,9 @@ export class SocketService
 {
   private socket: Socket | null = null;
   private readonly URL = 'http://localhost:3000';
-  //private readonly URL = '121.222.65.60:3000'
 
-  ////
+
+////
   private messageCallback: ((message: any, user: any, profilePicture:any) => void) | null = null;
   private updateGroupsCallback: ((groupName: string, groupID:string) => void) | null = null;
   private updateChannelsCallback: ((groupName: string, channelName:string) => void) | null = null;

@@ -28,6 +28,7 @@ export class LoginPage
 
   login() 
   {
+    // logic for submitting user input fields to backend/API for verification/auth
     const user = { username: this.username, password: this.password };
     
       this.Api.loginRequest(user).subscribe({

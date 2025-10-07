@@ -7,11 +7,8 @@ export async function createGroup(app, db, io)
     app.post('/api/createGroup', async (req, res) =>{
         try
         {
-            // check permission
             const {groupName, username} = req.body;
             const user = await db.collection("Users").findOne({username: username});
-            //console.log(checkPermissions(db, user._id.toString(), 1));
-            //console.log("kino");
             if (await checkPermissions(db,user._id ,1))
             {
                 const memberDetails = {_id: user._id, username: username, role: user.role};
@@ -19,9 +16,7 @@ export async function createGroup(app, db, io)
                 const collection = await db.collection("Groups");
                 const newGroup = new Group(groupName, memberDetails);
                 const result = await collection.insertOne(newGroup);
-                // update super admin UI
                 io.to('0').emit('updateGroups', groupName, result.insertedId);
-                // handles if a groupAdmin made the group
                 io.to(result.insertedId).emit('updateGroups', groupName, result.insertedId);
                 return res.json({valid: true});
             }

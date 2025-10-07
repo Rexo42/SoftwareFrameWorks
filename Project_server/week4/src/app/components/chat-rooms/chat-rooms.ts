@@ -196,6 +196,7 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
 
   sendMessage()
   {
+    // logic for sending message, local update and socket event
     const userMessage = this.message;
        if (!userMessage)
        {
@@ -208,15 +209,13 @@ export class ChatRooms implements OnInit, OnDestroy, AfterViewChecked
 
   onChannelClick(channelName: string, groupName:string)
   {
-    // I need some way for the joinRoom service to retrieve message history
-      // socketservice.leaveRoom
+    // logic for joinining a channel
 
     if (this.channelName != "Not Connected")
     {
       this.socketService.leaveRoom(this.channelName);
     }
     this.groupName = groupName;
-    //this.socketService.leaveRoom(this.channelName);
     this.socketService.joinRoom(channelName, this.currentUser, 1);
     this.channelName = channelName;
     this.api.getMessages(groupName, channelName).subscribe({

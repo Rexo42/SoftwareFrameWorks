@@ -68,6 +68,7 @@ export class Profile implements OnInit
 
   onFileSelected(event: Event): void 
   {
+    // logic for setting file
     const input = event.target as HTMLInputElement;
     if (input?.files?.length) 
     {
@@ -77,6 +78,7 @@ export class Profile implements OnInit
 
   onSubmit(): void
   {
+    // updating profile submission logic
     const token = localStorage.getItem('currentUser');
     if (!token)
     {

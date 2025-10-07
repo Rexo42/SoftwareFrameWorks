@@ -8,7 +8,7 @@ export class User
         this.password = password;
         this.birthdate = null;
         this.role = role;
-        this.profilePicture = null;
+        this.profilePicture = '1759799614527-defaultProfile.jpg';
         this.groups = [];
     }
 }

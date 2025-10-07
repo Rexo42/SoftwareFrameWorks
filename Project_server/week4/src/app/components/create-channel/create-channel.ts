@@ -17,7 +17,6 @@ export class CreateChannel
   creator: string = '';
   message: string = '';
 
-  //selectedGroup: string = '';
     selectedGroup: 
   {
     groupName: string;
@@ -26,16 +25,12 @@ export class CreateChannel
     groupWaitList: string[];
     channelNames: string[];
   } | null = null;
-  //groupList: string[] = [];
   channelName: string = '';
   constructor(private router: Router, private Api : Api) {}
-  ngOnInit():void
-  {
-    
-  }
 
   createChannel()
   {
+    // logic for submitting entered data and selected group to backend to create new channel from
     if (!this.selectedGroup || !this.channelName.trim())
     {
       this.message = "please select a group and enter a name for the channel";

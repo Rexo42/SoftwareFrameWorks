@@ -54,6 +54,7 @@ export class UserDashboard
 
   enrol(groupName : string)
   {
+    // logic for adding user to groups waitlist
     this.api.joinGroupWaitlist(this.currentUser, groupName).subscribe({
       next: (response) =>
       {
@@ -70,6 +71,7 @@ export class UserDashboard
 
   refreshGroups()
   {
+    // logic for refreshing group data from backend/API
     this.api.getGroupsToEnrol(this.pageNumber, 5, this.currentUser).subscribe({
     next:(response) =>
     {
@@ -108,8 +110,9 @@ export class UserDashboard
 
   pageUpdate(num : number)
   {
+    // change page/pagination logic
     let desired = this.pageNumber;
-    if (num == 0) // previous
+    if (num == 0) 
     {
       desired --;
       if (desired < 1)
@@ -117,7 +120,7 @@ export class UserDashboard
         return;
       }
     }
-    else if (num == 1) // next
+    else if (num == 1)
     {
       desired ++;
       if (desired > this.totalPages)

@@ -28,6 +28,7 @@ export class DeleteChannel
 
   deleteChannel()
   {
+    // logic for calling external parent function given user input group/channel to delete
     if (this.selectedChannel && this.selectedGroup)
     {
       this.channelDeleted.emit({groupName: this.selectedGroup.groupName, channelName: this.selectedChannel});

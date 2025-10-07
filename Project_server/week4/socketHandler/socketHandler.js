@@ -42,9 +42,8 @@ export async function socketSetup(server, io, db)
             {
                 socket.profilePicture = profilePicture;
             }
-            //socket.username = username;
+    
         });
-        // need a leave room function 
         socket.on('sendMessage', (message, username, channel, group, profilePicture)=>
         {
             const now = new Date();
@@ -54,7 +53,6 @@ export async function socketSetup(server, io, db)
 
             const newMsg = new Message(username, message, profilePicture);
             console.log("message recieved from:", socket.id, " :: ", message);
-            // in here we can update message history
             try
             {
                 db.collection("Groups").updateOne(
@@ -80,7 +78,6 @@ export async function socketSetup(server, io, db)
 
     socket.on('disconnect',()=>
     {
-        //io.to('0').emit('receiveMessage', "has disconnected", socket.username);
         console.log("user disconnected: ", socket.id);
     });
     

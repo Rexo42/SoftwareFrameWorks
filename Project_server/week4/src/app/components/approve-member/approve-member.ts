@@ -31,12 +31,14 @@ export class ApproveMember
 
   groupChange()
   {
+    // logic for selecting a group from dropdown and setting it
     console.log(this.selectedGroup?.groupName);
     this.selectedWaitlist = this.selectedGroup?.groupWaitList || [];
   }
 
   approveUser() 
   {
+    // submit logic to approve the chosen user into the chosen group
     if (!this.selectedGroup)
     {
       return;
@@ -60,6 +62,5 @@ export class ApproveMember
       }
     })
     this.handleMessage.emit(this.message);
-    // call api route to approve the user via selected groupName and selected waitlist user
   }
 }

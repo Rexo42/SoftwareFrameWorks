@@ -45,6 +45,7 @@ export class NavBar implements OnInit
 
   logout(): void
   {
+    // logic for logging out/clearing storage/altering UI
     localStorage.removeItem('currentUser');
     this.isLoggedIn = false;
     this.router.navigate(['/home']);

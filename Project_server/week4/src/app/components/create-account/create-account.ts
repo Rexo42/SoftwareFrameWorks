@@ -17,17 +17,9 @@ export class CreateAccount
   email: string = '';
   message: string = '';
   constructor(private router: Router, private Api : Api) {}
-    ngOnInit(): void
-    {
-      //if (localStorage.getItem('currentUser'))
-      //{
-      //  this.router.navigate(['/profile']);
-      //}
-
-    }
-
   accountCreate()
   {
+    // logic for submitting form and creating an account via API/backend
     const user = {username: this.username, password: this.password, email: this.email}
 
     this.Api.createAccountRequest(user).subscribe({

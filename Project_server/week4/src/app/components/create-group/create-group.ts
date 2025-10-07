@@ -21,6 +21,7 @@ export class CreateGroup
 
   createGroup()
   {
+    // logic for taking user input and creating a group via API/backend
     if (this.groupName == '')
     {
       this.message = "cannot leave fields empty!";

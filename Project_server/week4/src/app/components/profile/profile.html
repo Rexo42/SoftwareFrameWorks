@@ -6,7 +6,6 @@
         style="max-width: 500px;">
     <h3 class="mb-4 text-center">Update Profile</h3>
 
-    <!-- Form Fields Here -->
     <div class="mb-3">
       <label for="username" class="form-label">Username:</label>
       <input type="text" id="username" class="form-control"
@@ -46,7 +45,6 @@
     </div>
   </form>
 
-  <!-- Error/Success Message -->
   <div *ngIf="message" class="mt-3 alert alert-info text-center w-100" style="max-width: 500px;" id="errorMsg">
     {{ message }}
   </div>
