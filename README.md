@@ -1,110 +1,151 @@
-Software FrameWorks Documentation
+# Software Frameworks Documentation
 
-- Section 1) Describe the Organisation of your Git repository and how you used it during the development of your solution
+## Section 1) Git Repository Organisation
 
-  - My Git repository utilises branches to test and develop additional features that might need to be rolled back or drastically altered throughout production. When that particular feature is then complete I merge them onto my repositories main branch. 
-  most of the development took place on the main branch with only some significant features with larger scope/codebase covereage were tested on their own safe branches away from main.
+My Git repository utilises **branches** to test and develop additional features that might need to be rolled back or drastically altered during development. 
 
-- Section 2) Description of data structures used in the client and server to represent the various entities, eg: users, groups, channels, etc.
+When a particular feature is complete, it is **merged into the main branch**. Most of the development took place on the `main` branch, with only significant features (larger in scope or codebase coverage) tested in **safe feature branches** away from `main`.
 
-- User()
--   My Users class contains contains all relevant information needing to be stored in the database. It contains fields for a username, email, password, birthdate, role and an array of groups they are apart of.
+---
 
--   Group()
-    - My Group class contains all relevant information assosciated with a singular group to be stored in the database. it contains fields for a creators username, the name of the group, a list of members, a list of channels, and a list for the waitlist.
- 
-- Message()
--   My message class contains all necessary information that should be contained and stored as a message, with fields for a sender, time of sending and a body for its content.
+## Section 2) Data Structures Used (Client & Server)
 
-- Channel()
--   My channel class holds all information needed for a singular channel of a group. It contains fields for the name of the channel, the creator of it and also a list for message history
+### `User()`
+The `User` class contains all relevant information needing to be stored in the database:
 
-- Section 3) Angular Architecture
-- I have used angular components mostly to act as entire pages, however did segment my UI/logic via the use of child components that were responsible for displaying/performing one piece of logic.
-- I created and used two services, one for handling all of my API routes established on the node server (Api) and another for handling all of my socket related events (socketService). The Api service provides a safe and easy way for components to send/recieve data and information from my database and server without worrying about exploitation of giving the user too much control of data flow. Moreover, the socketservice also provides an easy way to define event behaviour/overrides in the frontend where needed to achieve things like realtime channel and group creation/deletion, chat messaging and leave/join notifications.
+- `username`
+- `email`
+- `password`
+- `birthdate`
+- `role`
+- `groups[]` (Array of groups the user is part of)
 
-- Section 4) REST API/Sockets
-  Routes:
-    User Routes:
-    CreateUserRoute()
-    @params (username, email, password) via request body
-    @returns success boolean and message string
-    Route takes in user information via login form and creates a new user if the username is not already present in the database
+### `Group()`
+The `Group` class stores all necessary data related to a group:
 
-  removeUserRoute()
-  @params username via parameters
-  @returns success boolean and a message string
-  Route takes in a username (since they are unique) and deletes them from the Users database as well as clears all instances of them in group member lists etc
+- `creatorUsername`
+- `groupName`
+- `members[]`
+- `channels[]`
+- `waitlist[]`
 
-  updateProfileRoute()
-  @params (username, email, age, birthdate) via request body. Token attached to authorization header.
-  @returns success boolean and message:string
-  Route takes in input from a form containing fields of a users details and attempts to update them in the database/server side.
+### `Message()`
+The `Message` class represents a single chat message:
 
-  updateUserRole()
-  @params (role) via req.body, username via parameters
-  @returns success boolean message string
-  Route takes in a username and a desired role to change to, it then updtes that users role within the database.
+- `sender`
+- `timestamp`
+- `body` (message content)
 
-  userLoginRoute()
-  @params (username, password) from request body
-  @returns success boolean, message string and new jsonwebtoken containing their userID to be stored locally
-  Route takes in user input login form information and attempts to match it with a user entry in the database. If successful generates a JSONWEBTOKEN with encrypted user ID to be stored locally
+### `Channel()`
+The `Channel` class contains information about a single group channel:
 
-  getUsersRoute()
-  @params (page, limit) sent via request parameters
-  @returns success boolean, usernames, userIds, userRoles, pageLimit
-  Route takes in a page and limit for pagination / performance and returns that amount/page of users details to be displayed
+- `channelName`
+- `creator`
+- `messageHistory[]`
 
-  Group Routes;
-  CreateGroupRoute()
-  @params group name and username via request body
-  @returns valid boolean
-  Route checks given username has right permissions to be making a group and then creates anew group in the database, sends out socket emit to update UI in realtime on the chat room page
+---
 
-  DeleteGroupRoute()
-  @params groupID via request parametres
-  @returns success boolean and message string
-  Route takes in a groups mongo database ID and then deletes that entry from the database. sends out secket event to update the UI in realtime to users on the chat-room page
+## Section 3) Angular Architecture
 
-  getGroupsRoute()
-  @params page, limit, username and useCase.
-  @returns all relevant fields of groups including ID's, members, waitlist users, channels, creator
-  Route takes in the above paramters via the request. Usecase is an optional input and determines whether or not the call is being made for the admin dashboard or the user dashboard/chat room. I use the non existance OR actual value given to usecase to filter
-  and control the flow of data.
+I structured Angular components to mostly represent **entire pages**, while segmenting specific UI/logic tasks into **child components**.
 
-  addUserToGroupRoute()
-  @params groupID, username via request paramters
-  @returns success boolean message string
-  Route finds user and group from the ID and username. It then checks that the user is on the groups waitlist and then removes them from it and adds them to the group member list
+### Services
 
-  addUserToWaitlistRoute()
-  @params username groupID passed via request parameters
-  @returns valid boolean message string
-  Route finds that the given group and user exist. The user is then added to that groups waitlist, ready to be approved by a GroupAdmin/SuperAdmin
+- **`ApiService`**: Handles all API routes connected to the Node server. Ensures safe data flow between frontend and backend.
+- **`SocketService`**: Manages socket-related events. Handles:
+  - Real-time channel and group creation/deletion
+  - Chat messaging
+  - Join/leave notifications
 
-  Channel Routes:
-  createChannelRoute()
-  @params username, groupID, channelName
-  @returns valid boolean
-  This route creates a channel with the given name, created by the passed username within the given group. Socket events are emitted to update UI in realtime
+---
 
-  deleteChannelRoute()
-  @params channelName, groupName, username via request parametres
-  @returns valid boolean message string
-  This route deletes a given channel from the given group
+## Section 4) REST API / Socket Routes
 
-  getChannelMessagesRoute()
-  @params group name and channelname via request parametres
-  @returns valid boolean and an array of messages
-  This route retrieves all channel messages for a channel. used when a user joins a channel in the chatroom.
+### User Routes
 
-  Utility Routes:
-  verifyTokenRoute()
-  @params token passed via authorization header
-  @returns valid boolean and all information related to that users details aside from sensitive information like password
-  This route verifies that a users encrypted token is valid and assosciated with an existing user, before returning all of their information to be used for processing/logic for the UI etc
-  
-  
-  
-  
+#### `CreateUserRoute()`
+- **@params**: `username`, `email`, `password` (via request body)  
+- **@returns**: `success` (boolean), `message` (string)  
+Creates a new user if the username is not already in the database.
+
+#### `removeUserRoute()`
+- **@params**: `username` (via URL params)  
+- **@returns**: `success`, `message`  
+Deletes user and removes them from all group memberships.
+
+#### `updateProfileRoute()`
+- **@params**: `username`, `email`, `age`, `birthdate` (via body), token via `Authorization` header  
+- **@returns**: `success`, `message`  
+Updates user profile information.
+
+#### `updateUserRole()`
+- **@params**: `username` (via URL), `role` (via body)  
+- **@returns**: `success`, `message`  
+Updates user role in the database.
+
+#### `userLoginRoute()`
+- **@params**: `username`, `password` (via body)  
+- **@returns**: `success`, `message`, `token`  
+Authenticates user and returns a JWT containing encrypted user ID.
+
+#### `getUsersRoute()`
+- **@params**: `page`, `limit` (via query params)  
+- **@returns**: `success`, `usernames`, `userIds`, `userRoles`, `pageLimit`  
+Returns paginated user data for display.
+
+---
+
+### Group Routes
+
+#### `CreateGroupRoute()`
+- **@params**: `groupName`, `username` (via body)  
+- **@returns**: `valid` (boolean)  
+Creates a new group and emits a socket event for UI update.
+
+#### `DeleteGroupRoute()`
+- **@params**: `groupID` (via URL param)  
+- **@returns**: `success`, `message`  
+Deletes a group and emits a socket event.
+
+#### `getGroupsRoute()`
+- **@params**: `page`, `limit`, `username`, `useCase`  
+- **@returns**: All group-related fields: IDs, members, waitlist, channels, creator  
+Filters data based on `useCase` for either admin or user dashboard.
+
+#### `addUserToGroupRoute()`
+- **@params**: `groupID`, `username` (via URL params)  
+- **@returns**: `success`, `message`  
+Moves user from waitlist to group member list.
+
+#### `addUserToWaitlistRoute()`
+- **@params**: `username`, `groupID` (via URL params)  
+- **@returns**: `valid`, `message`  
+Adds user to group's waitlist for approval.
+
+---
+
+### Channel Routes
+
+#### `createChannelRoute()`
+- **@params**: `username`, `groupID`, `channelName`  
+- **@returns**: `valid` (boolean)  
+Creates a new channel and emits socket event.
+
+#### `deleteChannelRoute()`
+- **@params**: `channelName`, `groupName`, `username`  
+- **@returns**: `valid`, `message`  
+Deletes a channel from a group.
+
+#### `getChannelMessagesRoute()`
+- **@params**: `groupName`, `channelName`  
+- **@returns**: `valid`, `messages[]`  
+Returns all messages in a channel.
+
+---
+
+### Utility Routes
+
+#### `verifyTokenRoute()`
+- **@params**: Token via `Authorization` header  
+- **@returns**: `valid`, user info (excluding password)  
+Verifies a user's JWT and returns their data for use in frontend logic/UI rendering.
