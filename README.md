@@ -55,5 +55,56 @@ Software FrameWorks Documentation
   @params (page, limit) sent via request parameters
   @returns success boolean, usernames, userIds, userRoles, pageLimit
   Route takes in a page and limit for pagination / performance and returns that amount/page of users details to be displayed
+
+  Group Routes;
+  CreateGroupRoute()
+  @params group name and username via request body
+  @returns valid boolean
+  Route checks given username has right permissions to be making a group and then creates anew group in the database, sends out socket emit to update UI in realtime on the chat room page
+
+  DeleteGroupRoute()
+  @params groupID via request parametres
+  @returns success boolean and message string
+  Route takes in a groups mongo database ID and then deletes that entry from the database. sends out secket event to update the UI in realtime to users on the chat-room page
+
+  getGroupsRoute()
+  @params page, limit, username and useCase.
+  @returns all relevant fields of groups including ID's, members, waitlist users, channels, creator
+  Route takes in the above paramters via the request. Usecase is an optional input and determines whether or not the call is being made for the admin dashboard or the user dashboard/chat room. I use the non existance OR actual value given to usecase to filter
+  and control the flow of data.
+
+  addUserToGroupRoute()
+  @params groupID, username via request paramters
+  @returns success boolean message string
+  Route finds user and group from the ID and username. It then checks that the user is on the groups waitlist and then removes them from it and adds them to the group member list
+
+  addUserToWaitlistRoute()
+  @params username groupID passed via request parameters
+  @returns valid boolean message string
+  Route finds that the given group and user exist. The user is then added to that groups waitlist, ready to be approved by a GroupAdmin/SuperAdmin
+
+  Channel Routes:
+  createChannelRoute()
+  @params username, groupID, channelName
+  @returns valid boolean
+  This route creates a channel with the given name, created by the passed username within the given group. Socket events are emitted to update UI in realtime
+
+  deleteChannelRoute()
+  @params channelName, groupName, username via request parametres
+  @returns valid boolean message string
+  This route deletes a given channel from the given group
+
+  getChannelMessagesRoute()
+  @params group name and channelname via request parametres
+  @returns valid boolean and an array of messages
+  This route retrieves all channel messages for a channel. used when a user joins a channel in the chatroom.
+
+  Utility Routes:
+  verifyTokenRoute()
+  @params token passed via authorization header
+  @returns valid boolean and all information related to that users details aside from sensitive information like password
+  This route verifies that a users encrypted token is valid and assosciated with an existing user, before returning all of their information to be used for processing/logic for the UI etc
+  
+  
   
   
