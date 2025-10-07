@@ -18,3 +18,42 @@ Software FrameWorks Documentation
 
 - Channel()
 -   My channel class holds all information needed for a singular channel of a group. It contains fields for the name of the channel, the creator of it and also a list for message history
+
+- Section 3) Angular Architecture
+- I have used angular components mostly to act as entire pages, however did segment my UI/logic via the use of child components that were responsible for displaying/performing one piece of logic.
+- I created and used two services, one for handling all of my API routes established on the node server (Api) and another for handling all of my socket related events (socketService). The Api service provides a safe and easy way for components to send/recieve data and information from my database and server without worrying about exploitation of giving the user too much control of data flow. Moreover, the socketservice also provides an easy way to define event behaviour/overrides in the frontend where needed to achieve things like realtime channel and group creation/deletion, chat messaging and leave/join notifications.
+
+- Section 4) REST API/Sockets
+  Routes:
+    User Routes:
+    CreateUserRoute()
+    @params (username, email, password) via request body
+    @returns success boolean and message string
+    Route takes in user information via login form and creates a new user if the username is not already present in the database
+
+  removeUserRoute()
+  @params username via parameters
+  @returns success boolean and a message string
+  Route takes in a username (since they are unique) and deletes them from the Users database as well as clears all instances of them in group member lists etc
+
+  updateProfileRoute()
+  @params (username, email, age, birthdate) via request body. Token attached to authorization header.
+  @returns success boolean and message:string
+  Route takes in input from a form containing fields of a users details and attempts to update them in the database/server side.
+
+  updateUserRole()
+  @params (role) via req.body, username via parameters
+  @returns success boolean message string
+  Route takes in a username and a desired role to change to, it then updtes that users role within the database.
+
+  userLoginRoute()
+  @params (username, password) from request body
+  @returns success boolean, message string and new jsonwebtoken containing their userID to be stored locally
+  Route takes in user input login form information and attempts to match it with a user entry in the database. If successful generates a JSONWEBTOKEN with encrypted user ID to be stored locally
+
+  getUsersRoute()
+  @params (page, limit) sent via request parameters
+  @returns success boolean, usernames, userIds, userRoles, pageLimit
+  Route takes in a page and limit for pagination / performance and returns that amount/page of users details to be displayed
+  
+  
