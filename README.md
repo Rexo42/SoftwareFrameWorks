@@ -1,7 +1,5 @@
 # Software Frameworks Documentation
 
-# Software Frameworks Documentation
-
 Instructions:
 default seeded user:
 username: test1
