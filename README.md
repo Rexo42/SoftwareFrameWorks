@@ -150,3 +150,34 @@ Returns all messages in a channel.
 - **@params**: Token via `Authorization` header  
 - **@returns**: `valid`, user info (excluding password)  
 Verifies a user's JWT and returns their data for use in frontend logic/UI rendering.
+
+---
+
+### Real-Time Messaging via Sockets
+
+Each user has a **unique socket connection**. This socket is joined to:
+
+- A **room for every group** the user is part of.
+- One (or none) **channel room**, depending on the channel they are currently active in.
+
+This structure enables **real-time UI updates** when actions occur—such as on the admin dashboard or within chat rooms.
+
+#### Message Flow
+
+1. **Sending a Message:**
+   - When a user presses **Send** in the chatbox, the content is:
+     - Formatted into an instance of the `Message` class.
+     - Emitted to the server using the socket event: `'SendMessage'`.
+
+2. **Server-Side Handling:**
+   - The server receives the message via `'SendMessage'`.
+   - It formats the message and re-emits it using: `'ReceiveMessage'`.
+   - This event targets **all sockets** connected to the relevant **channel room**.
+
+3. **Receiving Messages (Client-Side):**
+   - Clients listening to `'ReceiveMessage'` will:
+     - Append the received message to their **messages array** for that channel.
+     - Trigger a UI update to show the new message in real-time.
+
+4. **Persistence:**
+   - The message is also saved to the **channel's message history array** on the backend, ensuring persistence across sessions.
