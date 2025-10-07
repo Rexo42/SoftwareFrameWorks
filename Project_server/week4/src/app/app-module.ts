@@ -21,7 +21,6 @@ import { CreateGroup } from './components/create-group/create-group';
 import { UserDashboard } from './components/user-dashboard/user-dashboard';
 import { ApproveMember } from './components/approve-member/approve-member';
 import { RemoveUser } from './components/remove-user/remove-user';
-import { DeleteGroup } from './components/delete-group/delete-group';
 import { DeleteChannel } from './components/delete-channel/delete-channel';
 
 @NgModule({
@@ -40,7 +39,6 @@ import { DeleteChannel } from './components/delete-channel/delete-channel';
     UserDashboard,
     ApproveMember,
     RemoveUser,
-    DeleteGroup,
     DeleteChannel,
   ],
   imports: [

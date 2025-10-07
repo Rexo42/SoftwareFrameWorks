@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NavBar } from '../nav-bar/nav-bar';
+import { FormsModule } from '@angular/forms';
 import { ChatRooms } from './chat-rooms';
 
 describe('ChatRooms', () => {
@@ -8,7 +10,8 @@ describe('ChatRooms', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ChatRooms]
+      declarations: [ChatRooms, NavBar],
+      imports: [HttpClientTestingModule, FormsModule]
     })
     .compileComponents();
 

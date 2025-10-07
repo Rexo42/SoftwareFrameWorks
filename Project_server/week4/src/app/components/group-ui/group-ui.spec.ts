@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NavBar } from '../nav-bar/nav-bar';
+import { CreateGroup } from '../create-group/create-group';
+import { FormsModule } from '@angular/forms';
 import { GroupUI } from './group-ui';
 
 describe('GroupUI', () => {
@@ -8,7 +11,8 @@ describe('GroupUI', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GroupUI]
+      declarations: [GroupUI, NavBar],
+      imports: [HttpClientTestingModule, FormsModule]
     })
     .compileComponents();
 

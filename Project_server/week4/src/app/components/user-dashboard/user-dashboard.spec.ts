@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NavBar } from '../nav-bar/nav-bar';
 import { UserDashboard } from './user-dashboard';
 
 describe('UserDashboard', () => {
@@ -8,7 +9,8 @@ describe('UserDashboard', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [UserDashboard]
+      declarations: [UserDashboard, NavBar],
+      imports: [HttpClientTestingModule]
     })
     .compileComponents();
 
