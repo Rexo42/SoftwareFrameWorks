@@ -34,7 +34,8 @@ The `Message` class represents a single chat message:
 
 - `sender`
 - `timestamp`
-- `body` (message content)
+- `message`
+- `prfofilePicture`
 
 ### `Channel()`
 The `Channel` class contains information about a single group channel:
