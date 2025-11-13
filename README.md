@@ -1,5 +1,21 @@
 # Software Frameworks Documentation
 
+## Instructions
+
+> **Default Seeded User Credentials:**  
+> - **Username:** `test1`  
+> - **Password:** `1234`
+
+---
+
+## Section 1) Git Repository Organisation
+
+My Git repository utilises **branches** to test and develop additional features that might need to be rolled back or drastically altered during development. 
+
+When a particular feature is complete, it is **merged into the main branch**. Most of the development took place on the `main` branch, with only significant features (larger in scope or codebase coverage) tested in **safe feature branches** away from `main`.
+
+---
+
 ## Section 1) Git Repository Organisation
 
 My Git repository utilises **branches** to test and develop additional features that might need to be rolled back or drastically altered during development. 
